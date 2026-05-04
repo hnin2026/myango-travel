@@ -4,15 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Itinerary extends Model
+class TourImage extends Model
 {
     protected $fillable = [
         'tour_id',
-        'day_number',
-        'title',
-        'title_mm',
-        'description_en',
-        'description_mm'
+        'image_path',
+        'order'
     ];
 
     public function tour()

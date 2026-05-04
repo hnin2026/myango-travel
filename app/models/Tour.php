@@ -8,8 +8,11 @@ class Tour extends Model
 {
     protected $fillable = [
         'title',
-        'description',
+        'title_mm',
+        'description_en',
         'description_mm',
+        'additional_info_en',
+        'additional_info_mm',
         'duration_days',
         'location',
         'thumbnail',
@@ -23,11 +26,16 @@ class Tour extends Model
 
     public function itineraries()
     {
-        return $this->hasMany(Itinerary::class);
+        return $this->hasMany(Itinerary::class)->orderBy('day_number');
     }
 
     public function availableDates()
     {
         return $this->hasMany(AvailableDate::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(TourImage::class)->orderBy('order');
     }
 }
