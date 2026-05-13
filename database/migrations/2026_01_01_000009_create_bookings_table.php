@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone');
             $table->integer('num_persons');
+            $table->decimal('base_price', 10, 2);
+            $table->decimal('hotel_upgrade_price', 10, 2);
             $table->decimal('total_price', 10, 2);
             $table->enum('status', ['pending', 'confirmed', 'paid', 'cancelled'])->default('pending');
             $table->string('ref_code')->unique();

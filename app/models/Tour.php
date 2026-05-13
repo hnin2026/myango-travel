@@ -14,6 +14,7 @@ class Tour extends Model
         'additional_info_en',
         'additional_info_mm',
         'duration_days',
+        'base_price',
         'location',
         'thumbnail',
         'status'
@@ -31,7 +32,7 @@ class Tour extends Model
 
     public function availableDates()
     {
-        return $this->hasMany(AvailableDate::class);
+        return $this->hasMany(AvailableDate::class)->orderBy('date');
     }
 
     public function images()

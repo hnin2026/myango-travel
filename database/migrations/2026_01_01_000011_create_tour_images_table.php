@@ -11,21 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hotels', function (Blueprint $table) {
+        Schema::create('tour_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('category', ['3-star', '4-star', '5-star']);
-            $table->decimal('price_per_person', 10, 2);
-            $table->string('location')->nullable();
+            $table->foreignId('tour_id')->constrained()->onDelete('cascade');
+            $table->string('image_path');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('hotels');
+        Schema::dropIfExists('tour_images');
     }
 };

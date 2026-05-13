@@ -14,11 +14,17 @@ class Booking extends Model
         'email',
         'phone',
         'num_persons',
+        'base_price',
+        'hotel_upgrade_price',
         'total_price',
         'status',
         'ref_code',
         'cancellation_token',
         'payment_deadline'
+    ];
+
+    protected $casts = [
+        'payment_deadline' => 'date'
     ];
 
     public function tour()

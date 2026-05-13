@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\HotelController;
+use App\Http\Controllers\Admin\SeasonPeriodController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +18,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('tours', TourController::class);
     Route::resource('hotels', HotelController::class);
+    Route::resource('season-periods', SeasonPeriodController::class);
 });
 
 // Profile routes

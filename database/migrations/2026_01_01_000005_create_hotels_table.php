@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('itineraries', function (Blueprint $table) {
+        Schema::create('hotels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->integer('day_number');
-            $table->string('title');
-            $table->text('description');
-            $table->text('description_mm')->nullable();
+            $table->string('name');
+            $table->enum('category', ['3-star', '4-star', '5-star']);
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('itineraries');
+        Schema::dropIfExists('hotels');
     }
 };

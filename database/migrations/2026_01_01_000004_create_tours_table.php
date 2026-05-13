@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('tours', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->text('description_mm')->nullable(); 
+            $table->string('title_mm')->nullable();
+            $table->longText('description_en')->nullable();
+            $table->longText('description_mm')->nullable();
+            $table->longText('additional_info_en')->nullable();
+            $table->longText('additional_info_mm')->nullable();
             $table->integer('duration_days');
+            $table->decimal('base_price', 10, 2)->default(0);
             $table->string('location');
             $table->string('thumbnail')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tour_images', function (Blueprint $table) {
+        Schema::create('season_periods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->string('image_path');
-            $table->integer('order')->default(0);
+            $table->string('name');
+            $table->enum('season', ['low', 'normal', 'peak']);
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tour_images');
+        Schema::dropIfExists('season_periods');
     }
 };

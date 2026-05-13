@@ -13,6 +13,10 @@ class AvailableDate extends Model
         'booked_seats'
     ];
 
+    protected $casts = [
+        'date' => 'date'
+    ];
+
     public function tour()
     {
         return $this->belongsTo(Tour::class);
@@ -23,7 +27,7 @@ class AvailableDate extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function availableSeats()
+    public function availableSeats(): int
     {
         return $this->total_seats - $this->booked_seats;
     }
