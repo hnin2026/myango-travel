@@ -24,8 +24,7 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>#</th>
-                            <th>Thumbnail</th>
+                            <th>No.</th>
                             <th>Title</th>
                             <th>Location</th>
                             <th>Duration</th>
@@ -37,17 +36,6 @@
                         @forelse($tours as $tour)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    @if($tour->thumbnail)
-                                        <img src="{{ asset('storage/' . $tour->thumbnail) }}" 
-                                             alt="{{ $tour->title }}"
-                                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                    @else
-                                        <div style="width: 60px; height: 60px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="bi bi-image text-muted"></i>
-                                        </div>
-                                    @endif
-                                </td>
                                 <td>{{ $tour->title }}</td>
                                 <td>{{ $tour->location }}</td>
                                 <td>{{ $tour->duration_days }} days</td>
@@ -59,21 +47,24 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.tours.edit', $tour) }}" 
-                                       class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <form action="{{ route('admin.tours.destroy', $tour) }}" 
-                                          method="POST" 
-                                          class="d-inline"
-                                          onsubmit="return confirm('Are you sure you want to delete this tour?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </td>
+                                <a href="{{ route('admin.tours.dates.create', $tour) }}"
+                                class="btn btn-sm btn-info text-white">
+                                    <i class="bi bi-calendar"></i> Dates
+                                </a>
+                                <a href="{{ route('admin.tours.edit', $tour) }}"
+                                class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <form action="{{ route('admin.tours.destroy', $tour) }}"
+                                    method="POST" class="d-inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this tour?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
                             </tr>
                         @empty
                             <tr>

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('available_dates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->date('date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->integer('total_seats');
             $table->integer('booked_seats')->default(0);
             $table->timestamps();

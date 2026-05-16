@@ -78,9 +78,10 @@ class TourController extends Controller
             }
         }
 
-        return redirect()->route('admin.tours.index')
-            ->with('success', 'Tour created successfully!');
+        return redirect()->route('admin.tours.dates.index', $tour)
+    ->with('success', 'Tour created successfully! Now add available dates.');
     }
+    
     // Show edit form
     public function edit(Tour $tour)
     {

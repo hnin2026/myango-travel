@@ -8,13 +8,15 @@ class AvailableDate extends Model
 {
     protected $fillable = [
         'tour_id',
-        'date',
+        'start_date',
+        'end_date',
         'total_seats',
         'booked_seats'
     ];
 
     protected $casts = [
-        'date' => 'date'
+        'start_date' => 'date',
+        'end_date' => 'date'
     ];
 
     public function tour()

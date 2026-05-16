@@ -32,7 +32,7 @@ class Tour extends Model
 
     public function availableDates()
     {
-        return $this->hasMany(AvailableDate::class)->orderBy('date');
+        return $this->hasMany(AvailableDate::class);
     }
 
     public function images()
