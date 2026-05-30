@@ -1,119 +1,309 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Add New Hotel</h2>
-            <a href="{{ route('admin.hotels.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div>
+                <h1 class="page-title mb-1">
+                    Add New Hotel
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Create hotel upgrade pricing for tour packages
+                </p>
+            </div>
+
+            <a href="{{ route('admin.hotels.index') }}"
+               class="btn btn-light border rounded-pill px-4 ms-auto">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back
             </a>
         </div>
     </x-slot>
 
-    <div class="container py-4">
-        <div class="card">
-            <div class="card-body">
-                <form action="{{ route('admin.hotels.store') }}" method="POST">
-                    @csrf
+    <div class="admin-card">
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Hotel Name</label>
-                        <input type="text" name="name"
-                               class="form-control @error('name') is-invalid @enderror"
-                               value="{{ old('name') }}"
-                               placeholder="e.g. Sedona Hotel Yangon">
+        <form action="{{ route('admin.hotels.store') }}" method="POST">
+            @csrf
+
+            {{-- BASIC INFORMATION --}}
+            <div class="mb-5">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="section-icon me-3">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <div>
+                        <h4 class="mb-1 fw-bold">
+                            Hotel Information
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Basic hotel details
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+
+                    {{-- HOTEL NAME --}}
+                    <div class="col-lg-6">
+
+                        <label class="form-label-custom">
+                            Hotel Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control form-control-custom @error('name') is-invalid @enderror"
+                            value="{{ old('name') }}"
+                            placeholder="e.g. Sedona Hotel Yangon"
+                        >
+
                         @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Category</label>
-                        <select name="category"
-                                class="form-select @error('category') is-invalid @enderror">
-                            <option value="">Select category</option>
-                            <option value="3-star" {{ old('category') == '3-star' ? 'selected' : '' }}>3 Star</option>
-                            <option value="4-star" {{ old('category') == '4-star' ? 'selected' : '' }}>4 Star</option>
-                            <option value="5-star" {{ old('category') == '5-star' ? 'selected' : '' }}>5 Star</option>
-                        </select>
-                        @error('category')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Location</label>
-                        <input type="text" name="location"
-                               class="form-control"
-                               value="{{ old('location') }}"
-                               placeholder="e.g. Yangon, Myanmar">
-                    </div>
-
-                    {{-- Season Prices --}}
-                    <div class="card mb-4">
-                        <div class="card-header fw-bold">
-                            <i class="bi bi-tag"></i> Upgrade Price by Season ($ per person)
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">
-                                        <span class="badge bg-success me-1">Low Season</span>
-                                        Upgrade Price
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="price_low"
-                                               class="form-control"
-                                               value="{{ old('price_low', 0) }}"
-                                               min="0" step="0.01"
-                                               placeholder="0.00">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">
-                                        <span class="badge bg-warning text-dark me-1">Normal Season</span>
-                                        Upgrade Price
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="price_normal"
-                                               class="form-control"
-                                               value="{{ old('price_normal', 0) }}"
-                                               min="0" step="0.01"
-                                               placeholder="0.00">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">
-                                        <span class="badge bg-danger me-1">Peak Season</span>
-                                        Upgrade Price
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="price_peak"
-                                               class="form-control"
-                                               value="{{ old('price_peak', 0) }}"
-                                               min="0" step="0.01"
-                                               placeholder="0.00">
-                                    </div>
-                                </div>
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
                             </div>
-                            <small class="text-muted">
-                                <i class="bi bi-info-circle"></i>
-                                Set $0 for 3-star hotels if no upgrade price applies.
-                            </small>
-                        </div>
+                        @enderror
+
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Hotel
-                        </button>
-                        <a href="{{ route('admin.hotels.index') }}" class="btn btn-secondary">
-                            Cancel
-                        </a>
+                    {{-- CATEGORY --}}
+                    <div class="col-lg-6">
+
+                        <label class="form-label-custom">
+                            Hotel Category
+                        </label>
+
+                        <select
+                            name="category"
+                            class="form-select form-select-custom @error('category') is-invalid @enderror"
+                        >
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="3-star"
+                                {{ old('category') == '3-star' ? 'selected' : '' }}>
+                                ★★★ 3 Star
+                            </option>
+
+                            <option value="4-star"
+                                {{ old('category') == '4-star' ? 'selected' : '' }}>
+                                ★★★★ 4 Star
+                            </option>
+
+                            <option value="5-star"
+                                {{ old('category') == '5-star' ? 'selected' : '' }}>
+                                ★★★★★ 5 Star
+                            </option>
+                        </select>
+
+                        @error('category')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+
                     </div>
-                </form>
+
+                    {{-- LOCATION --}}
+                    <div class="col-12">
+
+                        <label class="form-label-custom">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            class="form-control form-control-custom"
+                            value="{{ old('location') }}"
+                            placeholder="e.g. Yangon, Myanmar"
+                        >
+
+                    </div>
+
+                </div>
             </div>
-        </div>
+
+            {{-- SEASON PRICING --}}
+            <div class="mb-5">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="section-icon me-3">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+
+                    <div>
+                        <h4 class="mb-1 fw-bold">
+                            Seasonal Upgrade Pricing
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Additional hotel price per person
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+
+                    {{-- LOW SEASON --}}
+                    <div class="col-lg-4">
+
+                        <div class="season-card low-season">
+
+                            <div class="season-badge success">
+                                <i class="bi bi-circle-fill"></i>
+                                Low Season
+                            </div>
+
+                            <div class="mt-4">
+
+                                <label class="form-label-custom">
+                                    Upgrade Price
+                                </label>
+
+                                <div class="input-group custom-group">
+
+                                    <span class="input-group-text">
+                                        $
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        name="price_low"
+                                        class="form-control form-control-custom"
+                                        value="{{ old('price_low', 0) }}"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{-- NORMAL SEASON --}}
+                    <div class="col-lg-4">
+
+                        <div class="season-card normal-season">
+
+                            <div class="season-badge warning">
+                                <i class="bi bi-circle-fill"></i>
+                                Normal Season
+                            </div>
+
+                            <div class="mt-4">
+
+                                <label class="form-label-custom">
+                                    Upgrade Price
+                                </label>
+
+                                <div class="input-group custom-group">
+
+                                    <span class="input-group-text">
+                                        $
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        name="price_normal"
+                                        class="form-control form-control-custom"
+                                        value="{{ old('price_normal', 0) }}"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{-- PEAK SEASON --}}
+                    <div class="col-lg-4">
+
+                        <div class="season-card peak-season">
+
+                            <div class="season-badge danger">
+                                <i class="bi bi-circle-fill"></i>
+                                Peak Season
+                            </div>
+
+                            <div class="mt-4">
+
+                                <label class="form-label-custom">
+                                    Upgrade Price
+                                </label>
+
+                                <div class="input-group custom-group">
+
+                                    <span class="input-group-text">
+                                        $
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        name="price_peak"
+                                        class="form-control form-control-custom"
+                                        value="{{ old('price_peak', 0) }}"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {{-- NOTE --}}
+                <div class="pricing-note mt-4">
+
+                    <div class="d-flex align-items-start">
+
+                        <i class="bi bi-info-circle-fill me-3"></i>
+
+                        <div>
+                            <strong>
+                                Pricing Note
+                            </strong>
+
+                            <div class="mt-1">
+                                Set $0 for hotels without additional upgrade pricing.
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- ACTION BUTTONS --}}
+            <div class="d-flex gap-3 flex-wrap">
+
+                <button type="submit" class="btn-save">Save</button>
+
+                <a href="{{ route('admin.hotels.index') }}"
+                   class="btn-cancel">Cancel</a>
+
+            </div>
+
+        </form>
+
     </div>
 </x-app-layout>

@@ -1,0 +1,217 @@
+body {
+    background: #EAE0CF;
+    font-family: 'Inter', sans-serif;
+}
+
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(rgba(17,24,68,0.88), rgba(17,24,68,0.88)),
+        url('/images/hero.jpg');
+
+    background-size: cover;
+    background-position: center;
+    padding: 24px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: white;
+    border-radius: 28px;
+    padding: 42px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+}
+
+.auth-card input {
+    box-sizing: border-box;
+}
+
+/* =========================
+   LOGO SECTION
+========================= */
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.auth-header img {
+    height: 85px;
+    width: auto;
+    margin-bottom: 14px;
+}
+
+.auth-subtitle {
+    color: #6b7280;
+    font-size: 15px;
+    margin: 0;
+}
+
+/* =========================
+   PASSWORD SECTION
+========================= */
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 52px !important;
+    margin-bottom: 0 !important;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    color: #6b7280;
+}
+
+.password-toggle:hover {
+    color: #111844;
+}
+
+/* =========================
+   REMEMBER + FORGOT
+========================= */
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.remember-me input {
+    width: 16px !important;
+    height: 16px;
+    margin: 0 !important;
+}
+
+.remember-me label {
+    margin: 0 !important;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #111844;
+}
+
+.forgot-link {
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #4B5694;
+
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* FORM */
+
+.auth-card label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111844;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.auth-card input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 14px;
+    margin-bottom: 18px;
+    transition: 0.3s;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: #4B5694;
+    box-shadow: 0 0 0 4px rgba(75,86,148,0.12);
+}
+
+/* LOGIN BUTTON */
+
+.auth-card button {
+    width: 70%;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    background: #111844;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    transition: 0.3s;
+    margin-top: 8px;
+    margin: 0 auto;
+    display: block;
+}
+
+.auth-card button:hover {
+    background: #4B5694;
+    transform: translateY(-1px);
+}
+
+/* CHECKBOX */
+
+.auth-card .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 24px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.auth-card .remember-me input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+/* LINKS */
+
+.auth-card a {
+    color: #4B5694;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
+}
+
+.btn-primary {
+    background: #111844;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #4B5694;
+}

@@ -3,120 +3,84 @@
 @section('title', 'MyanGo Travel - Discover Myanmar')
 
 @push('styles')
-<style>
-    .hero-section {
-        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                    url('/images/hero-bg.jpg') center/cover no-repeat;
-        min-height: 550px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: white;
-    }
-    .tour-card {
-        border-radius: 12px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        height: 100%;
-    }
-    .tour-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    .tour-card img {
-        height: 220px;
-        object-fit: cover;
-        width: 100%;
-    }
-    .location-badge {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: rgba(0,0,0,0.6);
-        color: white;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-    }
-    .arrow-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #2563eb;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        transition: background 0.2s;
-        flex-shrink: 0;
-    }
-    .arrow-btn:hover {
-        background: #1d4ed8;
-        color: white;
-    }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 @endpush
 
 @section('content')
 
 {{-- Hero Section --}}
 <section class="hero-section">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-3">Discover the Beauty of Myanmar</h1>
-        <p class="lead mb-4">Experience unforgettable journeys with MyanGo Travel</p>
-        <a href="#tours" class="btn btn-primary btn-lg px-5">
-            <i class="bi bi-compass"></i> Explore Tours
-        </a>
+    <div class="w-100 d-flex justify-content-between align-items-end">
+        <div class="hero-content">
+            <div class="hero-left">
+                <h1 class="hero-title">
+                    Discover the Beauty of Myanmar
+                </h1>
+
+                <p class="hero-subtitle">
+                    Hidden gems, breathtaking views, unforgettable adventures where will you go next?
+                </p>
+            </div>
+
+            <div class="hero-right">
+                <a href="#tours" class="hero-button">
+                    Book Now
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </div>
+
+        </div>
     </div>
 </section>
 
 {{-- Tours Section --}}
-<section class="py-5 bg-light" id="tours">
+<section class="tours-section" id="tours">
     <div class="container">
-        <h2 class="text-center fw-bold mb-2">Our Tour Packages</h2>
-        <p class="text-center text-muted mb-5">
-            Choose from our carefully curated Myanmar travel experiences
-        </p>
+        <h2 class="section-title">Tour Packages</h2>
 
         <div class="row g-4">
             @forelse($tours as $tour)
-                <div class="col-md-4">
-                    <div class="card tour-card">
-                        {{-- Tour Image --}}
-                        <div class="position-relative">
+                <div class="col-sm-6 col-lg-4">
+                    <div class="tour-card">
+                        {{-- Image --}}
+                        <div class="tour-image-wrapper">
                             @if($tour->images->first())
                                 <img src="{{ asset('storage/' . $tour->images->first()->image_path) }}"
-                                     alt="{{ $tour->title }}">
+                                     class="tour-image" alt="{{ $tour->title }}">
                             @else
-                                <img src="https://placehold.co/400x220/2563eb/white?text=MyanGo+Travel"
-                                     alt="{{ $tour->title }}">
+                                <img src="https://placehold.co/400x260/111827/white?text=MyanGo"
+                                     class="tour-image" alt="{{ $tour->title }}">
                             @endif
                             <span class="location-badge">
                                 <i class="bi bi-geo-alt-fill"></i> {{ $tour->location }}
                             </span>
                         </div>
 
-                        {{-- Tour Info --}}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold mb-1">{{ $tour->title }}</h5>
-                            <p class="text-muted small mb-2">
+                        {{-- Content --}}
+                        <div class="tour-content">
+                            <h3 class="tour-title">
+                                <span class="lang-en">{{ $tour->title }}</span>
+                                <span class="lang-mm" style="display:none;">
+                                    {{ $tour->title_mm ?? $tour->title }}
+                                </span>
+                            </h3>
+                            <p class="tour-info">
                                 <i class="bi bi-clock"></i>
                                 {{ $tour->duration_days }} Days /
                                 {{ $tour->duration_days - 1 }} Nights
                             </p>
-                            <p class="text-primary fw-bold mb-0">
-                                Starting from ${{ number_format($tour->base_price, 0) }} per person
-                            </p>
-                            <div class="mt-auto pt-3 d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="bi bi-calendar-check"></i>
-                                    {{ $tour->availableDates->count() }} dates available
-                                </small>
-                                <a href="{{ route('tours.show', $tour) }}" class="arrow-btn">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="tour-price mb-0">
+                                        ${{ number_format($tour->base_price, 0) }}
+                                        <small class="text-muted fw-normal">/person</small>
+                                    </p>
+                                    <small class="text-muted">
+                                        {{ $tour->availableDates->count() }} dates available
+                                    </small>
+                                </div>
+                                <a href="{{ route('tours.show', $tour) }}" class="tour-link">
                                     <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>

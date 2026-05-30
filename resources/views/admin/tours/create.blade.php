@@ -212,9 +212,7 @@
 
             {{-- Submit --}}
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Save Tour
-                </button>
+                <button type="submit" class="btn btn-primary" onclick="submitTourForm()">Save</button>
                 <a href="{{ route('admin.tours.index') }}" class="btn btn-secondary">
                     Cancel
                 </a>
@@ -225,75 +223,5 @@
 
     {{-- TinyMCE --}}
     <script src="https://cdn.tiny.cloud/1/kepwie1vxizkqpicpc4g2arjl67ndtn5c2nmbjfe31hr1b0f/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        // TinyMCE init
-        tinymce.init({
-            selector: '.tinymce',
-            height: 300,
-            plugins: 'lists link image table wordcount',
-            toolbar: 'undo redo | bold italic underline | bullist numlist | link image table | removeformat',
-            menubar: false,
-        });
-
-        // Dynamic itinerary days
-        let dayCount = 1;
-
-        document.getElementById('add-day').addEventListener('click', function() {
-            dayCount++;
-            const container = document.getElementById('itinerary-container');
-            const dayHtml = `
-            <div class="itinerary-day card mb-3" data-day="${dayCount}">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="fw-bold">Day ${dayCount}</span>
-                    <button type="button" class="btn btn-sm btn-danger remove-day">
-                        <i class="bi bi-trash"></i> Remove
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Description (English)</label>
-                        <textarea name="itineraries[${dayCount-1}][description_en]" 
-                                class="form-control" rows="3"
-                                placeholder="Day ${dayCount} details in English"></textarea>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">Description (Myanmar)</label>
-                        <textarea name="itineraries[${dayCount-1}][description_mm]" 
-                                class="form-control" rows="3"
-                                placeholder="Day ${dayCount} details in Myanmar"></textarea>
-                    </div>
-                </div>
-            </div>`;
-            container.insertAdjacentHTML('beforeend', dayHtml);
-        });
-
-        // Remove day
-        document.getElementById('itinerary-container').addEventListener('click', function(e) {
-            if (e.target.closest('.remove-day')) {
-                e.target.closest('.itinerary-day').remove();
-                // Renumber days
-                document.querySelectorAll('.itinerary-day').forEach((day, index) => {
-                    day.querySelector('.fw-bold').textContent = `Day ${index + 1}`;
-                });
-            }
-        });
-
-        // Image preview
-        document.querySelector('input[name="images[]"]').addEventListener('change', function() {
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            [...this.files].forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    preview.innerHTML += `
-                        <div class="col-md-3 mb-2">
-                            <img src="${e.target.result}" 
-                                 class="img-fluid rounded" 
-                                 style="height: 120px; width: 100%; object-fit: cover;">
-                        </div>`;
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-    </script>
+    
 </x-app-layout>

@@ -1,27 +1,37 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
+<nav class="front-navbar">
+    <div class="nav-container d-flex justify-content-between align-items-center">
+        {{-- Logo --}}
+        <a href="{{ route('home') }}" class="logo">
             <img src="{{ asset('images/MyanGo_Logo.png') }}"
                  alt="MyanGo Travel"
-                 style="height: 45px; padding: 2px 2px; border-radius: 6px;">
+                 style="height: 50px; background: transparent;">
         </a>
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
-                       href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}#tours">Tours</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-            </ul>
+
+        {{-- Nav Links --}}
+        <div class="nav-links">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="#tours">Tours</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        {{-- Right Side --}}
+        <div class="nav-right">
+            {{-- Language Switcher --}}
+            <div class="lang-dropdown" id="langDropdown">
+                <button class="lang-switch" onclick="toggleLangMenu()">
+                    <i class="bi bi-globe2"></i>
+                    <span id="current-lang">EN</span>
+                    <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display:none;">
+                    <button onclick="switchLang('en')" class="lang-option" id="opt-en">
+                        🇬🇧 English
+                    </button>
+                    <button onclick="switchLang('mm')" class="lang-option" id="opt-mm">
+                        🇲🇲 Myanmar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </nav>

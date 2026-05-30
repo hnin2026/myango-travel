@@ -1,0 +1,14 @@
+.btn-primary-custom {
+    background: #111844;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary-custom:hover {
+    background: #4B5694;
+    color: white;
+}

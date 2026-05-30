@@ -59,7 +59,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Date
+                            Save
                         </button>
                         <a href="{{ route('admin.tours.dates.index', $tour) }}" class="btn btn-secondary">
                             Cancel
@@ -71,38 +71,6 @@
     </div>
 
     <script>
-        // Season periods from database
-        
-    let seasonPeriods = @json($seasonPeriods ?? []);
-
-
-        document.querySelector('input[name="start_date"]').addEventListener('change', function() {
-            const selectedDate = new Date(this.value);
-            let detectedSeason = 'Normal';
-            let badgeClass = 'warning';
-
-            seasonPeriods.forEach(period => {
-                const start = new Date(period.start_date);
-                const end = new Date(period.end_date);
-
-                let inRange = false;
-                if (start > end) {
-                    inRange = selectedDate >= start || selectedDate <= end;
-                } else {
-                    inRange = selectedDate >= start && selectedDate <= end;
-                }
-
-                if (inRange) {
-                    detectedSeason = period.name;
-                    if (period.season === 'peak') badgeClass = 'danger';
-                    else if (period.season === 'low') badgeClass = 'success';
-                    else badgeClass = 'warning';
-                }
-            });
-
-            document.getElementById('season-preview').style.display = 'block';
-            document.getElementById('season-name').textContent = detectedSeason;
-            document.getElementById('season-preview').className = `alert alert-${badgeClass}`;
-        });
+    window.seasonPeriods = @json($seasonPeriods ?? []);
     </script>
 </x-app-layout>

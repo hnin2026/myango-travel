@@ -1,0 +1,9 @@
+@import './auth.css';
+
+@import './layouts/sidebar.css';
+
+@import './components/forms.css';
+@import './components/buttons.css';
+@import './components/cards.css';
+
+@import './pages/dashboard.css';

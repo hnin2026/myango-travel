@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class TourController extends Controller
 {
+    
     // Show all tours
     public function index()
     {
@@ -93,7 +94,7 @@ class TourController extends Controller
 
     // Update tour
     public function update(Request $request, Tour $tour)
-{
+{ 
     $request->validate([
         'title'         => 'required|string|max:255',
         'duration_days' => 'required|integer|min:1',
@@ -104,16 +105,16 @@ class TourController extends Controller
 
     // Update tour
     $tour->update([
-        'title'               => $request->title,
-        'title_mm'            => $request->title_mm,
-        'description_en'      => $request->description_en,
-        'description_mm'      => $request->description_mm,
-        'additional_info_en'  => $request->additional_info_en,
-        'additional_info_mm'  => $request->additional_info_mm,
-        'duration_days'       => $request->duration_days,
-        'base_price'          => $request->base_price ?? 0,
-        'location'            => $request->location,
-    ]);
+    'title' => $request->title,
+    'title_mm' => $request->title_mm,
+    'description_en' => $request->description_en,
+    'description_mm' => $request->description_mm,
+    'additional_info_en' => $request->additional_info_en,
+    'additional_info_mm' => $request->additional_info_mm,
+    'duration_days' => $request->duration_days,
+    'base_price' => $request->base_price ?? 0,
+    'location' => $request->location,
+]);
 
     // Sync hotels
     if ($request->has('hotels')) {

@@ -103,12 +103,8 @@
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Update Hotel
-                        </button>
-                        <a href="{{ route('admin.hotels.index') }}" class="btn btn-secondary">
-                            Cancel
-                        </a>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <a href="{{ route('admin.hotels.index') }}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
             </div>

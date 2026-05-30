@@ -62,7 +62,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Season
+                            Save
                         </button>
                         <a href="{{ route('admin.season-periods.index') }}" class="btn btn-secondary">
                             Cancel
