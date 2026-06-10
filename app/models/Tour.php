@@ -39,4 +39,14 @@ class Tour extends Model
     {
         return $this->hasMany(TourImage::class)->orderBy('order');
     }
+
+    public function inquiries()
+    {
+        return $this->hasMany(Inquiry::class);
+    }
+
+    public function tour()
+    {
+        return $this->belongsTo(Tour::class);
+    }
 }

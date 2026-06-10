@@ -25,7 +25,6 @@
                             <th>#</th>
                             <th>Hotel Name</th>
                             <th>Category</th>
-                            <th>Price Per Person</th>
                             <th>Location</th>
                             <th>Actions</th>
                         </tr>
@@ -38,7 +37,6 @@
                                 <td>
                                     <span class="badge bg-info">{{ $hotel->category }}</span>
                                 </td>
-                                <td>${{ number_format($hotel->price_per_person, 2) }}</td>
                                 <td>{{ $hotel->location ?? '-' }}</td>
                                 <td>
                                     <a href="{{ route('admin.hotels.edit', $hotel) }}" 

@@ -13,11 +13,28 @@ return new class extends Migration
     {
         Schema::create('inquiries', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('tour_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
             $table->string('customer_name');
-            $table->string('email');
+            $table->string('nationality')->nullable();
+
             $table->string('phone')->nullable();
-            $table->text('message');
-            $table->enum('status', ['new', 'read', 'replied'])->default('new');
+            $table->string('email');
+
+            $table->integer('number_of_adults')->default(1);
+            $table->integer('number_of_children')->default(0);
+
+            $table->date('checkin_date')->nullable();
+            $table->date('checkout_date')->nullable();
+
+            $table->text('message')->nullable();
+
+            $table->string('status')->default('new');
+
             $table->timestamps();
         });
     }

@@ -64,12 +64,14 @@
                 Seasons
             </a>
 
-            <a href="#">
+            <a href="{{ route('admin.bookings.index') }}"
+               class="{{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
                 <i class="bi bi-journal-text"></i>
                 Bookings
             </a>
 
-            <a href="#">
+            <a href="{{ route('admin.inquiries.index') }}"
+               class="{{ request()->routeIs('admin.inquiries.*') ? 'active' : '' }}">
                 <i class="bi bi-chat-dots"></i>
                 Inquiries
             </a>

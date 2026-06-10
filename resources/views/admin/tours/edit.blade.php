@@ -235,14 +235,9 @@
                                     <img src="{{ asset('storage/' . $image->image_path) }}"
                                          class="img-fluid rounded mb-2"
                                          style="height: 120px; width: 100%; object-fit: cover;">
-                                    <form action="{{ route('admin.tours.index') }}"
-                                          method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i> Remove
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Remove
+                                    </button>
                                 </div>
                             @endforeach
                         </div>
