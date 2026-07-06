@@ -30,7 +30,7 @@ class InquiryController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'number_of_adults' => $request->number_of_adults,
-            'number_of_children' => $request->number_of_children,
+            'number_of_children' => $request->number_of_children ?? 0,
             'checkin_date'  => $request->checkin_date,
             'checkout_date' => $request->checkout_date,
             'message'       => $request->message,

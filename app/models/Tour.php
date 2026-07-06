@@ -30,9 +30,9 @@ class Tour extends Model
         return $this->hasMany(Itinerary::class)->orderBy('day_number');
     }
 
-    public function availableDates()
+    public function travelPeriods()
     {
-        return $this->hasMany(AvailableDate::class);
+        return $this->hasMany(TravelPeriod::class);
     }
 
     public function images()

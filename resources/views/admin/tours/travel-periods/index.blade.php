@@ -5,11 +5,11 @@
                 Available Dates for {{ $tour->title }}
             </h2>
             <div class="d-flex gap-2">
-                <a href="{{ route('admin.tours.dates.create', $tour) }}" class="btn btn-primary">
+                <a href="{{ route('admin.tours.travel-periods.create', $tour) }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Add Date
                 </a>
                 <a href="{{ route('admin.tours.index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Tours
+                    Back
                 </a>
             </div>
         </div>
@@ -93,11 +93,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.tours.dates.edit', [$tour, $date]) }}"
+                                    <a href="{{ route('admin.tours.travel-periods.edit', [$tour, $date]) }}"
                                        class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
-                                    <form action="{{ route('admin.tours.dates.destroy', [$tour, $date]) }}"
+                                    <form action="{{ route('admin.tours.travel-periods.destroy', [$tour, $date]) }}"
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('Are you sure?')">
                                         @csrf
@@ -112,7 +112,7 @@
                             <tr>
                                 <td colspan="8" class="text-center text-muted py-4">
                                     No dates added yet.
-                                    <a href="{{ route('admin.tours.dates.create', $tour) }}">Add your first date!</a>
+                                    <a href="{{ route('admin.tours.travel-periods.create', $tour) }}">Add your first date!</a>
                                 </td>
                             </tr>
                         @endforelse

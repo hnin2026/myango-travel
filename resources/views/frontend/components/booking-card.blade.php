@@ -10,7 +10,7 @@
                         type="date"
                         id="checkin-date"
                         class="form-control"
-                        onchange="updateCheckoutDate()"
+                        onchange="updateCheckoutDate(); updateSeason();"
                     >
                 </div>
 
@@ -36,10 +36,13 @@
                     {{-- Children --}}
                     <div class="booking-field mb-2">
                         <label>Number of Children</label>
-                        <input type="number" id="num-children" min="0" value="0"
-                               onchange="updateChildrenAges()">
+                        <input type="number"
+                        id="booking-num-children"
+                        min="0"
+                        value="0"
+                        onchange="updateBookingChildrenAges()">
                     </div>
-                    <div id="children-ages" class="mb-3"></div>
+                    <div id="booking-children-ages" class="mb-3"></div>
 
                     {{-- Pricing Note --}}
                     <div class="pricing-note mb-3">
@@ -95,7 +98,7 @@
                         </div>
                     </div>
 
-                    <button class="book-now-btn mt-2" onclick="proceedBooking()">
+                    <button class="book-now-btn mt-2" onclick="proceedBooking({{ $tour->id }})">
                         Book Now
                     </button>
 

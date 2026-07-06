@@ -52,9 +52,18 @@ function updateChildrenAges() {
 }
 
 function calculatePrice() {
-    const numAdults = parseInt(document.getElementById('num-adults').value) || 0;
+    const numAdults = parseInt(document.getElementById('num-adults').value) || 1;
     const childAges = [...document.querySelectorAll('.child-age')]
         .map(el => parseInt(el.value) || 0);
+    let payableChildren = 0;
+    let occupiedSeats = numAdults;
+
+    childAges.forEach(age => {
+        if (age >= 5) {
+            payableChildren++;
+            occupiedSeats++;
+        }
+    });
     const hotelSelect = document.getElementById('hotel-select');
 
     if (!hotelSelect.value) {
@@ -64,12 +73,7 @@ function calculatePrice() {
 
     const selectedOption = hotelSelect.options[hotelSelect.selectedIndex];
     const hotelUpgrade = parseFloat(selectedOption.dataset[currentSeason]) || 0;
-
-    let paidChildren = 0;
-    childAges.forEach(age => { if (age >= 5) paidChildren++; });
-
-    const payableTravelers = numAdults + paidChildren;
-    const occupiedSeats = numAdults + paidChildren;
+    const payableTravelers = numAdults + payableChildren;
     const pricePerPerson = baseTourPrice + hotelUpgrade;
     const totalPrice = pricePerPerson * payableTravelers;
 

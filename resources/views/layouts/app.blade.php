@@ -112,8 +112,10 @@
                 </div>
             </div>
         @endif
+        <main>
+            {{ $slot }}
+        </main>
 
-        {{ $slot }}
 
     </div>
 

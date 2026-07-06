@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Edit Dates for {{ $tour->title }}</h2>
-            <a href="{{ route('admin.tours.dates.index', $tour) }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+            <h2 class="h4 mb-0">Edit Travel Period for {{ $tour->title }}</h2>
+            <a href="{{ route('admin.tours.travel-periods.index', $tour) }}" class="btn btn-secondary">
+                Back
             </a>
         </div>
     </x-slot>
@@ -11,7 +11,7 @@
     <div class="container py-4">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('admin.tours.dates.update', [$tour, $date]) }}" method="POST">
+                <form action="{{ route('admin.tours.travel-periods.update', [$tour, $date]) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -47,7 +47,7 @@
                         <button type="submit" class="btn btn-primary">
                             Update
                         </button>
-                        <a href="{{ route('admin.tours.dates.index', $tour) }}" class="btn btn-secondary">
+                        <a href="{{ route('admin.tours.travel-periods.index', $tour) }}" class="btn btn-secondary">
                             Cancel
                         </a>
                     </div>

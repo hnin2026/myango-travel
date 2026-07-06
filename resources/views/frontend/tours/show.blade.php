@@ -3,13 +3,6 @@
 @section('title', $tour->title . ' - MyanGo Travel')
 
 @push('styles')
-<style>
-    body { padding-top: 0; }
-    .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
-</style>
-@endpush
-
-@push('styles')
     @vite([
         'resources/css/frontend/tour-detail.css',
         'resources/css/frontend/inquiry-form.css',
@@ -192,7 +185,10 @@
             </div>
 
             {{-- INQUIRY FORM --}}
+            <div class="inquiry-section mt-5 d-none d-lg-block">
                 @include('frontend.components.inquiry-form', ['tour' => $tour])
+
+            </div>
 
         </div>
 
@@ -216,8 +212,12 @@
                     <span>{{ $tour->duration_days }} Days / {{ $tour->duration_days - 1 }} Nights</span>
                 </div>
                 <div class="tour-meta-item">
-                    <i class="bi bi-calendar-check-fill"></i>
-                    <span>{{ $tour->availableDates->count() }} dates available</span>
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>
+                    {{ $tour->travelPeriods->min('start_date')?->format('d M Y') }}
+                    -
+                    {{ $tour->travelPeriods->max('end_date')?->format('d M Y') }}
+                </span>
                 </div>
                 <div class="starting-price">
                     <div class="label">Starting from</div>
@@ -229,6 +229,9 @@
             {{-- Booking Card --}}
             @include('frontend.components.booking-card', ['tour' => $tour])
 
+            <div class="inquiry-section mt-4 d-block d-lg-none">
+            @include('frontend.components.inquiry-form', ['tour' => $tour])
+            </div>
         </div>
     </div>
 </div>

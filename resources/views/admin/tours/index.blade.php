@@ -47,7 +47,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                <a href="{{ route('admin.tours.dates.create', $tour) }}"
+                                <a href="{{ route('admin.tours.travel-periods.create', $tour) }}"
                                 class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-calendar"></i> Dates
                                 </a>

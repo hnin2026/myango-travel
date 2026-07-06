@@ -53,6 +53,17 @@
         gap: 24px;
     }
 
+    .inquiry-section {
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+
+    .tour-overview-card, .booking-card {
+        position: static !important;
+        top: auto !important;
+    }
+    
+
 }
 
 @media (max-width: 768px) {
@@ -135,6 +146,11 @@
     .location-badge {
         font-size: 12px;
         padding: 5px 12px;
+    }
+
+    /* INQUIRY */
+    .inquiry-children-ages {
+        grid-template-columns: 1fr;
     }
 
 }

@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Add Available Dates for {{ $tour->title }}</h2>
-            <a href="{{ route('admin.tours.dates.index', $tour) }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+            <a href="{{ route('admin.tours.travel-periods.index', $tour) }}" class="btn btn-secondary">
+                Back
             </a>
         </div>
     </x-slot>
@@ -11,7 +11,7 @@
     <div class="container py-4">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('admin.tours.dates.store', $tour) }}" method="POST">
+                <form action="{{ route('admin.tours.travel-periods.store', $tour) }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
@@ -61,7 +61,7 @@
                         <button type="submit" class="btn btn-primary">
                             Save
                         </button>
-                        <a href="{{ route('admin.tours.dates.index', $tour) }}" class="btn btn-secondary">
+                        <a href="{{ route('admin.tours.travel-periods.index', $tour) }}" class="btn btn-secondary">
                             Cancel
                         </a>
                     </div>

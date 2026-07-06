@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AvailableDate extends Model
+class TravelPeriod extends Model
 {
     protected $fillable = [
         'tour_id',

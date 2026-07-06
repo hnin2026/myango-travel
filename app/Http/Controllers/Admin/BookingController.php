@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Booking;
 
 class BookingController extends Controller
 {
@@ -12,7 +13,13 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $bookings = Booking::with([
+            'tour',
+            'hotel',
+            'travelPeriod'
+        ])->latest()->get();
+
+        return view('admin.bookings.index', compact('bookings'));
     }
 
     /**
@@ -28,15 +35,21 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+     
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Booking $booking)
     {
-        //
+        $booking->load([
+            'tour',
+            'hotel',
+            'travelPeriod'
+        ]);
+
+        return view('admin.bookings.show', compact('booking'));
     }
 
     /**
@@ -50,9 +63,19 @@ class BookingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Booking $booking)
     {
-        //
+        $request->validate([
+            'status' => 'required|in:confirmed,paid,cancelled'
+        ]);
+
+        $booking->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()
+            ->route('admin.bookings.show', $booking)
+            ->with('success', 'Booking status updated successfully.');
     }
 
     /**

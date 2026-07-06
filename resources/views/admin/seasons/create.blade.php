@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Add Season Period</h2>
             <a href="{{ route('admin.season-periods.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+                Back
             </a>
         </div>
     </x-slot>

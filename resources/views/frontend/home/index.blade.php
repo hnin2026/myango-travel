@@ -73,12 +73,10 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="tour-price mb-0">
-                                        ${{ number_format($tour->base_price, 0) }}
-                                        <small class="text-muted fw-normal">/person</small>
+                                        {{ number_format($tour->base_price, 0) }}
+                                        <small class="text-muted fw-normal">USD ～</small>
                                     </p>
-                                    <small class="text-muted">
-                                        {{ $tour->availableDates->count() }} dates available
-                                    </small>
+                                
                                 </div>
                                 <a href="{{ route('tours.show', $tour) }}" class="tour-link">
                                     <i class="bi bi-arrow-right"></i>
