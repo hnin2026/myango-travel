@@ -12,17 +12,21 @@ return new class extends Migration
 
 public function up(): void
 {
-    Schema::rename(
-        'available_dates',
-        'travel_periods'
-    );
+    if (Schema::hasTable('available_dates')) {
+        Schema::rename(
+            'available_dates',
+            'travel_periods'
+        );
+    }
 }
 
 public function down(): void
 {
-    Schema::rename(
-        'travel_periods',
-        'available_dates'
-    );
+    if (Schema::hasTable('travel_periods') && !Schema::hasTable('available_dates')) {
+        Schema::rename(
+            'travel_periods',
+            'available_dates'
+        );
+    }
 }
 };

@@ -27,11 +27,18 @@ class Booking extends Model
         'status',
         'ref_code',
         'cancellation_token',
-        'payment_deadline'
+        'payment_deadline',
+        'payment_receipt',
+        'payment_uploaded_at',
+        'cancelled_by',
+        'cancel_reason',
+        'cancelled_at'
     ];
 
     protected $casts = [
-        'payment_deadline' => 'date'
+        'payment_deadline' => 'date',
+        'payment_uploaded_at' => 'datetime',
+        'cancelled_at' => 'datetime'
     ];
 
     public function tour()

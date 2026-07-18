@@ -25,6 +25,13 @@ Route::post('/booking/{tour}', [FrontendBookingController::class, 'store'])
 Route::get('/booking/success/{booking}', [FrontendBookingController::class, 'success'])
     ->name('booking.success');
 
+Route::get('/payment/success', [FrontendBookingController::class, 'paymentSuccess'])
+    ->name('payment.success');
+Route::get('/payment/{token}', [FrontendBookingController::class, 'paymentShow'])
+    ->name('payment.show');
+Route::post('/payment/{token}', [FrontendBookingController::class, 'paymentUpload'])
+    ->name('payment.upload');
+
 // Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -36,6 +43,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('hotels', HotelController::class);
     Route::resource('season-periods', SeasonPeriodController::class);
     Route::resource('bookings', BookingController::class);
+    Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::get('/inquiries', [AdminInquiryController::class, 'index'])->name('inquiries.index');
     Route::get('/inquiries/{inquiry}', [AdminInquiryController::class, 'show'])->name('inquiries.show');
 

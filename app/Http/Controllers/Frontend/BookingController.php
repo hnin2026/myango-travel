@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\TravelPeriod;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingSubmittedMail;
+use App\Mail\PaymentReceiptReceivedMail;
 
 
 class BookingController extends Controller
@@ -62,5 +63,52 @@ return redirect()->route('booking.success', ['booking' => $booking->id]);
 public function success(Booking $booking)
 {
     return view('frontend.booking.success', compact('booking'));
+}
+
+public function paymentShow($token)
+{
+    $booking = Booking::where('cancellation_token', $token)->first();
+
+    if (!$booking) {
+        abort(404);
+    }
+
+    $booking->load(['tour']);
+
+    return view('frontend.booking.payment', compact('booking'));
+}
+
+public function paymentUpload(Request $request, $token)
+{
+    $booking = Booking::where('cancellation_token', $token)->first();
+
+    if (!$booking) {
+        abort(404);
+    }
+
+    $request->validate([
+        'receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
+
+    if ($request->hasFile('receipt')) {
+        $file = $request->file('receipt');
+        $path = $file->store('payment_receipts', 'public');
+
+        $booking->update([
+            'payment_receipt' => $path,
+            'payment_uploaded_at' => now(),
+            'status' => 'payment_uploaded',
+        ]);
+
+        $booking->load(['tour']);
+        Mail::to($booking->email)->send(new PaymentReceiptReceivedMail($booking));
+    }
+
+    return redirect()->route('payment.success');
+}
+
+public function paymentSuccess()
+{
+    return view('frontend.booking.payment-success');
 }
 }
