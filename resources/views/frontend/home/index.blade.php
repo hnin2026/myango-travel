@@ -70,13 +70,13 @@
                                 {{ $tour->duration_days }} Days /
                                 {{ $tour->duration_days - 1 }} Nights
                             </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="tour-price mb-0">
-                                        {{ number_format($tour->base_price, 0) }}
-                                        <small class="text-muted fw-normal">USD ～</small>
-                                    </p>
-                                
+                            <div class="tour-footer-row">
+                                <div class="tour-price-wrapper">
+                                    <span class="tour-price-label">Starting from</span>
+                                    <div class="tour-price">
+                                        ${{ number_format($tour->base_price, 0) }}
+                                        <small>USD</small>
+                                    </div>
                                 </div>
                                 <a href="{{ route('tours.show', $tour) }}" class="tour-link">
                                     <i class="bi bi-arrow-right"></i>

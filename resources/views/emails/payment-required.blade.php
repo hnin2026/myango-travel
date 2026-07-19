@@ -107,9 +107,26 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(17, 24, 68, 0.15);
             transition: background-color 0.2s ease;
+            margin: 5px;
         }
         .btn-primary:hover {
             background-color: #232c69;
+        }
+        .btn-secondary {
+            display: inline-block;
+            background-color: #c0392b;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 16px 36px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(192, 57, 43, 0.15);
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+        .btn-secondary:hover {
+            background-color: #a93226;
         }
         .methods-section {
             margin-top: 40px;
@@ -210,6 +227,9 @@
                 <div class="btn-container">
                     <a href="{{ url('/payment/' . $booking->cancellation_token) }}" class="btn-primary" target="_blank">
                         Upload Payment Receipt
+                    </a>
+                    <a href="{{ url('/booking/cancel/' . $booking->cancellation_token) }}" class="btn-secondary" target="_blank">
+                        Cancel Booking
                     </a>
                 </div>
 

@@ -43,6 +43,7 @@
 
     .tour-title {
         font-size: 22px;
+        min-height: auto;
     }
 
     .tour-image {
@@ -128,6 +129,7 @@
 
     .tour-title {
         font-size: 20px;
+        min-height: auto;
     }
 
     .tour-info {
@@ -179,6 +181,7 @@
 
     .tour-title {
         font-size: 18px;
+        min-height: auto;
     }
 
     .section-title {

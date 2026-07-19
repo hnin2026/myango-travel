@@ -1,5 +1,8 @@
-@vite('resources/css/frontend/booking-confirmation.css')
+@extends('frontend.layouts.app')
 
+@section('title', 'Complete Your Booking - MyanGo Travel')
+
+@section('content')
 <div class="booking-page">
     <div class="container">
         <div class="booking-layout">
@@ -138,3 +141,4 @@
         </div>
     </div>
 </div>
+@endsection

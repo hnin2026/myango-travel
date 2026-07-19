@@ -111,4 +111,61 @@ public function paymentSuccess()
 {
     return view('frontend.booking.payment-success');
 }
+
+public function cancelShow($token)
+{
+    $booking = Booking::where('cancellation_token', $token)->first();
+
+    if (!$booking) {
+        abort(404);
+    }
+
+    $booking->load(['tour']);
+
+    return view('frontend.booking.cancel', compact('booking'));
+}
+
+public function cancelSubmit(Request $request, $token)
+{
+    $booking = Booking::where('cancellation_token', $token)->first();
+
+    if (!$booking) {
+        abort(404);
+    }
+
+    if (!in_array($booking->status, ['pending', 'confirmed'])) {
+        return redirect()->route('booking.cancel.show', $token);
+    }
+
+    $request->validate([
+        'cancel_reason' => 'required|string|max:1000',
+    ]);
+
+    $booking->update([
+        'status' => 'cancelled',
+        'cancelled_by' => 'customer',
+        'cancel_reason' => $request->cancel_reason,
+        'cancelled_at' => now(),
+    ]);
+
+    $booking->load(['tour']);
+    Mail::to($booking->email)->send(new \App\Mail\BookingCancelledMail($booking));
+
+    return redirect()->route('booking.cancel.success', $token);
+}
+
+public function cancelSuccess($token)
+{
+    $booking = Booking::where('cancellation_token', $token)->first();
+
+    if (!$booking) {
+        abort(404);
+    }
+
+    if ($booking->status !== 'cancelled') {
+        return redirect()->route('booking.cancel.show', $token);
+    }
+
+    return view('frontend.booking.cancel-success', compact('booking'));
+}
 }

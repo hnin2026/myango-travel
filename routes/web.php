@@ -32,6 +32,13 @@ Route::get('/payment/{token}', [FrontendBookingController::class, 'paymentShow']
 Route::post('/payment/{token}', [FrontendBookingController::class, 'paymentUpload'])
     ->name('payment.upload');
 
+Route::get('/booking/cancel/{token}', [FrontendBookingController::class, 'cancelShow'])
+    ->name('booking.cancel.show');
+Route::post('/booking/cancel/{token}', [FrontendBookingController::class, 'cancelSubmit'])
+    ->name('booking.cancel.submit');
+Route::get('/booking/cancel/{token}/success', [FrontendBookingController::class, 'cancelSuccess'])
+    ->name('booking.cancel.success');
+
 // Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');

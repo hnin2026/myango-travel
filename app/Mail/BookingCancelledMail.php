@@ -26,7 +26,14 @@ class BookingCancelledMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Booking Cancellation Notice')
+        $subject = 'Booking Cancellation Notice';
+        if ($this->booking->cancelled_by === 'customer') {
+            $subject = 'Booking Cancellation Confirmation';
+        } elseif ($this->booking->cancelled_by === 'system') {
+            $subject = 'Booking Cancelled - Payment Deadline Expired';
+        }
+
+        return $this->subject($subject)
                     ->view('emails.booking-cancelled');
     }
 }

@@ -58,65 +58,6 @@
                 <hr>
             @endif
 
-            @if($booking->status == 'pending')
-
-                <form action="{{ route('admin.bookings.update', $booking) }}" method="POST" class="d-flex gap-2">
-
-                    @csrf
-                    @method('PATCH')
-
-                    <input type="hidden" name="status" value="confirmed">
-
-                    <button type="submit" class="btn btn-success">
-                        Confirm Booking
-                    </button>
-                </form>
-
-            @endif
-
-
-            @if($booking->status == 'confirmed')
-
-                <form action="{{ route('admin.bookings.update', $booking) }}"
-                    method="POST"
-                    class="mt-2">
-
-                    @csrf
-                    @method('PATCH')
-
-                    <input type="hidden" name="status" value="paid">
-
-                    <button type="submit" class="btn btn-primary">
-                        Mark as Paid
-                    </button>
-                </form>
-
-            @endif
-
-            @if($booking->status == 'payment_uploaded')
-
-                <div class="d-flex gap-2 mt-2">
-                    <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="status" value="paid">
-                        <button type="submit" class="btn btn-success">
-                            Approve Payment
-                        </button>
-                    </form>
-
-                    <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="status" value="confirmed">
-                        <button type="submit" class="btn btn-danger">
-                            Reject Payment
-                        </button>
-                    </form>
-                </div>
-
-            @endif
-
             @if($booking->status === 'cancelled')
                 <hr>
                 <div class="alert alert-danger mt-3">
@@ -129,7 +70,49 @@
 
             @if($booking->status !== 'cancelled')
                 <hr>
-                <div class="mt-3">
+                <div class="d-flex gap-2 align-items-center flex-wrap mt-3">
+                    @if($booking->status == 'pending')
+                        <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="confirmed">
+                            <button type="submit" class="btn btn-success">
+                                Confirm Booking
+                            </button>
+                        </form>
+                    @endif
+
+                    @if($booking->status == 'confirmed')
+                        <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="paid">
+                            <button type="submit" class="btn btn-primary">
+                                Mark as Paid
+                            </button>
+                        </form>
+                    @endif
+
+                    @if($booking->status == 'payment_uploaded')
+                        <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="paid">
+                            <button type="submit" class="btn btn-success">
+                                Approve Payment
+                            </button>
+                        </form>
+
+                        <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="confirmed">
+                            <button type="submit" class="btn btn-danger">
+                                Reject Payment
+                            </button>
+                        </form>
+                    @endif
+
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelBookingModal">
                         Cancel Booking
                     </button>

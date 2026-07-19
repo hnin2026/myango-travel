@@ -3,7 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Cancellation Notice</title>
+    <title>
+        @if(($booking->cancelled_by ?? '') === 'customer')
+            Booking Cancellation Confirmation
+        @else
+            Booking Cancellation Notice
+        @endif
+    </title>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -132,8 +138,14 @@
             
             <div class="content">
                 <p class="greeting">Dear {{ $booking->customer_name }},</p>
-                <p class="intro">
-                    We regret to inform you that your booking has been cancelled. Below are the details of the cancelled booking.
+                 <p class="intro">
+                    @if(($booking->cancelled_by ?? '') === 'customer')
+                        Your booking has been successfully cancelled.
+                    @elseif(($booking->cancelled_by ?? '') === 'system')
+                        Your booking has been cancelled because payment was not received before the payment deadline. If you have already made a payment, please contact MyanGo Travel immediately.
+                    @else
+                        We regret to inform you that your booking has been cancelled. Below are the details of the cancelled booking.
+                    @endif
                 </p>
                 
                 <div class="reason-box">
@@ -156,8 +168,12 @@
                         <div class="summary-value">{{ $booking->checkin_date }} &rarr; {{ $booking->checkout_date }}</div>
                     </div>
                     <div class="summary-row">
-                        <div class="summary-label">Refund Status</div>
-                        <div class="summary-value">Cancelled</div>
+                        <div class="summary-label">Total Amount</div>
+                        <div class="summary-value">USD {{ number_format($booking->total_price, 2) }}</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="summary-label">Cancellation Status</div>
+                        <div class="summary-value">{{ ucfirst($booking->status) }}</div>
                     </div>
                 </div>
             </div>

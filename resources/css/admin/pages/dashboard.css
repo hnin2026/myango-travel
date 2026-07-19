@@ -71,7 +71,7 @@ a {
     gap: 12px;
     padding: 14px 18px;
     border-radius: 14px;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255, 255, 255, 0.75);
     transition: all 0.25s ease;
     font-size: 15px;
     font-weight: 500;
@@ -79,7 +79,7 @@ a {
 
 .sidebar-menu a:hover,
 .sidebar-menu a.active {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     color: white;
 }
 
@@ -104,7 +104,7 @@ a {
     margin-bottom: 30px;
 }
 
-.page-header > div{
+.page-header>div {
     width: 100%;
 }
 
@@ -129,7 +129,7 @@ a {
     background: white;
     border-radius: 24px;
     padding: 28px;
-    box-shadow: 0 10px 35px rgba(17,24,68,0.06);
+    box-shadow: 0 10px 35px rgba(17, 24, 68, 0.06);
     margin-bottom: 24px;
 }
 
@@ -155,7 +155,7 @@ a {
     background: white;
     border-radius: 24px;
     padding: 24px;
-    box-shadow: 0 10px 30px rgba(17,24,68,0.05);
+    box-shadow: 0 10px 30px rgba(17, 24, 68, 0.05);
     position: relative;
     overflow: hidden;
 }
@@ -187,7 +187,7 @@ a {
     top: 20px;
     right: 20px;
     font-size: 28px;
-    color: rgba(75,86,148,0.18);
+    color: rgba(75, 86, 148, 0.18);
 }
 
 /* =========================
@@ -312,7 +312,7 @@ a {
 .form-control:focus,
 .form-select:focus {
     border-color: var(--mid-blue);
-    box-shadow: 0 0 0 4px rgba(75,86,148,0.1);
+    box-shadow: 0 0 0 4px rgba(75, 86, 148, 0.1);
 }
 
 /* =========================
@@ -325,7 +325,7 @@ a {
     justify-content: center;
     align-items: center;
     background:
-        linear-gradient(rgba(17,24,68,0.82), rgba(17,24,68,0.82)),
+        linear-gradient(rgba(17, 24, 68, 0.82), rgba(17, 24, 68, 0.82)),
         url('http://127.0.0.1:8000/images/hero.jpg');
     background-size: cover;
     background-position: center;
@@ -338,7 +338,7 @@ a {
     background: white;
     border-radius: 28px;
     padding: 42px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
 }
 
 .auth-logo {

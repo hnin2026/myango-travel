@@ -1,5 +1,3 @@
-@vite('resources/css/frontend/booking-payment.css')
-
 @extends('frontend.layouts.app')
 
 @section('title', 'Upload Payment Receipt - MyanGo Travel')
