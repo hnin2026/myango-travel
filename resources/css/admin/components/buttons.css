@@ -1,3 +1,17 @@
+.btn {
+    --bs-btn-padding-y: 0.375rem !important;
+    --bs-btn-padding-x: 0.75rem !important;
+    --bs-btn-font-size: 0.875rem !important;
+    --bs-btn-border-radius: var(--bs-border-radius-sm) !important;
+    
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    font-size: 0.875rem !important;
+    border-radius: var(--bs-border-radius-sm) !important;
+}
+
 .btn-primary-custom {
     background: #111844;
     color: white;
@@ -11,4 +25,29 @@
 .btn-primary-custom:hover {
     background: #4B5694;
     color: white;
+}
+
+.hover-bg-light {
+    transition: background-color 0.2s ease, transform 0.1s ease !important;
+}
+.hover-bg-light:hover {
+    background-color: rgba(17, 24, 68, 0.05) !important;
+}
+.hover-bg-light:active {
+    transform: scale(0.95) !important;
+}
+
+.hover-bg-light-white {
+    transition: background-color 0.2s ease, transform 0.1s ease !important;
+}
+.hover-bg-light-white:hover {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: #fff !important;
+}
+.hover-bg-light-white:active {
+    transform: scale(0.95) !important;
+}
+
+.profile-hover-container:hover .profile-tooltip {
+    display: block !important;
 }

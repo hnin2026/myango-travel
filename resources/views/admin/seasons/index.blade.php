@@ -19,59 +19,61 @@
 
         <div class="card">
             <div class="card-body">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Season</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($seasons as $season)
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $season->name }}</td>
-                                <td>
-                                    @if($season->season === 'peak')
-                                        <span class="badge bg-danger">Peak</span>
-                                    @elseif($season->season === 'normal')
-                                        <span class="badge bg-warning text-dark">Normal</span>
-                                    @else
-                                        <span class="badge bg-success">Low</span>
-                                    @endif
-                                </td>
-                                <td>{{ $season->start_date->format('d M Y') }}</td>
-                                <td>{{ $season->end_date->format('d M Y') }}</td>
-                                <td>
-                                    <a href="{{ route('admin.season-periods.edit', $season) }}"
-                                       class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <form action="{{ route('admin.season-periods.destroy', $season) }}"
-                                          method="POST" class="d-inline"
-                                          onsubmit="return confirm('Are you sure?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Season</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    No season periods found.
-                                    <a href="{{ route('admin.season-periods.create') }}">Add your first season!</a>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($seasons as $season)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $season->name }}</td>
+                                    <td>
+                                        @if($season->season === 'peak')
+                                            <span class="badge bg-danger">Peak</span>
+                                        @elseif($season->season === 'normal')
+                                            <span class="badge bg-warning text-dark">Normal</span>
+                                        @else
+                                            <span class="badge bg-success">Low</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $season->start_date->format('d M Y') }}</td>
+                                    <td>{{ $season->end_date->format('d M Y') }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.season-periods.edit', $season) }}"
+                                           class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                        <form action="{{ route('admin.season-periods.destroy', $season) }}"
+                                              method="POST" class="d-inline"
+                                              onsubmit="return confirm('Are you sure?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        No season periods found.
+                                        <a href="{{ route('admin.season-periods.create') }}">Add your first season!</a>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

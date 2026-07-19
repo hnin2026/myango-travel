@@ -10,6 +10,7 @@ use App\Http\Controllers\Frontend\BookingController as FrontendBookingController
 use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Frontend\InquiryController as FrontendInquiryController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Customer routes
@@ -40,9 +41,9 @@ Route::get('/booking/cancel/{token}/success', [FrontendBookingController::class,
     ->name('booking.cancel.success');
 
 // Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, '__invoke'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Admin routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -61,6 +62,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('tours/{tour}/travel-periods/{travel_period}/edit', [TravelPeriodController::class, 'edit'])->name('tours.travel-periods.edit');
     Route::put('tours/{tour}/travel-periods/{travel_period}', [TravelPeriodController::class, 'update'])->name('tours.travel-periods.update');
     Route::delete('tours/{tour}/travel-periods/{travel_period}', [TravelPeriodController::class, 'destroy'])->name('tours.travel-periods.destroy');
+
+    // User management (Admin-only)
+    Route::middleware(['admin'])->group(function () {
+        Route::resource('users', UserController::class);
+    });
 });
 
 // Profile routes

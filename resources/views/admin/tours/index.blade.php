@@ -21,60 +21,62 @@
         {{-- Tours Table --}}
         <div class="card">
             <div class="card-body">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>No.</th>
-                            <th>Title</th>
-                            <th>Location</th>
-                            <th>Duration</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($tours as $tour)
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $tour->title }}</td>
-                                <td>{{ $tour->location }}</td>
-                                <td>{{ $tour->duration_days }} days</td>
-                                <td>
-                                    @if($tour->status === 'active')
-                                        <span class="badge bg-success">Active</span>
-                                    @else
-                                        <span class="badge bg-secondary">Inactive</span>
-                                    @endif
-                                </td>
-                                <td>
-                                <a href="{{ route('admin.tours.travel-periods.create', $tour) }}"
-                                class="btn btn-sm btn-info text-white">
-                                    <i class="bi bi-calendar"></i> Dates
-                                </a>
-                                <a href="{{ route('admin.tours.edit', $tour) }}"
-                                class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.tours.destroy', $tour) }}"
-                                    method="POST" class="d-inline"
-                                    onsubmit="return confirm('Are you sure you want to delete this tour?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
+                                <th>No.</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    No tours found. <a href="{{ route('admin.tours.create') }}">Add your first tour!</a>
+                        </thead>
+                        <tbody>
+                            @forelse($tours as $tour)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $tour->title }}</td>
+                                    <td>{{ $tour->location }}</td>
+                                    <td>{{ $tour->duration_days }} days</td>
+                                    <td>
+                                        @if($tour->status === 'active')
+                                            <span class="badge bg-success">Active</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                    <a href="{{ route('admin.tours.travel-periods.create', $tour) }}"
+                                    class="btn btn-sm btn-info text-white">
+                                        <i class="bi bi-calendar"></i> Dates
+                                    </a>
+                                    <a href="{{ route('admin.tours.edit', $tour) }}"
+                                    class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <form action="{{ route('admin.tours.destroy', $tour) }}"
+                                        method="POST" class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this tour?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
                                 </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        No tours found. <a href="{{ route('admin.tours.create') }}">Add your first tour!</a>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -28,6 +28,10 @@
 
     <div class="sidebar">
 
+        <div class="d-flex justify-content-end mb-3 d-lg-none">
+            <button type="button" id="sidebarClose" class="btn-close btn-close-white" aria-label="Close"></button>
+        </div>
+
         <div class="sidebar-logo">
             <img src="{{ asset('images/MyanGo_Logo.png') }}"
                  alt="MyanGo Travel"
@@ -44,6 +48,18 @@
                class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-fill"></i>
                 Dashboard
+            </a>
+
+            <a href="{{ route('admin.bookings.index') }}"
+               class="{{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
+                <i class="bi bi-journal-text"></i>
+                Bookings
+            </a>
+
+            <a href="{{ route('admin.inquiries.index') }}"
+               class="{{ request()->routeIs('admin.inquiries.*') ? 'active' : '' }}">
+                <i class="bi bi-chat-dots"></i>
+                Inquiries
             </a>
 
             <a href="{{ route('admin.tours.index') }}"
@@ -64,20 +80,11 @@
                 Seasons
             </a>
 
-            <a href="{{ route('admin.bookings.index') }}"
-               class="{{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
-                <i class="bi bi-journal-text"></i>
-                Bookings
-            </a>
 
-            <a href="{{ route('admin.inquiries.index') }}"
-               class="{{ request()->routeIs('admin.inquiries.*') ? 'active' : '' }}">
-                <i class="bi bi-chat-dots"></i>
-                Inquiries
-            </a>
 
-            <hr style="border-color: rgba(255,255,255,0.12);">
+        </div>
 
+        <div class="mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.12) !important;">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
@@ -99,11 +106,21 @@
                     Logout
                 </button>
             </form>
-
         </div>
     </div>
 
+    <div class="mobile-admin-header d-flex align-items-center justify-content-between d-lg-none bg-white border-bottom px-3 py-2">
+        <div class="d-flex align-items-center gap-2">
+            <button id="sidebarToggle" class="btn btn-outline-secondary border-0 p-2">
+                <i class="bi bi-list fs-3" style="color: #111844; line-height: 1;"></i>
+            </button>
+            <span class="fw-bold" style="color: #111844;">MyanGo Admin</span>
+        </div>
+        <img src="{{ asset('images/MyanGo_Logo.png') }}" alt="MyanGo Logo" style="height: 35px;">
+    </div>
+
     <div class="admin-main">
+
 
         @if (isset($header))
             <div class="page-header">
