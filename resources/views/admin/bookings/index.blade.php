@@ -1,12 +1,15 @@
 <x-app-layout>
+    <x-slot name="header">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div>
+                <h1 class="page-title mb-1">Booking Management</h1>
+            </div>
+        </div>
+    </x-slot>
 
-<div class="container">
+<div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Booking Management</h2>
-    </div>
-
-    <div class="card shadow-sm">
+    <div class="card shadow-sm border-0">
         <div class="card-body">
 
             <div class="table-responsive">
@@ -41,7 +44,7 @@
                                 <td>{{ $booking->created_at->format('d M Y') }}</td>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $booking) }}"
-                                       class="btn btn-sm btn-outline-primary">
+                                       class="btn btn-sm btn-primary">
                                         View
                                     </a>
                                 </td>

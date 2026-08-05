@@ -10,9 +10,11 @@ let seasonPeriods = window.seasonPeriods || [];
 | Disable manual checkout editing
 |--------------------------------------------------------------------------
 */
-checkoutField.addEventListener('keydown', function (e) {
-    e.preventDefault();
-});
+if (checkoutField) {
+    checkoutField.addEventListener('keydown', function (e) {
+        e.preventDefault();
+    });
+}
 
 
 /*
@@ -22,6 +24,7 @@ checkoutField.addEventListener('keydown', function (e) {
 */
 window.updateCheckoutDate = function () {
     const checkinField = document.getElementById('checkin-date');
+    if (!checkinField || !checkoutField) return;
     const checkin = checkinField.value;
 
     if (!checkin) {
@@ -62,8 +65,9 @@ window.getSeasonForDate = function (dateStr) {
 };
 
 window.updateSeason = function () {
-    const checkin =
-        document.getElementById('checkin-date').value;
+    const checkinElement = document.getElementById('checkin-date');
+    if (!checkinElement) return;
+    const checkin = checkinElement.value;
 
     if (!checkin) {
         currentSeason = 'normal';
@@ -86,7 +90,10 @@ window.selectHotelCard = function (el, hotelId) {
 
     el.classList.add('selected');
 
-    document.getElementById('hotel-select').value = hotelId;
+    const hotelSelect = document.getElementById('hotel-select');
+    if (hotelSelect) {
+        hotelSelect.value = hotelId;
+    }
 
     calculatePrice();
 };
@@ -98,11 +105,12 @@ window.selectHotelCard = function (el, hotelId) {
 |--------------------------------------------------------------------------
 */
 window.updateBookingChildrenAges = function () {
-    const numChildren =
-        parseInt(document.getElementById('booking-num-children').value) || 0;
+    const numChildrenEl = document.getElementById('booking-num-children');
+    const container = document.getElementById('booking-children-ages');
+    if (!numChildrenEl || !container) return;
 
-    const container =
-        document.getElementById('booking-children-ages');
+    const numChildren =
+        parseInt(numChildrenEl.value) || 0;
 
     container.innerHTML = '';
 
@@ -156,8 +164,13 @@ window.updateInquiryChildrenAges = function (input) {
 |--------------------------------------------------------------------------
 */
 window.calculatePrice = function () {
+    const numAdultsEl = document.getElementById('num-adults');
+    const hotelSelect = document.getElementById('hotel-select');
+    const priceDisplay = document.getElementById('price-display');
+    if (!numAdultsEl || !hotelSelect || !priceDisplay) return;
+
     const numAdults =
-        parseInt(document.getElementById('num-adults').value) || 1;
+        parseInt(numAdultsEl.value) || 1;
 
     const childAges =
         [...document.querySelectorAll('.child-age')]
@@ -173,11 +186,8 @@ window.calculatePrice = function () {
         }
     });
 
-    const hotelSelect =
-        document.getElementById('hotel-select');
-
     if (!hotelSelect.value) {
-        document.getElementById('price-display').style.display = 'none';
+        priceDisplay.style.display = 'none';
         return;
     }
 
@@ -196,25 +206,21 @@ window.calculatePrice = function () {
     const totalPrice =
         pricePerPerson * payableTravelers;
 
-    document.getElementById('show-base-price').textContent =
-        baseTourPrice.toFixed(0);
+    const showBasePrice = document.getElementById('show-base-price');
+    const showHotelPrice = document.getElementById('show-hotel-price');
+    const showPerPerson = document.getElementById('show-per-person');
+    const showPayable = document.getElementById('show-payable');
+    const showSeats = document.getElementById('show-seats');
+    const showTotal = document.getElementById('show-total');
 
-    document.getElementById('show-hotel-price').textContent =
-        hotelUpgrade.toFixed(0);
+    if (showBasePrice) showBasePrice.textContent = baseTourPrice.toFixed(0);
+    if (showHotelPrice) showHotelPrice.textContent = hotelUpgrade.toFixed(0);
+    if (showPerPerson) showPerPerson.textContent = pricePerPerson.toFixed(0);
+    if (showPayable) showPayable.textContent = payableTravelers;
+    if (showSeats) showSeats.textContent = occupiedSeats;
+    if (showTotal) showTotal.textContent = totalPrice.toFixed(0);
 
-    document.getElementById('show-per-person').textContent =
-        pricePerPerson.toFixed(0);
-
-    document.getElementById('show-payable').textContent =
-        payableTravelers;
-
-    document.getElementById('show-seats').textContent =
-        occupiedSeats;
-
-    document.getElementById('show-total').textContent =
-        totalPrice.toFixed(0);
-
-    document.getElementById('price-display').style.display = 'block';
+    priceDisplay.style.display = 'block';
 };
 
 
@@ -224,20 +230,22 @@ window.calculatePrice = function () {
 |--------------------------------------------------------------------------
 */
 window.proceedBooking = function (tourId) {
-    const checkin =
-        document.getElementById('checkin-date').value;
+    const checkinEl = document.getElementById('checkin-date');
+    const checkoutEl = document.getElementById('checkout-date');
+    const adultsEl = document.getElementById('num-adults');
+    const hotelEl = document.getElementById('hotel-select');
+    const childrenEl = document.getElementById('booking-num-children');
+    const showTotalEl = document.getElementById('show-total');
 
-    const checkout =
-        document.getElementById('checkout-date').value;
+    if (!checkinEl || !checkoutEl || !adultsEl || !hotelEl || !childrenEl || !showTotalEl) {
+        return;
+    }
 
-    const adults =
-        document.getElementById('num-adults').value;
-
-    const hotel =
-        document.getElementById('hotel-select').value;
-
-    const children =
-        document.getElementById('booking-num-children').value;
+    const checkin = checkinEl.value;
+    const checkout = checkoutEl.value;
+    const adults = adultsEl.value;
+    const hotel = hotelEl.value;
+    const children = childrenEl.value;
 
     const childAges =
         [...document.querySelectorAll('.child-age')]
@@ -255,5 +263,5 @@ window.proceedBooking = function (tourId) {
     }
 
 window.location.href =
-    `/booking/${tourId}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&hotel=${hotel}&children=${children}&ages=${childAges}&total=${document.getElementById('show-total').textContent}`;
+    `/booking/${tourId}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&hotel=${hotel}&children=${children}&ages=${childAges}&total=${showTotalEl.textContent}`;
 };

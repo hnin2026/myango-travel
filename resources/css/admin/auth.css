@@ -65,6 +65,11 @@ body {
     margin-bottom: 0 !important;
 }
 
+.password-wrapper input::-ms-reveal,
+.password-wrapper input::-ms-clear {
+    display: none;
+}
+
 .password-toggle {
     position: absolute;
     top: 50%;

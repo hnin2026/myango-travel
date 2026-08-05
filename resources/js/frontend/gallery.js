@@ -6,6 +6,7 @@ function initGallery(images) {
 }
 
 function openLightbox(index) {
+    tourImages = window.tourImages || [];
     lightboxIndex = index;
     updateLightboxImg();
     document.getElementById('lightbox').classList.add('show');
@@ -16,6 +17,7 @@ function closeLightbox() {
 }
 
 function changeLightbox(dir) {
+    tourImages = window.tourImages || [];
     lightboxIndex = (lightboxIndex + dir + tourImages.length) % tourImages.length;
     updateLightboxImg();
 }
@@ -23,6 +25,11 @@ function changeLightbox(dir) {
 function updateLightboxImg() {
     document.getElementById('lightbox-img').src = '/storage/' + tourImages[lightboxIndex];
 }
+
+window.initGallery = initGallery;
+window.openLightbox = openLightbox;
+window.closeLightbox = closeLightbox;
+window.changeLightbox = changeLightbox;
 
 document.addEventListener('DOMContentLoaded', function() {
     const lightbox = document.getElementById('lightbox');

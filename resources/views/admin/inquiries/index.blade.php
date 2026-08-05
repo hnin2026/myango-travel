@@ -1,7 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Customer Inquiries</h2>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div>
+                <h1 class="page-title mb-1">Customer Inquiries</h1>
+            </div>
         </div>
     </x-slot>
 

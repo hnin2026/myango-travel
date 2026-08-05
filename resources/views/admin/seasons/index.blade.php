@@ -1,9 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Season Periods</h2>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div>
+                <h1 class="page-title mb-1">Season Periods</h1>
+            </div>
             <a href="{{ route('admin.season-periods.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add Season Period
+                <i class="bi bi-plus-circle me-2"></i> Add Season Period
             </a>
         </div>
     </x-slot>

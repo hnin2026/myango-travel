@@ -1,9 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Tour Management</h2>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div>
+                <h1 class="page-title mb-1">Tour Management</h1>
+            </div>
             <a href="{{ route('admin.tours.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add New Tour
+                <i class="bi bi-plus-circle me-2"></i> Add New Tour
             </a>
         </div>
     </x-slot>
