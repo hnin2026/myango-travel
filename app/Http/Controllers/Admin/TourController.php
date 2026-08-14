@@ -21,7 +21,14 @@ class TourController extends Controller
     public function create()
     {
         $hotels = Hotel::all();
-        return view('admin.tours.create', compact('hotels'));
+        $existingLocations = Hotel::whereNotNull('location')
+            ->where('location', '!=', '')
+            ->select('location')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location')
+            ->toArray();
+        return view('admin.tours.create', compact('hotels', 'existingLocations'));
     }
 
     // Save new tour
@@ -30,9 +37,38 @@ class TourController extends Controller
         $request->validate([
             'title'         => 'required|string|max:255',
             'duration_days' => 'required|integer|min:1',
-            'location'      => 'required|string|max:255',
+            'status'        => 'nullable|in:active,inactive',
+            'location'      => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $norm = preg_replace('/\s+/', ' ', trim($value));
+                    $exists = Hotel::whereRaw('LOWER(location) = ?', [strtolower($norm)])->exists();
+                    if (!$exists) {
+                        $fail('No existing location found. Please create a hotel with this location first.');
+                    }
+                }
+            ],
             'images.*'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'hotels'        => [
+                'nullable',
+                'array',
+                function ($attribute, $value, $fail) use ($request) {
+                    $norm = preg_replace('/\s+/', ' ', trim($request->location));
+                    $invalidHotels = Hotel::whereIn('id', $value ?? [])
+                        ->whereRaw('LOWER(location) != ?', [strtolower($norm)])
+                        ->pluck('name');
+                    if ($invalidHotels->isNotEmpty()) {
+                        $fail('Hotels from another location cannot be attached to a Tour.');
+                    }
+                }
+            ]
         ]);
+
+        $normalized = preg_replace('/\s+/', ' ', trim($request->location));
+        $existingHotel = Hotel::whereRaw('LOWER(location) = ?', [strtolower($normalized)])->first();
+        $location = $existingHotel ? $existingHotel->location : $normalized;
 
         // Create tour
         $tour = Tour::create([
@@ -44,8 +80,8 @@ class TourController extends Controller
         'additional_info_mm'  => $request->additional_info_mm,
         'duration_days'       => $request->duration_days,
         'base_price'          => $request->base_price ?? 0,
-        'location'            => $request->location,
-        'status'              => 'active',
+        'location'            => $location,
+        'status'              => $request->status ?? 'active',
     ]);
 
         // Attach hotels
@@ -89,7 +125,14 @@ class TourController extends Controller
         $hotels = Hotel::all();
         $selectedHotels = $tour->hotels->pluck('id')->toArray();
         $itineraries = $tour->itineraries;
-        return view('admin.tours.edit', compact('tour', 'hotels', 'selectedHotels', 'itineraries'));
+        $existingLocations = Hotel::whereNotNull('location')
+            ->where('location', '!=', '')
+            ->select('location')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location')
+            ->toArray();
+        return view('admin.tours.edit', compact('tour', 'hotels', 'selectedHotels', 'itineraries', 'existingLocations'));
     }
 
     // Update tour
@@ -98,10 +141,39 @@ class TourController extends Controller
     $request->validate([
         'title'         => 'required|string|max:255',
         'duration_days' => 'required|integer|min:1',
-        'location'      => 'required|string|max:255',
+        'status'        => 'nullable|in:active,inactive',
+        'location'      => [
+            'required',
+            'string',
+            'max:255',
+            function ($attribute, $value, $fail) {
+                $norm = preg_replace('/\s+/', ' ', trim($value));
+                $exists = Hotel::whereRaw('LOWER(location) = ?', [strtolower($norm)])->exists();
+                if (!$exists) {
+                    $fail('No existing location found. Please create a hotel with this location first.');
+                }
+            }
+        ],
         'base_price'    => 'required|numeric|min:0',
         'images.*'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'hotels'        => [
+            'nullable',
+            'array',
+            function ($attribute, $value, $fail) use ($request) {
+                $norm = preg_replace('/\s+/', ' ', trim($request->location));
+                $invalidHotels = Hotel::whereIn('id', $value ?? [])
+                    ->whereRaw('LOWER(location) != ?', [strtolower($norm)])
+                    ->pluck('name');
+                if ($invalidHotels->isNotEmpty()) {
+                    $fail('Hotels from another location cannot be attached to a Tour.');
+                }
+            }
+        ]
     ]);
+
+    $normalized = preg_replace('/\s+/', ' ', trim($request->location));
+    $existingHotel = Hotel::whereRaw('LOWER(location) = ?', [strtolower($normalized)])->first();
+    $location = $existingHotel ? $existingHotel->location : $normalized;
 
     // Update tour
     $tour->update([
@@ -113,7 +185,8 @@ class TourController extends Controller
     'additional_info_mm' => $request->additional_info_mm,
     'duration_days' => $request->duration_days,
     'base_price' => $request->base_price ?? 0,
-    'location' => $request->location,
+    'location' => $location,
+    'status' => $request->status ?? $tour->status,
 ]);
 
     // Sync hotels

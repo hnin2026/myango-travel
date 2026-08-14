@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit Hotel</h2>
             <a href="{{ route('admin.hotels.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+                Back
             </a>
         </div>
     </x-slot>
@@ -42,10 +42,48 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Location</label>
-                        <input type="text" name="location"
-                               class="form-control"
-                               value="{{ old('location', $hotel->location) }}"
-                               placeholder="e.g. Yangon, Myanmar">
+                        <div x-data="locationAutocomplete({
+                            initialValue: {{ json_encode(old('location', $hotel->location)) }},
+                            suggestions: {{ json_encode($existingLocations) }},
+                            allowNew: true
+                        })" class="autocomplete-wrapper">
+                            <input
+                                type="text"
+                                name="location"
+                                x-model="search"
+                                @focus="open = true"
+                                @click.away="open = false"
+                                @keydown.escape="open = false"
+                                class="form-control @error('location') is-invalid @enderror"
+                                placeholder="e.g. Yangon, Myanmar"
+                                autocomplete="off"
+                            >
+
+                            @error('location')
+                                <div class="invalid-feedback d-block mt-2">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                            <div x-show="open && (filteredSuggestions.length > 0 || search.trim() !== '')"
+                                 class="autocomplete-dropdown"
+                                 x-cloak>
+                                <template x-for="suggestion in filteredSuggestions" :key="suggestion">
+                                    <div @click="selectSuggestion(suggestion)" class="autocomplete-item">
+                                        <span class="me-2">📍</span>
+                                        <span x-text="suggestion"></span>
+                                    </div>
+                                </template>
+                                <div x-show="filteredSuggestions.length === 0 && search.trim() !== ''" class="autocomplete-no-match">
+                                    No matching location found.
+                                </div>
+                                <div x-show="search.trim() !== '' && !hasExactMatch"
+                                     @click="addNewLocation()"
+                                     class="autocomplete-add-new">
+                                    ➕ Add "<span x-text="search"></span>" as a new location?
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Season Prices --}}

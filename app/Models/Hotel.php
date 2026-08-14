@@ -12,6 +12,25 @@ class Hotel extends Model
         'location'
     ];
 
+    public static function normalizeLocation(string $value): string
+    {
+        $normalized = preg_replace('/\s+/', ' ', trim($value));
+
+        $existing = self::whereNotNull('location')
+            ->where('location', '!=', '')
+            ->select('location')
+            ->distinct()
+            ->get();
+
+        foreach ($existing as $hotel) {
+            if (strcasecmp($hotel->location, $normalized) === 0) {
+                return $hotel->location;
+            }
+        }
+
+        return ucwords(strtolower($normalized));
+    }
+
     public function tours()
     {
         return $this->belongsToMany(Tour::class, 'tour_hotels');

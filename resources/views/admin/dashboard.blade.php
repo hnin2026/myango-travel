@@ -47,7 +47,7 @@
                         {{-- Controls: Notifications & Settings Dropdown (Above Calendar) --}}
                         <div class="d-flex align-items-center gap-2 mb-1">
                             
-                            {{-- 👤 Profile Icon with Hover Info (Left Side of Notification) --}}
+                            {{-- Profile Icon with Hover Info (Left Side of Notification) --}}
                             <div class="position-relative profile-hover-container">
                                 <button class="btn btn-link p-2 text-white rounded-circle d-flex align-items-center justify-content-center hover-bg-light-white" type="button" style="width: 38px; height: 38px; text-decoration: none; background: rgba(255,255,255,0.1);">
                                     <i class="bi bi-person-circle fs-5"></i>
@@ -164,7 +164,7 @@
                         </div>
 
                         {{-- Date Badge --}}
-                        <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded p-2 px-3" style="backdrop-filter: blur(10px);">
+                        <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded p-2 px-2" style="backdrop-filter: blur(10px);">
                             <i class="bi bi-calendar3 fs-5 text-white"></i>
                             <span class="small fw-semibold text-white">{{ date('d M Y') }}</span>
                         </div>

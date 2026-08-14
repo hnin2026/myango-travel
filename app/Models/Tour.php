@@ -49,4 +49,9 @@ class Tour extends Model
     {
         return $this->belongsTo(Tour::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
 }

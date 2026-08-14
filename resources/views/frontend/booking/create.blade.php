@@ -79,6 +79,16 @@
                         </h2>
                     </div>
 
+                    @if($errors->any())
+                        <div class="alert alert-danger mx-4 mt-3 mb-0" style="border-radius: 12px;">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     {{-- Customer Info --}}
                     <div class="info-section">
                         <div class="info-section-header">

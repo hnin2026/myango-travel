@@ -12,8 +12,7 @@
             </div>
 
             <a href="{{ route('admin.hotels.index') }}"
-               class="btn btn-light border rounded-pill px-4 ms-auto">
-                <i class="bi bi-arrow-left me-2"></i>
+               class="btn btn-secondary border rounded-pill px-4 ms-auto">
                 Back
             </a>
         </div>
@@ -114,13 +113,48 @@
                             Location
                         </label>
 
-                        <input
-                            type="text"
-                            name="location"
-                            class="form-control form-control-custom"
-                            value="{{ old('location') }}"
-                            placeholder="e.g. Yangon, Myanmar"
-                        >
+                        <div x-data="locationAutocomplete({
+                            initialValue: {{ json_encode(old('location')) }},
+                            suggestions: {{ json_encode($existingLocations) }},
+                            allowNew: true
+                        })" class="autocomplete-wrapper">
+                            <input
+                                type="text"
+                                name="location"
+                                x-model="search"
+                                @focus="open = true"
+                                @click.away="open = false"
+                                @keydown.escape="open = false"
+                                class="form-control form-control-custom @error('location') is-invalid @enderror"
+                                placeholder="e.g. Yangon, Myanmar"
+                                autocomplete="off"
+                            >
+
+                            @error('location')
+                                <div class="invalid-feedback d-block mt-2">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                            <div x-show="open && (filteredSuggestions.length > 0 || search.trim() !== '')"
+                                 class="autocomplete-dropdown"
+                                 x-cloak>
+                                <template x-for="suggestion in filteredSuggestions" :key="suggestion">
+                                    <div @click="selectSuggestion(suggestion)" class="autocomplete-item">
+                                        <span class="me-2">📍</span>
+                                        <span x-text="suggestion"></span>
+                                    </div>
+                                </template>
+                                <div x-show="filteredSuggestions.length === 0 && search.trim() !== ''" class="autocomplete-no-match">
+                                    No matching location found.
+                                </div>
+                                <div x-show="search.trim() !== '' && !hasExactMatch"
+                                     @click="addNewLocation()"
+                                     class="autocomplete-add-new">
+                                    ➕ Add "<span x-text="search"></span>" as a new location?
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -296,10 +330,10 @@
             {{-- ACTION BUTTONS --}}
             <div class="d-flex gap-3 flex-wrap">
 
-                <button type="submit" class="btn-save">Save</button>
+                <button type="submit" class="btn btn-primary">Save</button>
 
                 <a href="{{ route('admin.hotels.index') }}"
-                   class="btn-cancel">Cancel</a>
+                   class="btn btn-secondary">Cancel</a>
 
             </div>
 

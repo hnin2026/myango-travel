@@ -17,6 +17,9 @@ class BookingController extends Controller
 {
     public function create(Request $request, Tour $tour)
     {
+        if ($tour->status !== 'active') {
+            return redirect()->route('tours.show', $tour);
+        }
         return view('frontend.booking.create', compact(
             'tour',
             'request'
@@ -25,6 +28,10 @@ class BookingController extends Controller
 
 public function store(Request $request, Tour $tour)
 {
+    if ($tour->status !== 'active') {
+        return back()->withErrors(['tour' => 'This tour is currently unavailable for booking.'])->withInput();
+    }
+
     $travelPeriod = TravelPeriod::where('tour_id', $tour->id)
         ->where('start_date', '<=', $request->checkin_date)
         ->where('end_date', '>=', $request->checkin_date)

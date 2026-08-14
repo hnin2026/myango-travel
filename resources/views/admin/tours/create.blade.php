@@ -129,13 +129,41 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">Location</label>
-                            <input type="text" name="location"
-                                class="form-control @error('location') is-invalid @enderror"
-                                value="{{ old('location') }}"
-                                placeholder="e.g. Bagan, Myanmar">
-                            @error('location')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div x-data="locationAutocomplete({
+                                initialValue: {{ json_encode(old('location')) }},
+                                suggestions: {{ json_encode($existingLocations) }},
+                                allowNew: false
+                            })" class="autocomplete-wrapper">
+                                <input
+                                    type="text"
+                                    name="location"
+                                    x-model="search"
+                                    @focus="open = true"
+                                    @click.away="open = false"
+                                    @keydown.escape="open = false"
+                                    class="form-control @error('location') is-invalid @enderror"
+                                    placeholder="e.g. Bagan, Myanmar"
+                                    autocomplete="off"
+                                >
+                                @error('location')
+                                    <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
+                                @enderror
+
+                                <div x-show="open && (filteredSuggestions.length > 0 || search.trim() !== '')"
+                                     class="autocomplete-dropdown"
+                                     x-cloak>
+                                    <template x-for="suggestion in filteredSuggestions" :key="suggestion">
+                                        <div @click="selectSuggestion(suggestion)" class="autocomplete-item">
+                                            <span class="me-2">📍</span>
+                                            <span x-text="suggestion"></span>
+                                        </div>
+                                    </template>
+                                    <div x-show="filteredSuggestions.length === 0 && search.trim() !== ''" class="autocomplete-no-match">
+                                        <div>No existing location found.</div>
+                                        <div class="text-danger small mt-1">Please create a hotel with this location first.</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">Duration (Days)</label>
@@ -162,40 +190,42 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Status</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input @error('status') is-invalid @enderror" 
+                                           type="radio" 
+                                           name="status" 
+                                           id="status_active" 
+                                           value="active" 
+                                           {{ old('status', 'active') === 'active' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="status_active">Active</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('status') is-invalid @enderror" 
+                                           type="radio" 
+                                           name="status" 
+                                           id="status_inactive" 
+                                           value="inactive" 
+                                           {{ old('status') === 'inactive' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="status_inactive">Inactive</label>
+                                </div>
+                            </div>
+                            @error('status')
+                                <div class="text-danger small mt-1 d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {{-- Available Hotels --}}
             <div class="card mb-4">
                 <div class="card-header fw-bold">Available Hotels</div>
-                <div class="card-body">
-                    @if($hotels->isEmpty())
-                        <p class="text-muted">No hotels added yet. 
-                            <a href="{{ route('admin.hotels.create') }}">Add hotels first.</a>
-                        </p>
-                    @else
-                        <div class="row">
-                            @foreach($hotels as $hotel)
-                                <div class="col-md-4 mb-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                               name="hotels[]" value="{{ $hotel->id }}"
-                                               id="hotel{{ $hotel->id }}"
-                                               {{ in_array($hotel->id, old('hotels', [])) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="hotel{{ $hotel->id }}">
-                                            {{ $hotel->name }}
-                                            <span class="badge bg-info">{{ $hotel->category }}</span>
-                                            <small class="text-muted">
-                                                Low: ${{ $hotel->getPriceForSeason('low') }} | 
-                                                Normal: ${{ $hotel->getPriceForSeason('normal') }} | 
-                                                Peak: ${{ $hotel->getPriceForSeason('peak') }}
-                                            </small>
-                                        </label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
+                <div class="card-body" id="hotels-container">
+                    <p class="text-muted">Please select a location first.</p>
                 </div>
             </div>
 
@@ -224,4 +254,13 @@
     {{-- TinyMCE --}}
     <script src="https://cdn.tiny.cloud/1/kepwie1vxizkqpicpc4g2arjl67ndtn5c2nmbjfe31hr1b0f/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     
+    <script>
+        window.selectedHotels = @json(old('hotels', [])) ? @json(old('hotels', [])).map(id => parseInt(id)) : [];
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialLocation = '{{ old('location') }}';
+            if (initialLocation) {
+                window.fetchHotels(initialLocation);
+            }
+        });
+    </script>
 </x-app-layout>

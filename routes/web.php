@@ -48,6 +48,7 @@ Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class,
 // Admin routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('tours', TourController::class);
+    Route::get('hotels-by-location', [HotelController::class, 'byLocation'])->name('hotels.by-location');
     Route::resource('hotels', HotelController::class);
     Route::resource('season-periods', SeasonPeriodController::class);
     Route::resource('bookings', BookingController::class);

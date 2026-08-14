@@ -16,9 +16,23 @@ class CustomerController extends Controller
         return view('frontend.home.index', compact('tours'));
     }
 
-public function show(Tour $tour)
+    public function show(Tour $tour)
     {
-        $tour->load(['images', 'hotels.seasonPrices', 'itineraries', 'travelPeriods']);
+        if ($tour->status !== 'active') {
+            return view('frontend.tours.unavailable');
+        }
+
+        $tour->load([
+            'images',
+            'hotels' => function ($query) use ($tour) {
+                $query->whereRaw('LOWER(location) = ?', [strtolower($tour->location)])
+                      ->orderBy('category', 'desc')
+                      ->orderBy('name', 'asc');
+            },
+            'hotels.seasonPrices',
+            'itineraries',
+            'travelPeriods'
+        ]);
         $seasonPeriods = SeasonPeriod::all();
         return view('frontend.tours.show', compact('tour', 'seasonPeriods'));
     }
