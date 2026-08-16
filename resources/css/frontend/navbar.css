@@ -140,3 +140,72 @@
     color: #4B5694;
     font-weight: 700;
 }
+
+/* Destinations Dropdown Styles */
+.nav-links .dropdown-toggle {
+    color: #111844;
+    text-decoration: none;
+    font-size: 18px;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.nav-links .dropdown-toggle:hover {
+    color: #4B5694;
+    background: rgba(75, 86, 148, 0.06);
+}
+
+.nav-links .dropdown-menu {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(17, 24, 68, 0.08) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    padding: 8px !important;
+    min-width: 200px !important;
+    margin-top: 10px !important;
+}
+
+.nav-links .dropdown-item {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #111844 !important;
+    padding: 10px 20px !important;
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-links .dropdown-item:hover {
+    background: rgba(75, 86, 148, 0.06) !important;
+    color: #4B5694 !important;
+}
+
+.nav-links .dropdown-toggle::after {
+    vertical-align: middle !important;
+    margin-left: 6px !important;
+}
+
+.nav-links .dropdown-item.active {
+    background-color: #111844 !important;
+    color: white !important;
+}
+
+.nav-mobile-toggle {
+    background: none;
+    border: none;
+    padding: 6px;
+    color: #111844;
+    cursor: pointer;
+    display: none; /* Hidden on desktop */
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    border-radius: 50%;
+}
+
+.nav-mobile-toggle:hover {
+    color: #4B5694;
+    background: rgba(75, 86, 148, 0.06);
+}

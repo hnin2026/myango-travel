@@ -29,19 +29,23 @@ const itineraryContainer =
 
 if (addDayBtn && itineraryContainer) {
 
-    let dayCount = 1;
+    let dayCount = itineraryContainer.querySelectorAll('.itinerary-day').length || 1;
 
     addDayBtn.addEventListener('click', function () {
 
+        const currentCount = itineraryContainer.querySelectorAll('.itinerary-day').length;
         dayCount++;
 
+        const enId = `itinerary_en_${dayCount}`;
+        const mmId = `itinerary_mm_${dayCount}`;
+
         const dayHtml = `
-            <div class="itinerary-day card mb-3" data-day="${dayCount}">
+            <div class="itinerary-day card mb-3" data-day="${currentCount + 1}">
 
                 <div class="card-header d-flex justify-content-between align-items-center">
 
                     <span class="fw-bold">
-                        Day ${dayCount}
+                        Day ${currentCount + 1}
                     </span>
 
                     <button
@@ -63,10 +67,11 @@ if (addDayBtn && itineraryContainer) {
                         </label>
 
                         <textarea
-                            name="itineraries[${dayCount - 1}][description_en]"
-                            class="form-control"
+                            id="${enId}"
+                            name="itineraries[${currentCount}][description_en]"
+                            class="form-control tinymce"
                             rows="3"
-                            placeholder="Day ${dayCount} details in English"
+                            placeholder="Day ${currentCount + 1} details in English"
                         ></textarea>
 
                     </div>
@@ -78,10 +83,11 @@ if (addDayBtn && itineraryContainer) {
                         </label>
 
                         <textarea
-                            name="itineraries[${dayCount - 1}][description_mm]"
-                            class="form-control"
+                            id="${mmId}"
+                            name="itineraries[${currentCount}][description_mm]"
+                            class="form-control tinymce"
                             rows="3"
-                            placeholder="Day ${dayCount} details in Myanmar"
+                            placeholder="Day ${currentCount + 1} details in Myanmar"
                         ></textarea>
 
                     </div>
@@ -96,6 +102,17 @@ if (addDayBtn && itineraryContainer) {
             dayHtml
         );
 
+        if (typeof tinymce !== 'undefined') {
+            tinymce.init({
+                selector: `#${enId}, #${mmId}`,
+                height: 300,
+                plugins: 'lists link image table wordcount',
+                toolbar:
+                    'undo redo | bold italic underline | bullist numlist | link image table | removeformat',
+                menubar: false,
+            });
+        }
+
     });
 
 
@@ -107,13 +124,37 @@ if (addDayBtn && itineraryContainer) {
 
         if (!removeBtn) return;
 
-        removeBtn.closest('.itinerary-day').remove();
+        const dayCard = removeBtn.closest('.itinerary-day');
+
+        if (typeof tinymce !== 'undefined') {
+            const textareas = dayCard.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                if (textarea.id) {
+                    const editor = tinymce.get(textarea.id);
+                    if (editor) {
+                        editor.remove();
+                    }
+                }
+            });
+        }
+
+        dayCard.remove();
 
         document.querySelectorAll('.itinerary-day')
             .forEach((day, index) => {
 
+                day.setAttribute('data-day', index + 1);
                 day.querySelector('.fw-bold')
                     .textContent = `Day ${index + 1}`;
+
+                const textareas = day.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    const name = textarea.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/itineraries\[\d+\]/, `itineraries[${index}]`);
+                        textarea.setAttribute('name', newName);
+                    }
+                });
 
             });
 

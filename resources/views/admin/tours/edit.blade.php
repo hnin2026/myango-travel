@@ -92,13 +92,13 @@
                                         <div class="card-body">
                                             <div class="mb-3">
                                                 <label class="form-label">Description (English)</label>
-                                                <textarea name="itineraries[{{ $index }}][description_en]"
-                                                          class="form-control" rows="3">{{ $itinerary->description_en }}</textarea>
+                                                <textarea id="itinerary_en_{{ $index + 1 }}" name="itineraries[{{ $index }}][description_en]"
+                                                          class="form-control tinymce" rows="3">{{ $itinerary->description_en }}</textarea>
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label">Description (Myanmar)</label>
-                                                <textarea name="itineraries[{{ $index }}][description_mm]"
-                                                          class="form-control" rows="3">{{ $itinerary->description_mm }}</textarea>
+                                                <textarea id="itinerary_mm_{{ $index + 1 }}" name="itineraries[{{ $index }}][description_mm]"
+                                                          class="form-control tinymce" rows="3">{{ $itinerary->description_mm }}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -113,14 +113,14 @@
                                         <div class="card-body">
                                             <div class="mb-3">
                                                 <label class="form-label">Description (English)</label>
-                                                <textarea name="itineraries[0][description_en]"
-                                                          class="form-control" rows="3"
+                                                <textarea id="itinerary_en_1" name="itineraries[0][description_en]"
+                                                          class="form-control tinymce" rows="3"
                                                           placeholder="Day 1 details in English"></textarea>
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label">Description (Myanmar)</label>
-                                                <textarea name="itineraries[0][description_mm]"
-                                                          class="form-control" rows="3"
+                                                <textarea id="itinerary_mm_1" name="itineraries[0][description_mm]"
+                                                          class="form-control tinymce" rows="3"
                                                           placeholder="နေ့ ၁ အသေးစိတ် မြန်မာဘာသာဖြင့်"></textarea>
                                             </div>
                                         </div>

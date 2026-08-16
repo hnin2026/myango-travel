@@ -11,9 +11,32 @@ class CustomerController extends Controller
     public function index()
     {
         $tours = Tour::where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
             ->with(['images', 'travelPeriods'])
             ->get();
         return view('frontend.home.index', compact('tours'));
+    }
+
+    public function tours(Request $request)
+    {
+        $destinations = Tour::where('status', 'active')
+            ->select('location')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location');
+
+        $query = Tour::where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->with(['images', 'travelPeriods']);
+
+        if ($request->filled('destination')) {
+            $query->whereRaw('LOWER(location) = ?', [strtolower($request->query('destination'))]);
+        }
+
+        $tours = $query->paginate(12)->withQueryString();
+
+        return view('frontend.tours.index', compact('tours', 'destinations'));
     }
 
     public function show(Tour $tour)

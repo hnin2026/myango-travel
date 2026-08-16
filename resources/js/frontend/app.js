@@ -1,4 +1,3 @@
-import * as bootstrap from 'bootstrap';
 import './language-switcher.js';
 import './gallery.js';
 import './price-calculator.js';

@@ -204,3 +204,120 @@
 .tour-card:hover .tour-link i {
     transform: translateX(4px);
 }
+
+/* See More button */
+.btn-see-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #111844;
+    color: white !important;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
+    box-shadow: 0 4px 12px rgba(17, 24, 68, 0.15);
+    text-decoration: none;
+}
+
+.btn-see-more:hover {
+    background: #4B5694;
+    box-shadow: 0 6px 20px rgba(75, 86, 148, 0.3);
+    transform: translateY(-2px);
+    color: white !important;
+}
+
+.btn-see-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-see-more:hover i {
+    transform: translateX(4px);
+}
+
+/* Destinations Filtering Layout */
+.destinations-filter-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.filter-badge {
+    background: white;
+    color: #111844;
+    border: 1px solid rgba(17, 24, 68, 0.1);
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(17, 24, 68, 0.03);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.filter-badge:hover {
+    background: rgba(75, 86, 148, 0.06);
+    border-color: #4B5694;
+    color: #4B5694;
+    transform: translateY(-2px);
+}
+
+.filter-badge.active {
+    background: #111844;
+    color: white !important;
+    border-color: #111844;
+    box-shadow: 0 4px 12px rgba(17, 24, 68, 0.15);
+}
+
+.filter-badge.active:hover {
+    background: #4B5694;
+    border-color: #4B5694;
+}
+
+/* Pagination custom wrapper */
+.pagination-wrapper {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-wrapper .pagination {
+    margin-bottom: 0;
+}
+
+.pagination-wrapper .page-item .page-link {
+    color: #111844;
+    border-radius: 50%;
+    margin: 0 4px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border: 1px solid rgba(17, 24, 68, 0.1);
+    transition: all 0.3s ease;
+}
+
+.pagination-wrapper .page-item.active .page-link {
+    background-color: #111844 !important;
+    border-color: #111844 !important;
+    color: white !important;
+}
+
+.pagination-wrapper .page-item .page-link:hover {
+    background-color: rgba(75, 86, 148, 0.08);
+    color: #4B5694;
+    border-color: #4B5694;
+}
+
+.pagination-wrapper .page-item:first-child .page-link,
+.pagination-wrapper .page-item:last-child .page-link {
+    border-radius: 50% !important;
+}

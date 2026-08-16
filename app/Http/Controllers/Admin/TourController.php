@@ -92,12 +92,12 @@ class TourController extends Controller
         // Save itineraries
         if ($request->has('itineraries')) {
             foreach ($request->itineraries as $index => $itinerary) {
-                if (!empty($itinerary['title'])) {
+                if (!empty($itinerary['description_en'])) {
                     $tour->itineraries()->create([
                         'day_number'      => $index + 1,
-                        'title'           => $itinerary['title'],
+                        'title'           => $itinerary['title'] ?? null,
                         'title_mm'        => $itinerary['title_mm'] ?? null,
-                        'description_en'  => $itinerary['description_en'] ?? null,
+                        'description_en'  => $itinerary['description_en'],
                         'description_mm'  => $itinerary['description_mm'] ?? null,
                     ]);
                 }

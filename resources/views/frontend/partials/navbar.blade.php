@@ -8,10 +8,29 @@
         </a>
 
         {{-- Nav Links --}}
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="{{ route('home') }}">Home</a>
-            <a href="#tours">Tours</a>
-            <a href="#contact">Contact</a>
+            <a href="{{ route('tours.index') }}">Tours</a>
+            <div class="dropdown d-inline">
+    <a href="#" class="dropdown-toggle {{ request('destination') ? 'active-dest' : '' }}" id="destinationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        Destinations
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="destinationsDropdown">
+        <li>
+            <a class="dropdown-item {{ !request('destination') && request()->routeIs('tours.index') ? 'active' : '' }}" href="{{ route('tours.index') }}">
+                All Destinations
+            </a>
+        </li>
+        @foreach($navbarDestinations ?? [] as $dest)
+            <li>
+                <a class="dropdown-item {{ strtolower(request('destination')) === strtolower($dest) ? 'active' : '' }}" href="{{ route('tours.index', ['destination' => $dest]) }}">
+                    {{ $dest }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
+            <a href="{{ route('home') }}#contact">Contact</a>
         </div>
 
         {{-- Right Side --}}
@@ -32,6 +51,20 @@
                     </button>
                 </div>
             </div>
+
+            {{-- Hamburger Toggler for Mobile --}}
+            <button class="nav-mobile-toggle d-md-none" onclick="toggleMobileMenu()" aria-label="Toggle navigation" style="background: none; border: none; padding: 4px; display: none;">
+                <i class="bi bi-list fs-3" style="color: #111844; line-height: 1;"></i>
+            </button>
         </div>
     </div>
 </nav>
+
+<script>
+    function toggleMobileMenu() {
+        var menu = document.getElementById('navLinks');
+        if (menu) {
+            menu.classList.toggle('show');
+        }
+    }
+</script>

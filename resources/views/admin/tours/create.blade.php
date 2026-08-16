@@ -77,29 +77,29 @@
                         {{-- Schedule Tab --}}
                         <div class="tab-pane fade" id="schedule">
                             <div id="itinerary-container">
-                        <div class="itinerary-day card mb-3" data-day="1">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">Day 1</span>
-                                <button type="button" class="btn btn-sm btn-danger remove-day" style="display:none;">
-                                    <i class="bi bi-trash"></i> Remove
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Tour Itinerary (English)</label>
-                                    <textarea name="itineraries[0][description_en]" 
-                                            class="form-control" rows="3"
-                                            placeholder="Day 1 details in English"></textarea>
+                                <div class="itinerary-day card mb-3" data-day="1">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Day 1</span>
+                                        <button type="button" class="btn btn-sm btn-danger remove-day" style="display:none;">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tour Itinerary (English)</label>
+                                            <textarea id="itinerary_en_1" name="itineraries[0][description_en]" 
+                                                    class="form-control tinymce" rows="3"
+                                                    placeholder="Day 1 details in English"></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">Tour Itinerary (Myanmar)</label>
+                                            <textarea id="itinerary_mm_1" name="itineraries[0][description_mm]" 
+                                                    class="form-control tinymce" rows="3"
+                                                    placeholder="Day 1 details in Myanmar"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Tour Itinerary (Myanmar)</label>
-                                    <textarea name="itineraries[0][description_mm]" 
-                                            class="form-control" rows="3"
-                                            placeholder="Day 1 details in Myanmar"></textarea>
-                                </div>
                             </div>
-                </div>
-</div>
 
                             <button type="button" class="btn btn-outline-primary" id="add-day">
                                 <i class="bi bi-plus-circle"></i> Add Day

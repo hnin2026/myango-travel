@@ -37,7 +37,6 @@
             <div class="hero-right flex-column align-items-end gap-3">
                 <a href="#tours" class="hero-button">
                     Book Now
-                    <i class="bi bi-chevron-double-right"></i>
                 </a>
                 <button type="button" class="hero-button btn-custom-tour" data-bs-toggle="modal" data-bs-target="#customInquiryModal">
                     Plan a Custom Tour
@@ -107,6 +106,14 @@
                 </div>
             @endforelse
         </div>
+
+        @if($tours->count() > 0)
+            <div class="text-center mt-5">
+                <a href="{{ route('tours.index') }}" class="btn-see-more">
+                    See More
+                </a>
+            </div>
+        @endif
     </div>
 </section>
 

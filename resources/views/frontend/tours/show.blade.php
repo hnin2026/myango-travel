@@ -115,12 +115,12 @@
                         <div class="schedule-card">
                             <div class="schedule-day">Day {{ $itinerary->day_number }}</div>
                             <div class="lang-en">
-                                <p class="schedule-desc">{{ $itinerary->description_en }}</p>
+                                <div class="schedule-desc">{!! $itinerary->description_en !!}</div>
                             </div>
                             <div class="lang-mm" style="display:none;">
-                                <p class="schedule-desc">
-                                    {{ $itinerary->description_mm ?? $itinerary->description_en }}
-                                </p>
+                                <div class="schedule-desc">
+                                    {!! $itinerary->description_mm ?? $itinerary->description_en !!}
+                                </div>
                             </div>
                         </div>
                     @empty

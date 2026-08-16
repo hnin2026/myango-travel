@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 // Customer routes
 Route::get('/', [CustomerController::class, 'index'])->name('home');
+Route::get('/tours', [CustomerController::class, 'tours'])->name('tours.index');
 Route::get('/tours/{tour}', [CustomerController::class, 'show'])->name('tours.show');
 Route::post('/inquiry', [FrontendInquiryController::class, 'store'])
     ->name('inquiry.store');
@@ -44,11 +45,11 @@ Route::get('/booking/cancel/{token}/success', [FrontendBookingController::class,
 
 // Dashboard
 Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, '__invoke'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'prevent-cache'])
     ->name('dashboard');
 
 // Admin routes
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'prevent-cache'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('tours', TourController::class);
     Route::get('hotels-by-location', [HotelController::class, 'byLocation'])->name('hotels.by-location');
     Route::resource('hotels', HotelController::class);
