@@ -4,7 +4,18 @@
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+@vite(['resources/css/frontend/inquiry-form.css'])
+<style>
+    .btn-custom-tour {
+        background: transparent !important;
+        color: white !important;
+        border: 2px solid white !important;
+    }
+    .btn-custom-tour:hover {
+        background: white !important;
+        color: #111844 !important;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -23,11 +34,15 @@
                 </p>
             </div>
 
-            <div class="hero-right">
+            <div class="hero-right flex-column align-items-end gap-3">
                 <a href="#tours" class="hero-button">
                     Book Now
                     <i class="bi bi-chevron-double-right"></i>
                 </a>
+                <button type="button" class="hero-button btn-custom-tour" data-bs-toggle="modal" data-bs-target="#customInquiryModal">
+                    Plan a Custom Tour
+                    <i class="bi bi-magic"></i>
+                </button>
             </div>
 
         </div>
@@ -94,5 +109,24 @@
         </div>
     </div>
 </section>
+
+{{-- Custom Inquiry Modal --}}
+<div class="modal fade" id="customInquiryModal" tabindex="-1" aria-labelledby="customInquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content text-dark" style="border-radius: 20px; overflow: hidden; border: none; background: #ffffff;">
+            <div class="modal-header text-white" style="background: #111844; padding: 20px 24px;">
+                <h5 class="modal-title" id="customInquiryModalLabel" style="font-weight: 600;">Plan a Custom Tour</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-start">
+                @include('frontend.components.inquiry-form', ['tour' => null])
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+@vite('resources/js/frontend/booking.js')
+@endpush
 
 @endsection

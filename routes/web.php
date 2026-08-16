@@ -18,6 +18,8 @@ Route::get('/', [CustomerController::class, 'index'])->name('home');
 Route::get('/tours/{tour}', [CustomerController::class, 'show'])->name('tours.show');
 Route::post('/inquiry', [FrontendInquiryController::class, 'store'])
     ->name('inquiry.store');
+Route::get('/inquiry/success/{inquiry}', [FrontendInquiryController::class, 'success'])
+    ->name('inquiry.success');
 Route::get('/booking/{tour}', [FrontendBookingController::class, 'create'])
     ->name('booking.create');
 
@@ -53,8 +55,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('season-periods', SeasonPeriodController::class);
     Route::resource('bookings', BookingController::class);
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
-    Route::get('/inquiries', [AdminInquiryController::class, 'index'])->name('inquiries.index');
-    Route::get('/inquiries/{inquiry}', [AdminInquiryController::class, 'show'])->name('inquiries.show');
+    Route::resource('inquiries', AdminInquiryController::class)->only(['index', 'show', 'update', 'destroy']);
 
     // Travel Periods
     Route::get('tours/{tour}/travel-periods', [TravelPeriodController::class, 'index'])->name('tours.travel-periods.index');

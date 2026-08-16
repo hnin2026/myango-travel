@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
 
+use App\Mail\AdminInquirySubmittedMail;
+use Illuminate\Support\Facades\Mail;
+
 class InquiryController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
-            'tour_id'       => 'required|exists:tours,id',
+            'tour_id'       => 'nullable|exists:tours,id',
             'customer_name' => 'required|string|max:255',
             'nationality'   => 'nullable|string|max:255',
             'phone'         => 'nullable|string|max:255',
@@ -23,7 +26,7 @@ class InquiryController extends Controller
             'message'       => 'nullable|string',
         ]);
 
-            Inquiry::create([
+        $inquiry = Inquiry::create([
             'tour_id'       => $request->tour_id,
             'customer_name' => $request->customer_name,
             'nationality'   => $request->nationality,
@@ -37,9 +40,19 @@ class InquiryController extends Controller
             'status'        => 'new',
         ]);
 
-        return back()->with(
-            'inquiry_success',
-            'Inquiry sent successfully!'
-        );
+        try {
+            $adminEmail = env('ADMIN_NOTIFICATION_EMAIL') ?: config('mail.from.address') ?: 'admin@myango.com';
+            Mail::to($adminEmail)->send(new AdminInquirySubmittedMail($inquiry));
+        } catch (\Exception $e) {
+            // Log or ignore email sending errors in local environment to prevent crash
+            logger()->error('Failed sending admin inquiry email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('inquiry.success', $inquiry->id);
+    }
+
+    public function success(Inquiry $inquiry)
+    {
+        return view('frontend.inquiry.success', compact('inquiry'));
     }
 }

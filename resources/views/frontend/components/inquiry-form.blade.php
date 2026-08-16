@@ -20,7 +20,7 @@
         @csrf
 
         {{-- Hidden Tour ID --}}
-        <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+        <input type="hidden" name="tour_id" value="{{ $tour->id ?? '' }}">
 
         <div class="row g-3">
 
@@ -29,7 +29,7 @@
                 <label class="form-label-custom">Tour</label>
 
                 <input type="text"
-                       value="{{ $tour->title }}"
+                       value="{{ $tour->title ?? 'Custom Tour' }}"
                        disabled
                        style="background:#f3f4f6; color:#6b7280;">
             </div>
