@@ -16,7 +16,7 @@ class InquiryController extends Controller
             $query->where('status', $request->status);
         }
 
-        $inquiries = $query->get();
+        $inquiries = $query->paginate(10)->withQueryString();
 
         return view(
             'admin.inquiries.index',

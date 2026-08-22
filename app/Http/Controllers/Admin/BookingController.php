@@ -16,13 +16,25 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with([
+        $query = Booking::with([
             'tour',
             'hotel',
             'travelPeriod'
-        ])->latest()->get();
+        ]);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('ref_code', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.bookings.index', compact('bookings'));
     }
@@ -75,6 +87,27 @@ class BookingController extends Controller
         ]);
 
         $oldStatus = $booking->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === 'cancelled' && in_array($newStatus, ['confirmed', 'paid', 'pending'])) {
+            $travelPeriod = $booking->travelPeriod;
+            if ($travelPeriod) {
+                $requestedSeats = $booking->num_persons;
+                if (!empty($booking->child_ages)) {
+                    $ages = explode(',', $booking->child_ages);
+                    foreach ($ages as $age) {
+                        if (is_numeric($age) && intval($age) >= 5) {
+                            $requestedSeats++;
+                        }
+                    }
+                }
+
+                $availableSeats = $travelPeriod->total_seats - $travelPeriod->booked_seats;
+                if ($requestedSeats > $availableSeats) {
+                    return back()->with('error', "Not enough seats available on the travel period. Only {$availableSeats} seats remaining, but this booking requires {$requestedSeats} seats.");
+                }
+            }
+        }
 
         $booking->update([
             'status' => $request->status

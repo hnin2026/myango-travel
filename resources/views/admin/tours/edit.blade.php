@@ -36,7 +36,7 @@
                             <input type="text" name="title_mm"
                                    class="form-control"
                                    value="{{ old('title_mm', $tour->title_mm) }}"
-                                   placeholder="ဥပမာ။ ဘဂါန် ယဉ်ကျေးမှုခရီးစဉ်">
+                                   placeholder="ဥပမာ။ ပုဂံ ယဉ်ကျေးမှုခရီးစဉ်">
                         </div>
                     </div>
                 </div>

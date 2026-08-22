@@ -1,12 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3">
             <div>
                 <h1 class="page-title mb-1">Hotel Management</h1>
             </div>
-            <a href="{{ route('admin.hotels.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i> Add New Hotel
-            </a>
+            <div class="d-flex gap-2 align-items-center">
+                <form action="{{ route('admin.hotels.index') }}" method="GET" class="d-flex gap-2">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search hotel..." 
+                           value="{{ request('search') }}"
+                           style="width: 250px; height: 40px;">
+                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Search" style="height: 40px; width: 40px;">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <a href="{{ route('admin.hotels.create') }}" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Add New Hotel" title="Add New Hotel" style="height: 40px; width: 40px;">
+                    <i class="bi bi-plus-circle"></i>
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -25,7 +38,7 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>#</th>
+                                <th>No.</th>
                                 <th>Hotel Name</th>
                                 <th>Category</th>
                                 <th>Location</th>
@@ -35,7 +48,7 @@
                         <tbody>
                             @forelse($hotels as $hotel)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $loop->iteration + ($hotels->firstItem() - 1) }}</td>
                                     <td>{{ $hotel->name }}</td>
                                     <td>
                                         <span class="badge bg-info">{{ $hotel->category }}</span>
@@ -59,14 +72,17 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        No hotels found. 
-                                        <a href="{{ route('admin.hotels.create') }}">Add your first hotel!</a>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        No hotels found.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <div class="mt-4">
+                    {{ $hotels->links() }}
                 </div>
             </div>
         </div>

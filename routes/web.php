@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Frontend\InquiryController as FrontendInquiryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\TourBlackoutController;
 use Illuminate\Support\Facades\Route;
 
 // Customer routes
@@ -65,6 +66,13 @@ Route::middleware(['auth', 'prevent-cache'])->prefix('admin')->name('admin.')->g
     Route::get('tours/{tour}/travel-periods/{travel_period}/edit', [TravelPeriodController::class, 'edit'])->name('tours.travel-periods.edit');
     Route::put('tours/{tour}/travel-periods/{travel_period}', [TravelPeriodController::class, 'update'])->name('tours.travel-periods.update');
     Route::delete('tours/{tour}/travel-periods/{travel_period}', [TravelPeriodController::class, 'destroy'])->name('tours.travel-periods.destroy');
+
+    // Blackout Periods
+    Route::get('tours/{tour}/blackouts/create', [TourBlackoutController::class, 'create'])->name('tours.blackouts.create');
+    Route::post('tours/{tour}/blackouts', [TourBlackoutController::class, 'store'])->name('tours.blackouts.store');
+    Route::get('tours/{tour}/blackouts/{blackout}/edit', [TourBlackoutController::class, 'edit'])->name('tours.blackouts.edit');
+    Route::put('tours/{tour}/blackouts/{blackout}', [TourBlackoutController::class, 'update'])->name('tours.blackouts.update');
+    Route::delete('tours/{tour}/blackouts/{blackout}', [TourBlackoutController::class, 'destroy'])->name('tours.blackouts.destroy');
 
     // User management (Admin-only)
     Route::middleware(['admin'])->group(function () {

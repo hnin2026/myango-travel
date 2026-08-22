@@ -1,12 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3">
             <div>
                 <h1 class="page-title mb-1">Tour Management</h1>
             </div>
-            <a href="{{ route('admin.tours.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i> Add New Tour
-            </a>
+            <div class="d-flex gap-2 align-items-center">
+                <form action="{{ route('admin.tours.index') }}" method="GET" class="d-flex gap-2">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search tour..." 
+                           value="{{ request('search') }}"
+                           style="width: 250px; height: 40px;">
+                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Search" style="height: 40px; width: 40px;">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <a href="{{ route('admin.tours.create') }}" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Add New Tour" title="Add New Tour" style="height: 40px; width: 40px;">
+                    <i class="bi bi-plus-circle"></i>
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -38,7 +51,7 @@
                         <tbody>
                             @forelse($tours as $tour)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $loop->iteration + ($tours->firstItem() - 1) }}</td>
                                     <td>{{ $tour->title }}</td>
                                     <td>{{ $tour->location }}</td>
                                     <td>{{ $tour->duration_days }} days</td>
@@ -50,7 +63,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                    <a href="{{ route('admin.tours.travel-periods.create', $tour) }}"
+                                    <a href="{{ route('admin.tours.travel-periods.index', $tour) }}"
                                     class="btn btn-sm btn-info text-white">
                                         <i class="bi bi-calendar"></i> Dates
                                     </a>
@@ -71,13 +84,17 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                        No tours found. <a href="{{ route('admin.tours.create') }}">Add your first tour!</a>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        No tours found.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <div class="mt-4">
+                    {{ $tours->links() }}
                 </div>
             </div>
         </div>

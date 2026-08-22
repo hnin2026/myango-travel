@@ -3,6 +3,7 @@
                     <h5><i class="bi bi-calendar-check me-2"></i>Book This Tour</h5>
                 </div>
                 <div class="booking-card-body">
+
                     {{-- Travel Date --}}
                     <div class="booking-field mb-3">
                     <label>Check-in Date</label>

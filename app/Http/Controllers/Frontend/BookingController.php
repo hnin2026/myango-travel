@@ -32,13 +32,38 @@ public function store(Request $request, Tour $tour)
         return back()->withErrors(['tour' => 'This tour is currently unavailable for booking.'])->withInput();
     }
 
+    $isBlackout = \App\Models\TourBlackoutPeriod::where('tour_id', $tour->id)
+        ->where('start_date', '<=', $request->checkin_date)
+        ->where('end_date', '>=', $request->checkin_date)
+        ->exists();
+
+    if ($isBlackout) {
+        return back()->withErrors(['checkin_date' => 'The selected check-in date falls within a blackout period and is not bookable.'])->withInput();
+    }
+
     $travelPeriod = TravelPeriod::where('tour_id', $tour->id)
         ->where('start_date', '<=', $request->checkin_date)
         ->where('end_date', '>=', $request->checkin_date)
         ->first();
 
     if (!$travelPeriod) {
-        return back()->with('error', 'No travel period found for selected date.');
+        return back()->withErrors(['checkin_date' => 'No travel period found for selected date.'])->withInput();
+    }
+
+    // Capacity Check
+    $requestedSeats = intval($request->adults);
+    if (!empty($request->child_ages)) {
+        $ages = explode(',', $request->child_ages);
+        foreach ($ages as $age) {
+            if (is_numeric($age) && intval($age) >= 5) {
+                $requestedSeats++;
+            }
+        }
+    }
+
+    $availableSeats = $travelPeriod->total_seats - $travelPeriod->booked_seats;
+    if ($requestedSeats > $availableSeats) {
+        return back()->withErrors(['seats' => "Not enough seats available. Only {$availableSeats} seats remaining, but {$requestedSeats} were requested."])->withInput();
     }
 
     $booking = Booking::create([

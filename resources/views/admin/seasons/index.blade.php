@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3">
             <div>
                 <h1 class="page-title mb-1">Season Periods</h1>
             </div>
-            <a href="{{ route('admin.season-periods.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i> Add Season Period
+            <a href="{{ route('admin.season-periods.create') }}" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Add Season Period" title="Add Season Period" style="height: 40px; width: 40px;">
+                <i class="bi bi-plus-circle"></i>
             </a>
         </div>
     </x-slot>
@@ -25,7 +25,7 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>#</th>
+                                <th>No.</th>
                                 <th>Name</th>
                                 <th>Season</th>
                                 <th>Start Date</th>

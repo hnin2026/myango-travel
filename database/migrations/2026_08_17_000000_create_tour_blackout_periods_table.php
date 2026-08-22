@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('itineraries', function (Blueprint $table) {
+        Schema::create('tour_blackout_periods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->integer('day_number');
-            $table->longText('description_en')->nullable();
-            $table->longText('description_mm')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('itineraries');
+        Schema::dropIfExists('tour_blackout_periods');
     }
 };

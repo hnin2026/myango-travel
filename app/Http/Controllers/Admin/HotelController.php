@@ -9,9 +9,19 @@ use Illuminate\Http\Request;
 class HotelController extends Controller
 {
     // Show all hotels
-    public function index()
+    public function index(Request $request)
     {
-        $hotels = Hotel::all();
+        $query = Hotel::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        $hotels = $query->latest()->paginate(10)->withQueryString();
         return view('admin.hotels.index', compact('hotels'));
     }
 

@@ -11,9 +11,20 @@ class TourController extends Controller
 {
     
     // Show all tours
-    public function index()
+    public function index(Request $request)
     {
-        $tours = Tour::all();
+        $query = Tour::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        $tours = $query->latest()->paginate(10)->withQueryString();
+
         return view('admin.tours.index', compact('tours'));
     }
 
