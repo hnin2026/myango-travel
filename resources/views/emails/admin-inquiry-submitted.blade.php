@@ -1,65 +1,80 @@
-<h2>New Inquiry Received</h2>
+@extends('emails.layouts.email-myango')
 
-<p>A new customer inquiry has been submitted with the following details:</p>
+@section('title', 'New Inquiry Received - MyanGo Travel')
 
-<table style="width: 100%; max-width: 600px; border-collapse: collapse; margin-top: 15px;">
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; width: 150px; vertical-align: top;">Reference:</td>
-        <td style="padding: 8px 0;">{{ $inquiry->reference }}</td>
-    </tr>
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Customer:</td>
-        <td style="padding: 8px 0;">{{ $inquiry->customer_name }}</td>
-    </tr>
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Email:</td>
-        <td style="padding: 8px 0;">
-            <a href="mailto:{{ $inquiry->email }}">{{ $inquiry->email }}</a>
-        </td>
-    </tr>
-    @if($inquiry->phone)
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Phone:</td>
-        <td style="padding: 8px 0;">{{ $inquiry->phone }}</td>
-    </tr>
-    @endif
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Tour:</td>
-        <td style="padding: 8px 0;">
-            {{ $inquiry->tour->title ?? 'General Inquiry / Not specified' }}
-        </td>
-    </tr>
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Travel Date:</td>
-        <td style="padding: 8px 0;">
-            @if($inquiry->checkin_date)
-                {{ \Carbon\Carbon::parse($inquiry->checkin_date)->format('d M Y') }}
-                @if($inquiry->checkout_date)
-                    → {{ \Carbon\Carbon::parse($inquiry->checkout_date)->format('d M Y') }}
+@section('content')
+    <p class="greeting">New Inquiry Received</p>
+    <p class="intro">
+        A new customer inquiry has been submitted with the following details:
+    </p>
+    
+    <div class="summary-card">
+        <div class="summary-title">Inquiry Details</div>
+        
+        <div class="summary-row">
+            <div class="summary-label">Reference</div>
+            <div class="summary-value">{{ $inquiry->reference }}</div>
+        </div>
+        
+        <div class="summary-row">
+            <div class="summary-label">Customer</div>
+            <div class="summary-value">{{ $inquiry->customer_name }}</div>
+        </div>
+        
+        <div class="summary-row">
+            <div class="summary-label">Email</div>
+            <div class="summary-value">
+                <a href="mailto:{{ $inquiry->email }}" style="color: #111844; text-decoration: underline;">{{ $inquiry->email }}</a>
+            </div>
+        </div>
+        
+        @if($inquiry->phone)
+        <div class="summary-row">
+            <div class="summary-label">Phone</div>
+            <div class="summary-value">{{ $inquiry->phone }}</div>
+        </div>
+        @endif
+        
+        <div class="summary-row">
+            <div class="summary-label">Tour</div>
+            <div class="summary-value">
+                {{ $inquiry->tour->title ?? 'General Inquiry / Not specified' }}
+            </div>
+        </div>
+        
+        <div class="summary-row">
+            <div class="summary-label">Travel Date</div>
+            <div class="summary-value">
+                @if($inquiry->checkin_date)
+                    {{ \Carbon\Carbon::parse($inquiry->checkin_date)->format('d M Y') }}
+                    @if($inquiry->checkout_date)
+                        &rarr; {{ \Carbon\Carbon::parse($inquiry->checkout_date)->format('d M Y') }}
+                    @endif
+                @else
+                    Flexible
                 @endif
-            @else
-                Flexible
-            @endif
-        </td>
-    </tr>
-    @if($inquiry->number_of_adults || $inquiry->number_of_children)
-    <tr>
-        <td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Guests:</td>
-        <td style="padding: 8px 0;">
-            {{ $inquiry->number_of_adults }} Adult(s)
-            @if($inquiry->number_of_children > 0)
-                , {{ $inquiry->number_of_children }} Child(ren)
-            @endif
-        </td>
-    </tr>
-    @endif
-</table>
+            </div>
+        </div>
+        
+        @if($inquiry->number_of_adults || $inquiry->number_of_children)
+        <div class="summary-row">
+            <div class="summary-label">Guests</div>
+            <div class="summary-value">
+                {{ $inquiry->number_of_adults }} Adult(s)
+                @if($inquiry->number_of_children > 0)
+                    , {{ $inquiry->number_of_children }} Child(ren)
+                @endif
+            </div>
+        </div>
+        @endif
+    </div>
 
-<h3 style="margin-top: 25px;">Message:</h3>
-<div style="background: #f8f9fa; border-left: 4px solid #111844; padding: 15px; border-radius: 4px; font-family: inherit; font-size: 14px; color: #333; line-height: 1.6; white-space: pre-line;">
-{{ $inquiry->message }}
-</div>
+    <div class="message-section">
+        <div class="section-title">Message:</div>
+        <div class="message-card">{{ $inquiry->message }}</div>
+    </div>
 
-<p style="margin-top: 30px; font-size: 13px; color: #666;">
-    This is an automated notification. To reply to this customer, please log in to the admin panel and use the "Reply via Email" feature.
-</p>
+    <p class="intro" style="margin-top: 30px; font-size: 13px; color: #666666;">
+        This is an automated notification. To reply to this customer, please log in to the admin panel and use the "Reply via Email" feature.
+    </p>
+@endsection

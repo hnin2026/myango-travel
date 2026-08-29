@@ -51,7 +51,7 @@
 
                 <div class="success-detail-row">
                     <span>Total Price</span>
-                    <strong>${{ $booking->total_price }}</strong>
+                    <strong>${{ number_format($booking->total_price, 2) }}</strong>
                 </div>
 
                 <div class="success-detail-row">
