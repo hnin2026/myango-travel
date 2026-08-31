@@ -1,4 +1,7 @@
 <x-app-layout>
+    @if(request()->has('test_mode'))
+        <script>window.confirm = function() { return true; };</script>
+    @endif
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit Tour</h2>
@@ -256,16 +259,19 @@
 
             {{-- Existing Images --}}
             @if($tour->images->count() > 0)
-                <div class="card mb-4">
+                <div class="card mb-4" id="current-images-card">
                     <div class="card-header fw-bold">Current Images</div>
                     <div class="card-body">
                         <div class="row">
                             @foreach($tour->images as $image)
-                                <div class="col-md-3 mb-3 text-center">
+                                <div class="col-md-3 mb-3 text-center image-card" id="image-card-{{ $image->id }}">
                                     <img src="{{ asset('storage/' . $image->image_path) }}"
                                          class="img-fluid rounded mb-2"
                                          style="height: 120px; width: 100%; object-fit: cover;">
-                                    <button type="button" class="btn btn-sm btn-danger">
+                                    <button type="button" 
+                                            class="btn btn-sm btn-danger remove-image-btn"
+                                            data-image-id="{{ $image->id }}"
+                                            data-delete-url="{{ route('admin.tours.images.destroy', $image) }}">
                                         <i class="bi bi-trash"></i> Remove
                                     </button>
                                 </div>

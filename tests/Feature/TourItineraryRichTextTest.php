@@ -139,4 +139,65 @@ class TourItineraryRichTextTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('<h3>Day 1: Arrival</h3><p>Transfer to hotel.</p>', false);
     }
+
+    /**
+     * Test admin can delete tour image and file.
+     */
+    public function test_admin_can_delete_tour_image(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+        
+        $tour = Tour::create([
+            'title' => 'Bagan Tour',
+            'duration_days' => 3,
+            'location' => 'Bagan',
+            'status' => 'active',
+        ]);
+
+        $imageFile = \Illuminate\Http\UploadedFile::fake()->image('tour1.jpg');
+        $path = $imageFile->store('tours', 'public');
+
+        $image = $tour->images()->create([
+            'image_path' => $path,
+            'order' => 0,
+        ]);
+
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($path);
+
+        $response = $this->actingAs($this->admin)->delete(route('admin.tours.images.destroy', $image));
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseMissing('tour_images', [
+            'id' => $image->id,
+        ]);
+
+        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($path);
+    }
+
+    /**
+     * Test guest/unauthorized cannot delete tour image.
+     */
+    public function test_guest_cannot_delete_tour_image(): void
+    {
+        $tour = Tour::create([
+            'title' => 'Bagan Tour',
+            'duration_days' => 3,
+            'location' => 'Bagan',
+            'status' => 'active',
+        ]);
+
+        $image = $tour->images()->create([
+            'image_path' => 'tours/fake.jpg',
+            'order' => 0,
+        ]);
+
+        $response = $this->delete(route('admin.tours.images.destroy', $image));
+
+        $response->assertStatus(302); // Redirects to login
+        $this->assertDatabaseHas('tour_images', [
+            'id' => $image->id,
+        ]);
+    }
 }

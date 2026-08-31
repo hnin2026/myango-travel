@@ -51,6 +51,7 @@ Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class,
 
 // Admin routes
 Route::middleware(['auth', 'prevent-cache'])->prefix('admin')->name('admin.')->group(function () {
+    Route::delete('tours/images/{image}', [TourController::class, 'destroyImage'])->name('tours.images.destroy');
     Route::resource('tours', TourController::class);
     Route::get('hotels-by-location', [HotelController::class, 'byLocation'])->name('hotels.by-location');
     Route::resource('hotels', HotelController::class);

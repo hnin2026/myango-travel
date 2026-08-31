@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tour;
 use App\Models\Hotel;
+use App\Models\TourImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TourController extends Controller
 {
@@ -242,5 +244,17 @@ class TourController extends Controller
 
         return redirect()->route('admin.tours.index')
             ->with('success', 'Tour deleted successfully!');
+    }
+
+    // Delete a specific tour image
+    public function destroyImage(TourImage $image)
+    {
+        if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        
+        $image->delete();
+
+        return response()->json(['success' => true]);
     }
 }
