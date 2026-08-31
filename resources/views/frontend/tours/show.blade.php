@@ -207,18 +207,43 @@
                     <i class="bi bi-geo-alt-fill"></i>
                     <span>{{ $tour->location }}</span>
                 </div>
-                <div class="tour-meta-item">
+                <div class="tour-meta-item mb-4">
                     <i class="bi bi-clock-fill"></i>
                     <span>{{ $tour->duration_days }} Days / {{ $tour->duration_days - 1 }} Nights</span>
                 </div>
-                <div class="tour-meta-item">
-                <i class="bi bi-calendar-check-fill"></i>
-                <span>
-                    {{ $tour->travelPeriods->min('start_date')?->format('d M Y') }}
-                    -
-                    {{ $tour->travelPeriods->max('end_date')?->format('d M Y') }}
-                </span>
+                
+                {{-- Available Travel Period --}}
+                <div class="tour-meta-section mb-3">
+                    <div class="tour-meta-label" style="font-weight: 600; font-size: 14px; color: white; display: flex; align-items: center; gap: 10px;">
+                        <i class="bi bi-calendar-check-fill" style="color: var(--cream); font-size: 16px; width: 20px;"></i>
+                        <span>Available Travel Period</span>
+                    </div>
+                    <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-left: 30px; margin-top: 4px;">
+                        {{ $tour->travelPeriods->min('start_date')?->format('d M Y') }}
+                        -
+                        {{ $tour->travelPeriods->max('end_date')?->format('d M Y') }}
+                    </div>
                 </div>
+
+                {{-- Blackout Dates --}}
+                @if($tour->blackoutPeriods->isNotEmpty())
+                    <div class="tour-meta-section mb-3">
+                        <div class="tour-meta-label" style="font-weight: 600; font-size: 14px; color: white; display: flex; align-items: center; gap: 10px;">
+                            <i class="bi bi-slash-circle-fill" style="color: #f87171; font-size: 16px; width: 20px;"></i>
+                            <span>Blackout Dates</span>
+                        </div>
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-left: 30px; margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+                            @foreach($tour->blackoutPeriods as $blackout)
+                                <div>
+                                    {{ $blackout->start_date?->format('d M Y') }}
+                                    -
+                                    {{ $blackout->end_date?->format('d M Y') }}
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+                
                 <div class="starting-price">
                     <div class="label">Starting from</div>
                     <div class="amount">${{ number_format($tour->base_price, 0) }}</div>

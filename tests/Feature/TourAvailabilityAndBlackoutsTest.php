@@ -316,4 +316,31 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         $cancelledBooking->refresh();
         $this->assertEquals('cancelled', $cancelledBooking->status);
     }
+
+    /**
+     * TEST: Tour detail overview card displays travel period and blackout dates.
+     */
+    public function test_tour_detail_overview_card_displays_travel_and_blackout_periods(): void
+    {
+        // Add blackout period: April 4 to April 6
+        TourBlackoutPeriod::create([
+            'tour_id' => $this->tour->id,
+            'start_date' => '2026-04-04',
+            'end_date' => '2026-04-06'
+        ]);
+
+        $response = $this->get(route('tours.show', $this->tour));
+
+        $response->assertStatus(200);
+        
+        // Assert travel period is shown in the new section
+        $response->assertSee('Available Travel Period');
+        $response->assertSee('01 Apr 2026');
+        $response->assertSee('10 Apr 2026');
+
+        // Assert blackout dates are shown in the new section
+        $response->assertSee('Blackout Dates');
+        $response->assertSee('04 Apr 2026');
+        $response->assertSee('06 Apr 2026');
+    }
 }

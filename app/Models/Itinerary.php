@@ -9,8 +9,6 @@ class Itinerary extends Model
     protected $fillable = [
         'tour_id',
         'day_number',
-        'title',
-        'title_mm',
         'description_en',
         'description_mm'
     ];

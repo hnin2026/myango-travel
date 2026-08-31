@@ -106,8 +106,6 @@ class TourController extends Controller
                 if (!empty($itinerary['description_en'])) {
                     $tour->itineraries()->create([
                         'day_number'      => $index + 1,
-                        'title'           => $itinerary['title'] ?? null,
-                        'title_mm'        => $itinerary['title_mm'] ?? null,
                         'description_en'  => $itinerary['description_en'],
                         'description_mm'  => $itinerary['description_mm'] ?? null,
                     ]);
@@ -214,8 +212,6 @@ class TourController extends Controller
             if (!empty($itinerary['description_en'])) {
                 $tour->itineraries()->create([
                     'day_number'     => $index + 1,
-                    'title'          => $itinerary['title'] ?? null,
-                    'title_mm'       => $itinerary['title_mm'] ?? null,
                     'description_en' => $itinerary['description_en'],
                     'description_mm' => $itinerary['description_mm'] ?? null,
                 ]);
