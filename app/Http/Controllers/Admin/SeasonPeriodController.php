@@ -25,7 +25,9 @@ class SeasonPeriodController extends Controller
             'name'       => 'required|string|max:255',
             'season'     => 'required|in:low,normal,peak',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
 
         SeasonPeriod::create($request->all());
@@ -45,7 +47,9 @@ class SeasonPeriodController extends Controller
             'name'       => 'required|string|max:255',
             'season'     => 'required|in:low,normal,peak',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
 
         $seasonPeriod->update($request->all());
