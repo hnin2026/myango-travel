@@ -29,21 +29,26 @@ class TravelPeriod extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public static function calculateRequestedSeats(int $adults, string|array|null $childAges = null): int
+    {
+        $seats = $adults;
+        if (!empty($childAges)) {
+            $ages = is_array($childAges) ? $childAges : explode(',', $childAges);
+            foreach ($ages as $age) {
+                if (is_numeric($age) && intval($age) >= 5) {
+                    $seats++;
+                }
+            }
+        }
+        return $seats;
+    }
+
     public function getBookedSeatsAttribute(): int
     {
         $bookings = $this->bookings()->where('status', '!=', 'cancelled')->get();
         $total = 0;
         foreach ($bookings as $booking) {
-            $seats = $booking->num_persons;
-            if (!empty($booking->child_ages)) {
-                $ages = explode(',', $booking->child_ages);
-                foreach ($ages as $age) {
-                    if (is_numeric($age) && intval($age) >= 5) {
-                        $seats++;
-                    }
-                }
-            }
-            $total += $seats;
+            $total += static::calculateRequestedSeats($booking->num_persons, $booking->child_ages);
         }
         return $total;
     }

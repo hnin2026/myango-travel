@@ -92,17 +92,8 @@ class BookingController extends Controller
         if ($oldStatus === 'cancelled' && in_array($newStatus, ['confirmed', 'paid', 'pending'])) {
             $travelPeriod = $booking->travelPeriod;
             if ($travelPeriod) {
-                $requestedSeats = $booking->num_persons;
-                if (!empty($booking->child_ages)) {
-                    $ages = explode(',', $booking->child_ages);
-                    foreach ($ages as $age) {
-                        if (is_numeric($age) && intval($age) >= 5) {
-                            $requestedSeats++;
-                        }
-                    }
-                }
-
-                $availableSeats = $travelPeriod->total_seats - $travelPeriod->booked_seats;
+                $requestedSeats = \App\Models\TravelPeriod::calculateRequestedSeats($booking->num_persons, $booking->child_ages);
+                $availableSeats = $travelPeriod->availableSeats();
                 if ($requestedSeats > $availableSeats) {
                     return back()->with('error', "Not enough seats available on the travel period. Only {$availableSeats} seats remaining, but this booking requires {$requestedSeats} seats.");
                 }

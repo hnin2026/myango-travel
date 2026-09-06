@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">
-                Available Dates for {{ $tour->title }}
+                Available Dates 
             </h2>
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.tours.travel-periods.create', $tour) }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add Date
+                    Add Date
                 </a>
                 <a href="{{ route('admin.tours.index') }}" class="btn btn-secondary">
                     Back
@@ -75,8 +75,8 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>#</th>
-                            <th>Date</th>
+                            <th>No.</th>
+                            <th>Travel Period</th>
                             <th>Season</th>
                             <th>Total Seats</th>
                             <th>Booked</th>
@@ -155,7 +155,7 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No.</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Actions</th>

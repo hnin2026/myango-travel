@@ -9,6 +9,7 @@ use App\Models\Booking;
 use Illuminate\Support\Str;
 use App\Models\TravelPeriod;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use App\Mail\BookingSubmittedMail;
 use App\Mail\PaymentReceiptReceivedMail;
 
@@ -26,71 +27,81 @@ class BookingController extends Controller
         ));
     }
 
-public function store(Request $request, Tour $tour)
-{
-    if ($tour->status !== 'active') {
-        return back()->withErrors(['tour' => 'This tour is currently unavailable for booking.'])->withInput();
-    }
-
-    $isBlackout = \App\Models\TourBlackoutPeriod::where('tour_id', $tour->id)
-        ->where('start_date', '<=', $request->checkin_date)
-        ->where('end_date', '>=', $request->checkin_date)
-        ->exists();
-
-    if ($isBlackout) {
-        return back()->withErrors(['checkin_date' => 'The selected check-in date falls within a blackout period and is not bookable.'])->withInput();
-    }
-
-    $travelPeriod = TravelPeriod::where('tour_id', $tour->id)
-        ->where('start_date', '<=', $request->checkin_date)
-        ->where('end_date', '>=', $request->checkin_date)
-        ->first();
-
-    if (!$travelPeriod) {
-        return back()->withErrors(['checkin_date' => 'No travel period found for selected date.'])->withInput();
-    }
-
-    // Capacity Check
-    $requestedSeats = intval($request->adults);
-    if (!empty($request->child_ages)) {
-        $ages = explode(',', $request->child_ages);
-        foreach ($ages as $age) {
-            if (is_numeric($age) && intval($age) >= 5) {
-                $requestedSeats++;
-            }
+    public function store(Request $request, Tour $tour)
+    {
+        if ($tour->status !== 'active') {
+            return back()->withErrors(['tour' => 'This tour is currently unavailable for booking.'])->withInput();
         }
-    }
 
-    $availableSeats = $travelPeriod->total_seats - $travelPeriod->booked_seats;
-    if ($requestedSeats > $availableSeats) {
-        return back()->withErrors(['seats' => "Not enough seats available. Only {$availableSeats} seats remaining, but {$requestedSeats} were requested."])->withInput();
-    }
+        $isBlackout = \App\Models\TourBlackoutPeriod::where('tour_id', $tour->id)
+            ->where('start_date', '<=', $request->checkin_date)
+            ->where('end_date', '>=', $request->checkin_date)
+            ->exists();
 
-    $booking = Booking::create([
-    'tour_id' => $tour->id,
-    'travel_period_id' => $travelPeriod->id,
-    'hotel_id' => $request->hotel_id,
-    'customer_name' => $request->customer_name,
-    'nationality' => $request->nationality,
-    'email' => $request->email,
-    'phone' => $request->phone,
-    'num_persons' => $request->adults,
-    'num_children' => $request->children,
-    'child_ages' => $request->child_ages,
-    'checkin_date' => $request->checkin_date,
-    'checkout_date' => $request->checkout_date,
-    'base_price' => $tour->base_price,
-    'hotel_upgrade_price' => 0,
-    'total_price' => $request->total_price,
-    'message' => $request->message,
-    'status' => 'pending',
-    'ref_code' => 'MYG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),
-    'cancellation_token' => Str::uuid(),
-    'payment_deadline' => now()->addDays(7),
-]);
-Mail::to($booking->email)->send(new BookingSubmittedMail($booking));
-return redirect()->route('booking.success', ['booking' => $booking->id]);
-}
+        if ($isBlackout) {
+            return back()->withErrors(['checkin_date' => 'The selected check-in date falls within a blackout period and is not bookable.'])->withInput();
+        }
+
+        $result = DB::transaction(function () use ($request, $tour) {
+            $travelPeriod = TravelPeriod::where('tour_id', $tour->id)
+                ->where('start_date', '<=', $request->checkin_date)
+                ->where('end_date', '>=', $request->checkin_date)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$travelPeriod) {
+                return ['error_key' => 'checkin_date', 'message' => 'No travel period found for selected date.'];
+            }
+
+            // Capacity Check using existing adult/child seat-counting rules
+            $adults = intval($request->input('adults', $request->input('num_persons', 0)));
+            $childAgesInput = $request->input('child_ages', $request->input('ages', ''));
+            $requestedSeats = TravelPeriod::calculateRequestedSeats($adults, $childAgesInput);
+
+            $availableSeats = $travelPeriod->availableSeats();
+
+            if ($requestedSeats > $availableSeats) {
+                return [
+                    'error_key' => 'seats',
+                    'message'   => "Insufficient seats available. Only {$availableSeats} seats remain for the selected travel period."
+                ];
+            }
+
+            $booking = Booking::create([
+                'tour_id'             => $tour->id,
+                'travel_period_id'    => $travelPeriod->id,
+                'hotel_id'            => $request->hotel_id,
+                'customer_name'       => $request->customer_name,
+                'nationality'         => $request->nationality,
+                'email'               => $request->email,
+                'phone'               => $request->phone,
+                'num_persons'         => $adults,
+                'num_children'        => $request->input('children', $request->input('num_children', 0)),
+                'child_ages'          => is_array($childAgesInput) ? implode(',', $childAgesInput) : $childAgesInput,
+                'checkin_date'        => $request->checkin_date,
+                'checkout_date'       => $request->checkout_date,
+                'base_price'          => $tour->base_price,
+                'hotel_upgrade_price' => 0,
+                'total_price'         => $request->total_price,
+                'message'             => $request->message,
+                'status'              => 'pending',
+                'ref_code'            => 'MYG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),
+                'cancellation_token'  => Str::uuid(),
+                'payment_deadline'    => now()->addDays(7),
+            ]);
+
+            return ['booking' => $booking];
+        });
+
+        if (isset($result['error_key'])) {
+            return back()->withErrors([$result['error_key'] => $result['message']])->withInput();
+        }
+
+        $booking = $result['booking'];
+        Mail::to($booking->email)->send(new BookingSubmittedMail($booking));
+
+        return redirect()->route('booking.success', ['booking' => $booking->id]);
+    }
 
 public function success(Booking $booking)
 {
