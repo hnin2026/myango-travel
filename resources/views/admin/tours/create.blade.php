@@ -255,9 +255,9 @@
     <script src="https://cdn.tiny.cloud/1/kepwie1vxizkqpicpc4g2arjl67ndtn5c2nmbjfe31hr1b0f/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     
     <script>
-        window.selectedHotels = @json(old('hotels', [])) ? @json(old('hotels', [])).map(id => parseInt(id)) : [];
+        window.selectedHotels = (@js(old('hotels', [])) || []).map(id => parseInt(id));
         document.addEventListener('DOMContentLoaded', () => {
-            const initialLocation = '{{ old('location') }}';
+            const initialLocation = @js(old('location'));
             if (initialLocation) {
                 window.fetchHotels(initialLocation);
             }

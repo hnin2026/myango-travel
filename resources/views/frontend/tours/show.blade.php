@@ -13,75 +13,97 @@
 @section('content')
 
 <div class="content-wrapper">
-    <div class="row g-5">
+    {{-- TOP SECTION: Title & Gallery spanning full width --}}
+    <div class="mb-4">
         {{-- TOUR OVERVIEW --}}
-            <div>
-                <h1  class="tour-detail-title">
-                    <span class="lang-en">{{ $tour->title }}</span>
-                    <span class="lang-mm" style="display:none;">
-                        {{ $tour->title_mm ?? $tour->title }}
-                    </span>
-                </h1>
-                <div class="d-flex flex-wrap gap-4 mb-2">
-                    <span style="color:#6b7280; font-size:15px;">
-                        <i class="bi bi-geo-alt me-1" style="color:var(--mid-blue)"></i>
-                        {{ $tour->location }}
-                    </span>
-                    <span style="color:#6b7280; font-size:15px;">
-                        <i class="bi bi-clock me-1" style="color:var(--mid-blue)"></i>
-                        {{ $tour->duration_days }} Days / {{ $tour->duration_days - 1 }} Nights
-                    </span>
+        <h1 class="tour-detail-title">
+            <span class="lang-en">{{ $tour->title }}</span>
+            <span class="lang-mm" style="display:none;">
+                {{ $tour->title_mm ?? $tour->title }}
+            </span>
+        </h1>
+        <div class="d-flex flex-wrap gap-4 mb-3">
+            <span style="color:#6b7280; font-size:15px;">
+                <i class="bi bi-geo-alt me-1" style="color:var(--mid-blue)"></i>
+                {{ $tour->location }}
+            </span>
+            <span style="color:#6b7280; font-size:15px;">
+                <i class="bi bi-clock me-1" style="color:var(--mid-blue)"></i>
+                {{ $tour->duration_days }} Days / {{ $tour->duration_days - 1 }} Nights
+            </span>
+        </div>
+
+        {{-- GALLERY --}}
+        <div class="gallery-section">
+            @php $images = $tour->images; @endphp
+
+            @if($images->count() === 1)
+                {{-- Single uploaded photo: full width --}}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="gallery-main" onclick="openLightbox(0)" style="cursor:pointer;">
+                            <img src="{{ asset('storage/' . $images->first()->image_path) }}"
+                                 alt=""
+                                 class="w-100 object-fit-cover"
+                                 style="max-height: 480px; border-radius: 8px;">
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            {{-- GALLERY --}}
-            <div class="gallery-section">
-                @php $images = $tour->images; @endphp
-
-                @if($images->count() > 0)
-                    <div class="row g-3">
-                        {{-- Main large image --}}
-                        <div class="col-md-7">
-                            <div class="gallery-main" onclick="openLightbox(0)" style="cursor:pointer;">
-                                <img src="{{ asset('storage/' . $images->first()->image_path) }}"
-                                     alt="{{ $tour->title }}">
-                            </div>
-                        </div>
-
-                        {{-- Grid of 4 smaller images --}}
-                        <div class="col-md-5">
-                            <div class="gallery-grid">
-                                @foreach($images->skip(1)->take(4) as $index => $image)
-                                    <div class="gallery-grid-item"
-                                         onclick="openLightbox({{ $index + 1 }})">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}"
-                                             alt="{{ $tour->title }}">
-                                        @if($index === 3 && $images->count() > 5)
-                                            <div class="gallery-overlay">
-                                                <span>+{{ $images->count() - 5 }} Photos</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endforeach
-
-                                {{-- Fill empty slots with placeholder --}}
-                                @for($i = $images->count() - 1; $i < 4; $i++)
-                                    <div class="gallery-grid-item">
-                                        <img src="https://placehold.co/300x240/111844/EAE0CF?text=MyanGo"
-                                             alt="MyanGo Travel">
-                                    </div>
-                                @endfor
-                            </div>
+            @elseif($images->count() > 1)
+                {{-- Multiple uploaded photos: main photo + 4-grid --}}
+                <div class="row g-3">
+                    {{-- Main large image --}}
+                    <div class="col-md-7">
+                        <div class="gallery-main" onclick="openLightbox(0)" style="cursor:pointer;">
+                            <img src="{{ asset('storage/' . $images->first()->image_path) }}"
+                                 alt="">
                         </div>
                     </div>
-                @else
-                    <div class="gallery-main">
-                        <img src="https://placehold.co/900x480/111844/EAE0CF?text=MyanGo+Travel"
-                             alt="{{ $tour->title }}">
-                    </div>
-                @endif
-            </div>
 
+                    {{-- Grid of smaller images --}}
+                    <div class="col-md-5">
+                        <div class="gallery-grid">
+                            @foreach($images->skip(1)->take(4)->values() as $index => $image)
+                                <div class="gallery-grid-item"
+                                     onclick="openLightbox({{ $index + 1 }})">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}"
+                                         alt="">
+
+                                    @if($loop->iteration === 4 && $images->count() > 5)
+                                        <div class="gallery-overlay">
+                                            <span>+{{ $images->count() - 5 }} Photos</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+
+                            {{-- Fill empty slots only if between 2 and 4 total images --}}
+                            @php
+                                $displayedCount = min(4, $images->count() - 1);
+                            @endphp
+                            @for($i = $displayedCount; $i < 4; $i++)
+                                <div class="gallery-grid-item">
+                                    <img src="https://placehold.co/300x240/111844/EAE0CF?text=MyanGo"
+                                         alt="">
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+
+            @else
+                {{-- No photos uploaded: default fallback --}}
+                <div class="gallery-main">
+                    <img src="https://placehold.co/900x480/111844/EAE0CF?text=MyanGo+Travel"
+                         alt="">
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- MAIN 2-COLUMN LAYOUT: Content (Left) & Sidebar (Right) --}}
+    <div class="row g-5">
         {{-- LEFT SIDE --}}
         <div class="col-lg-8">
 
@@ -184,15 +206,14 @@
                 </div>
             </div>
 
-            {{-- INQUIRY FORM --}}
+            {{-- INQUIRY FORM (Desktop) --}}
             <div class="inquiry-section mt-5 d-none d-lg-block">
                 @include('frontend.components.inquiry-form', ['tour' => $tour])
-
             </div>
 
         </div>
 
-        {{-- RIGHT SIDE --}}
+        {{-- RIGHT SIDE (Sidebar with Overview & Booking Card) --}}
         <div class="col-lg-4">
 
             {{-- Tour Overview Card --}}
@@ -254,8 +275,9 @@
             {{-- Booking Card --}}
             @include('frontend.components.booking-card', ['tour' => $tour])
 
+            {{-- INQUIRY FORM (Mobile) --}}
             <div class="inquiry-section mt-4 d-block d-lg-none">
-            @include('frontend.components.inquiry-form', ['tour' => $tour])
+                @include('frontend.components.inquiry-form', ['tour' => $tour])
             </div>
         </div>
     </div>

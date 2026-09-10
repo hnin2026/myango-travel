@@ -307,9 +307,9 @@
     <script src="https://cdn.tiny.cloud/1/kepwie1vxizkqpicpc4g2arjl67ndtn5c2nmbjfe31hr1b0f/tinymce/6/tinymce.min.js"></script>
 
     <script>
-        window.selectedHotels = @json(old('hotels', $selectedHotels)) ? @json(old('hotels', $selectedHotels)).map(id => parseInt(id)) : [];
+        window.selectedHotels = (@js(old('hotels', $selectedHotels)) || []).map(id => parseInt(id));
         document.addEventListener('DOMContentLoaded', () => {
-            const initialLocation = '{{ old('location', $tour->location) }}';
+            const initialLocation = @js(old('location', $tour->location));
             if (initialLocation) {
                 window.fetchHotels(initialLocation);
             }
