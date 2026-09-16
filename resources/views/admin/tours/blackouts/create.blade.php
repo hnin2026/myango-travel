@@ -16,7 +16,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Start Date</label>
-                        <input type="date" name="start_date"
+                        <input type="date" name="start_date" id="start_date"
                                class="form-control @error('start_date') is-invalid @enderror"
                                value="{{ old('start_date') }}">
                         @error('start_date')
@@ -26,7 +26,7 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">End Date</label>
-                        <input type="date" name="end_date"
+                        <input type="date" name="end_date" id="end_date"
                                class="form-control @error('end_date') is-invalid @enderror"
                                value="{{ old('end_date') }}">
                         @error('end_date')
@@ -46,4 +46,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+
+            function updateMinEndDate() {
+                if (startDateInput.value) {
+                    endDateInput.min = startDateInput.value;
+                } else {
+                    endDateInput.removeAttribute('min');
+                }
+            }
+
+            updateMinEndDate();
+            startDateInput.addEventListener('change', updateMinEndDate);
+        });
+    </script>
 </x-app-layout>

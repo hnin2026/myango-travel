@@ -21,10 +21,20 @@ class InquiryController extends Controller
             'email'         => 'required|email|max:255',
             'number_of_adults' => 'required|integer|min:1',
             'number_of_children' => 'nullable|integer|min:0',
+            'child_ages'         => 'nullable',
             'checkin_date'  => 'nullable|date',
             'checkout_date' => 'nullable|date',
             'message'       => 'nullable|string',
         ]);
+
+        $childAgesInput = $request->child_ages;
+        $childAgesStr = null;
+        if (is_array($childAgesInput)) {
+            $filtered = array_filter($childAgesInput, fn($v) => $v !== null && $v !== '');
+            $childAgesStr = !empty($filtered) ? implode(', ', $filtered) : null;
+        } elseif (is_string($childAgesInput) && trim($childAgesInput) !== '') {
+            $childAgesStr = trim($childAgesInput);
+        }
 
         $inquiry = Inquiry::create([
             'tour_id'       => $request->tour_id,
@@ -34,6 +44,7 @@ class InquiryController extends Controller
             'phone'         => $request->phone,
             'number_of_adults' => $request->number_of_adults,
             'number_of_children' => $request->number_of_children ?? 0,
+            'child_ages'    => $childAgesStr,
             'checkin_date'  => $request->checkin_date,
             'checkout_date' => $request->checkout_date,
             'message'       => $request->message,

@@ -116,7 +116,7 @@
                                 <td>
                                     <a href="{{ route('admin.tours.travel-periods.edit', [$tour, $date]) }}"
                                        class="btn btn-sm btn-warning">
-                                        <i class="bi bi-pencil"></i> Edit
+                                        <i class="bi bi-pencil"></i>
                                     </a>
                                     <form action="{{ route('admin.tours.travel-periods.destroy', [$tour, $date]) }}"
                                           method="POST" class="d-inline"
@@ -124,7 +124,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -170,7 +170,7 @@
                                     <td>
                                         <a href="{{ route('admin.tours.blackouts.edit', [$tour, $blackout]) }}"
                                            class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i> Edit
+                                            <i class="bi bi-pencil"></i>
                                         </a>
                                         <form action="{{ route('admin.tours.blackouts.destroy', [$tour, $blackout]) }}"
                                               method="POST" class="d-inline"
@@ -178,7 +178,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> Remove
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </td>

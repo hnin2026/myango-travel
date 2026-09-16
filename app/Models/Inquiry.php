@@ -29,6 +29,7 @@ class Inquiry extends Model
         'email',
         'number_of_adults',
         'number_of_children',
+        'child_ages',
         'checkin_date',
         'checkout_date',
         'message',
@@ -37,10 +38,25 @@ class Inquiry extends Model
 
     protected static function booted()
     {
-        static::created(function ($inquiry) {
-            $inquiry->reference = 'INQ-' . str_pad($inquiry->id, 4, '0', STR_PAD_LEFT);
-            $inquiry->saveQuietly();
+        static::creating(function ($inquiry) {
+            if (empty($inquiry->reference)) {
+                $inquiry->reference = static::generateUniqueReference();
+            }
         });
+    }
+
+    public static function generateUniqueReference(): string
+    {
+        $maxId = (int) static::max('id');
+        $nextId = $maxId + 1;
+        $reference = 'INQ-' . str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
+
+        while (static::where('reference', $reference)->exists()) {
+            $nextId++;
+            $reference = 'INQ-' . str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
+        }
+
+        return $reference;
     }
 
     public function getStatusLabelAttribute()

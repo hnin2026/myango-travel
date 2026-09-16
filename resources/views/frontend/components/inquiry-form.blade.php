@@ -105,9 +105,10 @@
                 </label>
 
                 <input type="number"
+                name="number_of_children"
                 id="inquiry-num-children"
                 min="0"
-                value="0"
+                value="{{ old('number_of_children', 0) }}"
                 onchange="updateInquiryChildrenAges(this)">
             </div>
 

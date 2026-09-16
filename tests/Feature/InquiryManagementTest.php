@@ -97,6 +97,44 @@ class InquiryManagementTest extends TestCase
         $this->assertNotNull($inquiry);
         $response->assertRedirect(route('inquiry.success', $inquiry->id));
         $this->assertNull($inquiry->tour_id);
+        $this->assertNotEmpty($inquiry->reference);
+    }
+
+    /**
+     * Test sequential inquiry creations receive distinct, unique references.
+     */
+    public function test_two_inquiries_receive_different_unique_references(): void
+    {
+        $inquiry1 = Inquiry::create([
+            'customer_name' => 'First Customer',
+            'email' => 'first@example.com',
+            'number_of_adults' => 2,
+        ]);
+
+        $inquiry2 = Inquiry::create([
+            'customer_name' => 'Second Customer',
+            'email' => 'second@example.com',
+            'number_of_adults' => 1,
+        ]);
+
+        $this->assertNotEmpty($inquiry1->reference);
+        $this->assertNotEmpty($inquiry2->reference);
+        $this->assertNotEquals($inquiry1->reference, $inquiry2->reference);
+    }
+
+    /**
+     * Test explicit reference provided during creation is preserved.
+     */
+    public function test_inquiry_creation_preserves_explicit_reference_if_provided(): void
+    {
+        $inquiry = Inquiry::create([
+            'reference' => 'INQ-CUSTOM-999',
+            'customer_name' => 'Custom Ref Customer',
+            'email' => 'custom@example.com',
+            'number_of_adults' => 1,
+        ]);
+
+        $this->assertEquals('INQ-CUSTOM-999', $inquiry->reference);
     }
 
     /**
@@ -202,5 +240,83 @@ class InquiryManagementTest extends TestCase
             'status' => 'confirmed',
         ]);
         $this->assertEquals('confirmed', $inquiry->fresh()->status);
+    }
+
+    /**
+     * Test custom inquiry submission with 0 children.
+     */
+    public function test_custom_inquiry_with_zero_children(): void
+    {
+        $response = $this->post(route('inquiry.store'), [
+            'customer_name' => 'Adult Only Customer',
+            'email' => 'adultonly@example.com',
+            'number_of_adults' => 2,
+            'number_of_children' => 0,
+        ]);
+
+        $inquiry = Inquiry::latest()->first();
+        $this->assertNotNull($inquiry);
+        $this->assertEquals(0, $inquiry->number_of_children);
+        $this->assertNull($inquiry->child_ages);
+    }
+
+    /**
+     * Test custom inquiry submission with 1 child and child age.
+     */
+    public function test_custom_inquiry_with_one_child_and_child_age(): void
+    {
+        $response = $this->post(route('inquiry.store'), [
+            'customer_name' => 'Single Child Parent',
+            'email' => 'parent1@example.com',
+            'number_of_adults' => 2,
+            'number_of_children' => 1,
+            'child_ages' => ['6'],
+        ]);
+
+        $inquiry = Inquiry::latest()->first();
+        $this->assertNotNull($inquiry);
+        $this->assertEquals(1, $inquiry->number_of_children);
+        $this->assertEquals('6', $inquiry->child_ages);
+    }
+
+    /**
+     * Test custom inquiry submission with multiple children and child ages.
+     */
+    public function test_custom_inquiry_with_multiple_children_and_child_ages(): void
+    {
+        $response = $this->post(route('inquiry.store'), [
+            'customer_name' => 'Multi Child Family',
+            'email' => 'family@example.com',
+            'number_of_adults' => 2,
+            'number_of_children' => 2,
+            'child_ages' => ['3', '8'],
+        ]);
+
+        $inquiry = Inquiry::latest()->first();
+        $this->assertNotNull($inquiry);
+        $this->assertEquals(2, $inquiry->number_of_children);
+        $this->assertEquals('3, 8', $inquiry->child_ages);
+    }
+
+    /**
+     * Test Admin Inquiry detail page displays stored child information correctly.
+     */
+    public function test_admin_inquiry_show_page_displays_child_information(): void
+    {
+        $inquiry = Inquiry::create([
+            'customer_name' => 'Family Admin Test',
+            'email' => 'adminfamily@example.com',
+            'number_of_adults' => 2,
+            'number_of_children' => 2,
+            'child_ages' => '4, 7',
+            'status' => 'new',
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('admin.inquiries.show', $inquiry->id));
+        $response->assertStatus(200);
+        $response->assertSee('Children:');
+        $response->assertSee('2');
+        $response->assertSee('Child Age(s):');
+        $response->assertSee('4, 7');
     }
 }

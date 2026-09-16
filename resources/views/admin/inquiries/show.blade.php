@@ -96,6 +96,12 @@
                             <span class="text-muted d-block small">Children:</span>
                             <strong class="fs-6 text-dark">{{ $inquiry->number_of_children }}</strong>
                         </div>
+                        @if($inquiry->number_of_children > 0 || $inquiry->child_ages)
+                            <div class="col-sm-6 col-md-4">
+                                <span class="text-muted d-block small">Child Age(s):</span>
+                                <strong class="fs-6 text-dark">{{ $inquiry->child_ages ?: '-' }}</strong>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

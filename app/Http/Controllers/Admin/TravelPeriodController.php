@@ -25,11 +25,13 @@ class TravelPeriodController extends Controller
 
     public function store(Request $request, Tour $tour)
     {
-         $validated = $request->validate([
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-        'total_seats' => 'required|integer|min:1',
-    ]);
+        $validated = $request->validate([
+            'start_date'  => 'required|date',
+            'end_date'    => 'required|date|after_or_equal:start_date',
+            'total_seats' => 'required|integer|min:1',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
+        ]);
 
         // Auto detect season
         $season = SeasonPeriod::getSeasonForDate($validated['start_date']);
@@ -53,9 +55,11 @@ class TravelPeriodController extends Controller
     public function update(Request $request, Tour $tour, TravelPeriod $travel_period)
     {
         $validated = $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_date'  => 'required|date',
+            'end_date'    => 'required|date|after_or_equal:start_date',
             'total_seats' => 'required|integer|min:1',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
 
         $travel_period->update([

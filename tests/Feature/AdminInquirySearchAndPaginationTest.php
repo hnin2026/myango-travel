@@ -33,7 +33,6 @@ class AdminInquirySearchAndPaginationTest extends TestCase
             'email' => 'customer@example.com',
             'phone' => '0912345678',
             'status' => 'new',
-            'reference' => 'INQ-' . rand(10000, 99999),
         ], $attributes));
 
         if ($createdAt) {

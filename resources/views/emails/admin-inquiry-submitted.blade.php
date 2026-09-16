@@ -63,6 +63,9 @@
                 {{ $inquiry->number_of_adults }} Adult(s)
                 @if($inquiry->number_of_children > 0)
                     , {{ $inquiry->number_of_children }} Child(ren)
+                    @if($inquiry->child_ages)
+                        (Ages: {{ $inquiry->child_ages }})
+                    @endif
                 @endif
             </div>
         </div>

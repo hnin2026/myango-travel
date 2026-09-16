@@ -19,6 +19,8 @@ class TourBlackoutController extends Controller
         $validated = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
 
         $earliest = $tour->travelPeriods()->min('start_date');
@@ -28,8 +30,11 @@ class TourBlackoutController extends Controller
             return back()->withErrors(['start_date' => 'Please add at least one travel period/available date before adding blackout periods.'])->withInput();
         }
 
-        if ($validated['start_date'] < $earliest || $validated['end_date'] > $latest) {
-            return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliest} to {$latest})."])->withInput();
+        $earliestDate = \Carbon\Carbon::parse($earliest)->format('Y-m-d');
+        $latestDate = \Carbon\Carbon::parse($latest)->format('Y-m-d');
+
+        if ($validated['start_date'] < $earliestDate || $validated['end_date'] > $latestDate) {
+            return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliestDate} to {$latestDate})."])->withInput();
         }
 
         // Overlap Check (Rule 3)
@@ -58,6 +63,8 @@ class TourBlackoutController extends Controller
         $validated = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
+        ], [
+            'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
 
         $earliest = $tour->travelPeriods()->min('start_date');
@@ -67,8 +74,11 @@ class TourBlackoutController extends Controller
             return back()->withErrors(['start_date' => 'Please add at least one travel period/available date before adding blackout periods.'])->withInput();
         }
 
-        if ($validated['start_date'] < $earliest || $validated['end_date'] > $latest) {
-            return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliest} to {$latest})."])->withInput();
+        $earliestDate = \Carbon\Carbon::parse($earliest)->format('Y-m-d');
+        $latestDate = \Carbon\Carbon::parse($latest)->format('Y-m-d');
+
+        if ($validated['start_date'] < $earliestDate || $validated['end_date'] > $latestDate) {
+            return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliestDate} to {$latestDate})."])->withInput();
         }
 
         // Overlap Check (Rule 3)
