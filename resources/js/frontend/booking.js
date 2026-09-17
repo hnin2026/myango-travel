@@ -265,3 +265,32 @@ window.proceedBooking = function (tourId) {
 window.location.href =
     `/booking/${tourId}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&hotel=${hotel}&children=${children}&ages=${childAges}&total=${showTotalEl.textContent}`;
 };
+
+/*
+|--------------------------------------------------------------------------
+| Inquiry date validation & picker sync
+|--------------------------------------------------------------------------
+*/
+window.handleInquiryCheckinChange = function (checkinInput) {
+    if (!checkinInput) return;
+    const form = checkinInput.closest('form');
+    if (!form) return;
+    const checkoutInput = form.querySelector('input[name="checkout_date"]');
+    if (!checkoutInput) return;
+
+    const checkinValue = checkinInput.value;
+    if (checkinValue) {
+        checkoutInput.min = checkinValue;
+        if (checkoutInput.value && checkoutInput.value < checkinValue) {
+            checkoutInput.value = '';
+        }
+    } else {
+        checkoutInput.removeAttribute('min');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form.inquiry-form input[name="checkin_date"]').forEach(input => {
+        window.handleInquiryCheckinChange(input);
+    });
+});

@@ -122,7 +122,14 @@
 
                 <input type="date"
                        name="checkin_date"
-                       value="{{ old('checkin_date') }}">
+                       value="{{ old('checkin_date') }}"
+                       onchange="handleInquiryCheckinChange(this)">
+
+                @error('checkin_date')
+                    <div class="text-danger mt-1 small">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
             {{-- Check-out --}}
@@ -134,6 +141,12 @@
                 <input type="date"
                        name="checkout_date"
                        value="{{ old('checkout_date') }}">
+
+                @error('checkout_date')
+                    <div class="text-danger mt-1 small">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
             {{-- Message --}}

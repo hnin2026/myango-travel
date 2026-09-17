@@ -319,4 +319,63 @@ class InquiryManagementTest extends TestCase
         $response->assertSee('Child Age(s):');
         $response->assertSee('4, 7');
     }
+
+    /**
+     * Test Public Tour Inquiry rejects invalid date range (checkout before checkin).
+     */
+    public function test_public_tour_inquiry_rejects_checkout_before_checkin(): void
+    {
+        $response = $this->post(route('inquiry.store'), [
+            'tour_id' => $this->tour->id,
+            'customer_name' => 'Invalid Date Tour Customer',
+            'email' => 'invalidtour@example.com',
+            'number_of_adults' => 2,
+            'checkin_date' => '2026-11-17',
+            'checkout_date' => '2026-11-14',
+        ]);
+
+        $response->assertSessionHasErrors(['checkout_date']);
+        $this->assertEquals(0, Inquiry::count());
+    }
+
+    /**
+     * Test Plan a Custom Tour Inquiry rejects invalid date range (checkout before checkin).
+     */
+    public function test_custom_tour_inquiry_rejects_checkout_before_checkin(): void
+    {
+        $response = $this->post(route('inquiry.store'), [
+            'tour_id' => null,
+            'customer_name' => 'Invalid Date Custom Customer',
+            'email' => 'invalidcustom@example.com',
+            'number_of_adults' => 1,
+            'checkin_date' => '2026-11-17',
+            'checkout_date' => '2026-11-14',
+        ]);
+
+        $response->assertSessionHasErrors(['checkout_date']);
+        $this->assertEquals(0, Inquiry::count());
+    }
+
+    /**
+     * Test Inquiry accepts same day check-in and check-out dates.
+     */
+    public function test_inquiry_accepts_same_day_checkin_and_checkout(): void
+    {
+        Mail::fake();
+
+        $response = $this->post(route('inquiry.store'), [
+            'tour_id' => $this->tour->id,
+            'customer_name' => 'Same Day Customer',
+            'email' => 'sameday@example.com',
+            'number_of_adults' => 1,
+            'checkin_date' => '2026-11-17',
+            'checkout_date' => '2026-11-17',
+        ]);
+
+        $inquiry = Inquiry::latest()->first();
+        $this->assertNotNull($inquiry);
+        $response->assertRedirect(route('inquiry.success', $inquiry->id));
+        $this->assertEquals('2026-11-17', $inquiry->checkin_date);
+        $this->assertEquals('2026-11-17', $inquiry->checkout_date);
+    }
 }

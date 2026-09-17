@@ -33,19 +33,22 @@ class BookingController extends Controller
             return back()->withErrors(['tour' => 'This tour is currently unavailable for booking.'])->withInput();
         }
 
+        $checkinDate = $request->input('checkin_date', $request->input('checkin'));
+        $checkoutDate = $request->input('checkout_date', $request->input('checkout'));
+
         $isBlackout = \App\Models\TourBlackoutPeriod::where('tour_id', $tour->id)
-            ->where('start_date', '<=', $request->checkin_date)
-            ->where('end_date', '>=', $request->checkin_date)
+            ->where('start_date', '<=', $checkinDate)
+            ->where('end_date', '>=', $checkinDate)
             ->exists();
 
         if ($isBlackout) {
             return back()->withErrors(['checkin_date' => 'The selected check-in date falls within a blackout period and is not bookable.'])->withInput();
         }
 
-        $result = DB::transaction(function () use ($request, $tour) {
+        $result = DB::transaction(function () use ($request, $tour, $checkinDate, $checkoutDate) {
             $travelPeriod = TravelPeriod::where('tour_id', $tour->id)
-                ->where('start_date', '<=', $request->checkin_date)
-                ->where('end_date', '>=', $request->checkin_date)
+                ->where('start_date', '<=', $checkinDate)
+                ->where('end_date', '>=', $checkinDate)
                 ->lockForUpdate()
                 ->first();
 
@@ -54,7 +57,7 @@ class BookingController extends Controller
             }
 
             // Capacity Check using existing adult/child seat-counting rules
-            $adults = intval($request->input('adults', $request->input('num_persons', 0)));
+            $adults = intval($request->input('adults', $request->input('num_persons', 1)));
             $childAgesInput = $request->input('child_ages', $request->input('ages', ''));
             $requestedSeats = TravelPeriod::calculateRequestedSeats($adults, $childAgesInput);
 
@@ -67,10 +70,26 @@ class BookingController extends Controller
                 ];
             }
 
+            // Independent server-side price calculation
+            $season = \App\Models\SeasonPeriod::getSeasonForDate($checkinDate);
+
+            $hotelId = $request->input('hotel_id', $request->input('hotel'));
+            $hotelUpgradePrice = 0.0;
+            if ($hotelId) {
+                $hotel = \App\Models\Hotel::find($hotelId);
+                if ($hotel) {
+                    $hotelUpgradePrice = $hotel->getPriceForSeason($season);
+                }
+            }
+
+            $pricePerPerson = (float) $tour->base_price + $hotelUpgradePrice;
+            $payableTravelers = $requestedSeats;
+            $calculatedTotalPrice = $pricePerPerson * $payableTravelers;
+
             $booking = Booking::create([
                 'tour_id'             => $tour->id,
                 'travel_period_id'    => $travelPeriod->id,
-                'hotel_id'            => $request->hotel_id,
+                'hotel_id'            => $hotelId,
                 'customer_name'       => $request->customer_name,
                 'nationality'         => $request->nationality,
                 'email'               => $request->email,
@@ -78,11 +97,11 @@ class BookingController extends Controller
                 'num_persons'         => $adults,
                 'num_children'        => $request->input('children', $request->input('num_children', 0)),
                 'child_ages'          => is_array($childAgesInput) ? implode(',', $childAgesInput) : $childAgesInput,
-                'checkin_date'        => $request->checkin_date,
-                'checkout_date'       => $request->checkout_date,
+                'checkin_date'        => $checkinDate,
+                'checkout_date'       => $checkoutDate,
                 'base_price'          => $tour->base_price,
-                'hotel_upgrade_price' => 0,
-                'total_price'         => $request->total_price,
+                'hotel_upgrade_price' => $hotelUpgradePrice,
+                'total_price'         => $calculatedTotalPrice,
                 'message'             => $request->message,
                 'status'              => 'pending',
                 'ref_code'            => 'MYG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),

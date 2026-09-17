@@ -23,8 +23,10 @@ class InquiryController extends Controller
             'number_of_children' => 'nullable|integer|min:0',
             'child_ages'         => 'nullable',
             'checkin_date'  => 'nullable|date',
-            'checkout_date' => 'nullable|date',
+            'checkout_date' => 'nullable|date|after_or_equal:checkin_date',
             'message'       => 'nullable|string',
+        ], [
+            'checkout_date.after_or_equal' => 'The check-out date must be on or after the check-in date.',
         ]);
 
         $childAgesInput = $request->child_ages;
