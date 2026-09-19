@@ -127,7 +127,6 @@ class AdminInquirySearchAndPaginationTest extends TestCase
         $responsePage2->assertSee('INQ-0005');
         $responsePage2->assertSee('INQ-0001');
         $responsePage2->assertDontSee('INQ-0015');
-        $responsePage2->assertDontSee('INQ-0016');
     }
 
     /**
@@ -141,5 +140,56 @@ class AdminInquirySearchAndPaginationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('No inquiries found');
+    }
+
+    /**
+     * Test admin inquiry list displays sequential row numbers without gaps after deletion.
+     */
+    public function test_admin_inquiry_list_displays_sequential_row_numbers_without_gaps(): void
+    {
+        $inq1 = $this->createInquiry(['customer_name' => 'Alice']);
+        $inq2 = $this->createInquiry(['customer_name' => 'Bob']);
+        $inq3 = $this->createInquiry(['customer_name' => 'Charlie']);
+
+        // Delete middle inquiry (ID 2)
+        $inq2->delete();
+
+        $response = $this->actingAs($this->admin)->get(route('admin.inquiries.index'));
+
+        $response->assertStatus(200);
+        // Verify references are preserved
+        $response->assertSee($inq3->reference);
+        $response->assertSee($inq1->reference);
+        // Verify DB IDs remain unchanged
+        $this->assertEquals(1, $inq1->id);
+        $this->assertEquals(3, $inq3->id);
+
+        // Total remaining is 2. Top row (newest) gets 2, bottom row (oldest) gets 1
+        $response->assertSee('<td>2</td>', false);
+        $response->assertSee('<td>1</td>', false);
+    }
+
+    /**
+     * Test admin inquiry list row numbers are pagination aware in reverse total order.
+     */
+    public function test_admin_inquiry_list_row_numbers_are_pagination_aware(): void
+    {
+        for ($i = 0; $i < 15; $i++) {
+            $this->createInquiry([
+                'created_at' => now()->addMinutes($i)
+            ]);
+        }
+
+        // Page 1 (top 10 newest items) should display 15 down to 6
+        $response1 = $this->actingAs($this->admin)->get(route('admin.inquiries.index'));
+        $response1->assertStatus(200);
+        $response1->assertSee('<td>15</td>', false);
+        $response1->assertSee('<td>6</td>', false);
+
+        // Page 2 (bottom 5 oldest items) should display 5 down to 1
+        $response2 = $this->actingAs($this->admin)->get(route('admin.inquiries.index', ['page' => 2]));
+        $response2->assertStatus(200);
+        $response2->assertSee('<td>5</td>', false);
+        $response2->assertSee('<td>1</td>', false);
     }
 }

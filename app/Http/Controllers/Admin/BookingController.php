@@ -87,6 +87,7 @@ class BookingController extends Controller
         ]);
 
         $oldStatus = $booking->status;
+        $wasPaymentUploaded = $booking->is_payment_uploaded;
         $newStatus = $request->status;
 
         if ($oldStatus === 'cancelled' && in_array($newStatus, ['confirmed', 'paid', 'pending'])) {
@@ -100,21 +101,28 @@ class BookingController extends Controller
             }
         }
 
-        $booking->update([
+        $updateData = [
             'status' => $request->status
-        ]);
+        ];
 
-        if ($oldStatus === 'pending' && $booking->status === 'confirmed') {
+        if ($wasPaymentUploaded && $newStatus === 'confirmed') {
+            $updateData['payment_receipt'] = null;
+            $updateData['payment_uploaded_at'] = null;
+        }
+
+        $booking->update($updateData);
+
+        if ($oldStatus === 'pending' && $booking->status === 'confirmed' && !$wasPaymentUploaded) {
             $booking->load(['tour']);
             Mail::to($booking->email)->send(new PaymentRequiredMail($booking));
         }
 
-        if ($oldStatus === 'payment_uploaded' && $booking->status === 'paid') {
+        if ($wasPaymentUploaded && $booking->status === 'paid') {
             $booking->load(['tour']);
             Mail::to($booking->email)->send(new PaymentConfirmedMail($booking));
         }
 
-        if ($oldStatus === 'payment_uploaded' && $booking->status === 'confirmed') {
+        if ($wasPaymentUploaded && $booking->status === 'confirmed') {
             $booking->load(['tour']);
             Mail::to($booking->email)->send(new PaymentRejectedMail($booking));
         }

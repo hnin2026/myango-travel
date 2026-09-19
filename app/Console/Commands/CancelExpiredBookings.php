@@ -34,6 +34,7 @@ class CancelExpiredBookings extends Command
         // Bookings that are skipped include confirmed bookings with deadlines in the future.
         // Get total number of confirmed bookings with deadlines to calculate checked & skipped correctly.
         $checked = Booking::where('status', 'confirmed')
+            ->whereNull('payment_receipt')
             ->whereNotNull('payment_deadline')
             ->count();
 
@@ -41,6 +42,7 @@ class CancelExpiredBookings extends Command
 
         // Using chunkById for efficient query processing in case of a large bookings table
         Booking::where('status', 'confirmed')
+            ->whereNull('payment_receipt')
             ->whereNotNull('payment_deadline')
             ->where('payment_deadline', '<', $now)
             ->chunkById(100, function ($bookings) use (&$cancelled) {

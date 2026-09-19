@@ -159,7 +159,7 @@ public function paymentUpload(Request $request, $token)
         $booking->update([
             'payment_receipt' => $path,
             'payment_uploaded_at' => now(),
-            'status' => 'payment_uploaded',
+            'status' => 'confirmed',
         ]);
 
         $booking->load(['tour']);
@@ -195,7 +195,7 @@ public function cancelSubmit(Request $request, $token)
         abort(404);
     }
 
-    if (!in_array($booking->status, ['pending', 'confirmed'])) {
+    if (!in_array($booking->status, ['pending', 'confirmed']) || $booking->is_payment_uploaded) {
         return redirect()->route('booking.cancel.show', $token);
     }
 

@@ -93,7 +93,7 @@
                         </div>
                         <div class="col-sm-4 col-4">
                             <label class="text-muted small fw-bold text-uppercase d-block mb-1">Child Ages</label>
-                            <span class="text-dark">{{ $booking->child_ages ?? '-' }}</span>
+                            <span class="text-dark">{{ $booking->child_ages ?: '-' }}</span>
                         </div>
                     </div>
                     
@@ -106,9 +106,13 @@
                         </div>
                         <div class="col-sm-6 col-12">
                             <label class="text-muted small fw-bold text-uppercase d-block mb-1">Booking Status</label>
-                            <span class="badge bg-{{ $booking->status == 'confirmed' || $booking->status == 'paid' ? 'success' : ($booking->status == 'cancelled' ? 'danger' : 'warning') }} fs-6">
-                                {{ ucfirst($booking->status) }}
-                            </span>
+                            @if($booking->is_payment_uploaded)
+                                <span class="badge bg-primary fs-6">Payment Uploaded</span>
+                            @else
+                                <span class="badge bg-{{ $booking->status == 'confirmed' || $booking->status == 'paid' ? 'success' : ($booking->status == 'cancelled' ? 'danger' : 'warning') }} fs-6">
+                                    {{ ucfirst($booking->status) }}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -163,7 +167,7 @@
                                 </form>
                             @endif
 
-                            @if($booking->status == 'confirmed')
+                            @if($booking->status == 'confirmed' && !$booking->payment_receipt)
                                 <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
@@ -174,7 +178,7 @@
                                 </form>
                             @endif
 
-                            @if($booking->status == 'payment_uploaded')
+                            @if($booking->is_payment_uploaded)
                                 <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
                                     @csrf
                                     @method('PATCH')

@@ -39,7 +39,7 @@
                     <div class="d-flex flex-column align-items-sm-end align-items-start gap-2 align-self-sm-center align-self-start">
                         @php
                             $pendingBookings = \App\Models\Booking::where('status', 'pending')->latest()->take(5)->get();
-                            $paymentBookings = \App\Models\Booking::where('status', 'payment_uploaded')->latest()->take(5)->get();
+                            $paymentBookings = \App\Models\Booking::where('status', 'confirmed')->whereNotNull('payment_receipt')->latest()->take(5)->get();
                             $newInquiries = \App\Models\Inquiry::where('status', 'new')->latest()->take(5)->get();
 
                             $notiCount = $pendingBookingsCount + $paymentVerificationCount + $newInquiriesCount;
@@ -377,10 +377,10 @@
                                             <td>
                                                 @if($booking->status === 'pending')
                                                     <span class="badge bg-warning-subtle text-warning rounded-pill px-3">Pending</span>
+                                                @elseif($booking->is_payment_uploaded)
+                                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3">Verification</span>
                                                 @elseif($booking->status === 'confirmed')
                                                     <span class="badge bg-info-subtle text-info rounded-pill px-3">Confirmed</span>
-                                                @elseif($booking->status === 'payment_uploaded')
-                                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3">Verification</span>
                                                 @elseif($booking->status === 'paid')
                                                     <span class="badge bg-success-subtle text-success rounded-pill px-3">Paid</span>
                                                 @else

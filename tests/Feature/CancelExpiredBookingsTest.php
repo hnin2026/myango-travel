@@ -135,7 +135,9 @@ class CancelExpiredBookingsTest extends TestCase
         Mail::fake();
 
         $booking = $this->createBooking([
-            'status' => 'payment_uploaded',
+            'status' => 'confirmed',
+            'payment_receipt' => 'payment_receipts/sample.jpg',
+            'payment_uploaded_at' => now(),
             'payment_deadline' => now()->subDay()->format('Y-m-d'),
         ]);
 
@@ -147,7 +149,8 @@ class CancelExpiredBookingsTest extends TestCase
 
         $booking->refresh();
 
-        $this->assertEquals('payment_uploaded', $booking->status);
+        $this->assertEquals('confirmed', $booking->status);
+        $this->assertTrue($booking->is_payment_uploaded);
         Mail::assertNothingSent();
     }
 

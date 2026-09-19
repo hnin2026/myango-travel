@@ -47,9 +47,9 @@
                                 <td>{{ $booking->ref_code }}</td>
                                 <td>{{ $booking->customer_name }}</td>
                                 <td>{{ $booking->tour?->title ?? 'No Tour Found' }}</td>
-                                <td>{{ $booking->num_persons }}</td>
+                                <td><div>{{ $booking->num_persons + $booking->num_children }}</div></td>
                                 <td>${{ $booking->total_price }}</td>
-                                <td>{{ ucfirst($booking->status) }}</td>
+                                <td>{{ $booking->display_status_label }}</td>
                                 <td>{{ $booking->created_at->format('d M Y') }}</td>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $booking) }}"

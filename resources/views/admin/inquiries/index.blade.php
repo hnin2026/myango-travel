@@ -63,7 +63,7 @@
                                     };
                                 @endphp
                                 <tr>
-                                    <td>{{ $inquiry->id }}</td>
+                                    <td>{{ $inquiries->total() - (($inquiries->currentPage() - 1) * $inquiries->perPage() + $loop->index) }}</td>
                                     <td>
                                         <span class="font-monospace fw-bold text-dark">{{ $inquiry->reference ?? 'INQ-XXXX' }}</span>
                                     </td>

@@ -18,8 +18,8 @@ class DashboardController extends Controller
         // 1. Summary Counts
         $totalBookingsCount = Booking::count();
         $pendingBookingsCount = Booking::where('status', 'pending')->count();
-        $paymentVerificationCount = Booking::where('status', 'payment_uploaded')->count();
-        $confirmedBookingsCount = Booking::where('status', 'confirmed')->count();
+        $paymentVerificationCount = Booking::where('status', 'confirmed')->whereNotNull('payment_receipt')->count();
+        $confirmedBookingsCount = Booking::where('status', 'confirmed')->whereNull('payment_receipt')->count();
         $paidBookingsCount = Booking::where('status', 'paid')->count();
         $cancelledBookingsCount = Booking::where('status', 'cancelled')->count();
         $activeToursCount = Tour::where('status', 'active')->count();

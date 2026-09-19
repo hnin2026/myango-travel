@@ -168,7 +168,9 @@ class CustomerBookingCancellationTest extends TestCase
             'base_price' => 150.00,
             'hotel_upgrade_price' => 0.00,
             'total_price' => 300.00,
-            'status' => 'payment_uploaded',
+            'status' => 'confirmed',
+            'payment_receipt' => 'payment_receipts/sample.jpg',
+            'payment_uploaded_at' => now(),
             'cancellation_token' => 'my-uuid-token-upload',
             'ref_code' => 'MYG-33333',
         ]);
@@ -187,7 +189,8 @@ class CustomerBookingCancellationTest extends TestCase
         $response->assertRedirect(route('booking.cancel.show', 'my-uuid-token-upload'));
 
         $booking = $booking->fresh();
-        $this->assertEquals('payment_uploaded', $booking->status);
+        $this->assertEquals('confirmed', $booking->status);
+        $this->assertTrue($booking->is_payment_uploaded);
         Mail::assertNothingSent();
     }
 

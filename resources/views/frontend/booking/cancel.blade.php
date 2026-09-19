@@ -20,7 +20,7 @@
                     </div>
                 </div>
 
-            @elseif($booking->status === 'payment_uploaded' || $booking->status === 'paid')
+            @elseif($booking->is_payment_uploaded || $booking->status === 'paid')
                 <!-- Payment Processing / Already Paid State -->
                 <div class="alert-card">
                     <div class="alert-card-icon">

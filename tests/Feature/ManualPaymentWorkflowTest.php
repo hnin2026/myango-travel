@@ -196,7 +196,9 @@ class ManualPaymentWorkflowTest extends TestCase
         $response->assertRedirect(route('payment.success'));
         
         $booking = $booking->fresh();
-        $this->assertEquals('payment_uploaded', $booking->status);
+        $this->assertEquals('confirmed', $booking->status);
+        $this->assertTrue($booking->is_payment_uploaded);
+        $this->assertEquals('payment_uploaded', $booking->display_status);
         $this->assertNotNull($booking->payment_receipt);
         $this->assertNotNull($booking->payment_uploaded_at);
 
@@ -303,7 +305,7 @@ class ManualPaymentWorkflowTest extends TestCase
             'base_price' => 150.00,
             'hotel_upgrade_price' => 0.00,
             'total_price' => 300.00,
-            'status' => 'payment_uploaded',
+            'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
@@ -344,7 +346,7 @@ class ManualPaymentWorkflowTest extends TestCase
             'base_price' => 150.00,
             'hotel_upgrade_price' => 0.00,
             'total_price' => 300.00,
-            'status' => 'payment_uploaded',
+            'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
@@ -358,7 +360,10 @@ class ManualPaymentWorkflowTest extends TestCase
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
-        $this->assertEquals('confirmed', $booking->fresh()->status);
+        $freshBooking = $booking->fresh();
+        $this->assertEquals('confirmed', $freshBooking->status);
+        $this->assertNull($freshBooking->payment_receipt);
+        $this->assertNull($freshBooking->payment_uploaded_at);
 
         \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\PaymentRejectedMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&

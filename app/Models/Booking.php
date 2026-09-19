@@ -7,6 +7,20 @@ use App\Models\Hotel;
 use App\Models\TravelPeriod;
 class Booking extends Model
 {
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_PAID = 'paid';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_COMPLETED = 'completed';
+
+    public const STATUSES = [
+        self::STATUS_PENDING,
+        self::STATUS_CONFIRMED,
+        self::STATUS_PAID,
+        self::STATUS_CANCELLED,
+        self::STATUS_COMPLETED,
+    ];
+
     protected $fillable = [
         'tour_id',
         'travel_period_id',
@@ -41,6 +55,24 @@ class Booking extends Model
         'cancelled_at' => 'datetime'
     ];
 
+    public function getIsPaymentUploadedAttribute(): bool
+    {
+        return $this->status === self::STATUS_CONFIRMED && !is_null($this->payment_receipt);
+    }
+
+    public function getDisplayStatusAttribute(): string
+    {
+        return $this->is_payment_uploaded ? 'payment_uploaded' : $this->status;
+    }
+
+    public function getDisplayStatusLabelAttribute(): string
+    {
+        if ($this->is_payment_uploaded) {
+            return 'Payment Uploaded';
+        }
+        return ucfirst($this->status);
+    }
+
     public function tour()
     {
         return $this->belongsTo(Tour::class);
@@ -55,6 +87,4 @@ class Booking extends Model
     {
         return $this->belongsTo(TravelPeriod::class);
     }
-
-    
 }
