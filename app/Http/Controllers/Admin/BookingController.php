@@ -110,6 +110,10 @@ class BookingController extends Controller
             $updateData['payment_uploaded_at'] = null;
         }
 
+        if ($oldStatus === 'pending' && $newStatus === 'confirmed') {
+            $updateData['payment_deadline'] = now()->addDays(7)->format('Y-m-d');
+        }
+
         $booking->update($updateData);
 
         if ($oldStatus === 'pending' && $booking->status === 'confirmed' && !$wasPaymentUploaded) {

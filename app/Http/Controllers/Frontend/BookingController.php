@@ -106,7 +106,6 @@ class BookingController extends Controller
                 'status'              => 'pending',
                 'ref_code'            => 'MYG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4)),
                 'cancellation_token'  => Str::uuid(),
-                'payment_deadline'    => now()->addDays(7),
             ]);
 
             return ['booking' => $booking];

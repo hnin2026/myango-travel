@@ -70,7 +70,6 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'pending',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'test-token-uuid-123',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
         ]);
 
         $response = $this->actingAs($admin)
@@ -79,12 +78,61 @@ class ManualPaymentWorkflowTest extends TestCase
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
-        $this->assertEquals('confirmed', $booking->fresh()->status);
+        $freshBooking = $booking->fresh();
+        $this->assertEquals('confirmed', $freshBooking->status);
+        $this->assertEquals(now()->addDays(7)->format('Y-m-d'), $freshBooking->payment_deadline->format('Y-m-d'));
 
         Mail::assertSent(PaymentRequiredMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
-                   $mail->booking->id === $booking->id;
+                   $mail->booking->id === $booking->id &&
+                   $mail->booking->payment_deadline->format('Y-m-d') === now()->addDays(7)->format('Y-m-d');
         });
+    }
+
+    public function test_payment_deadline_is_null_on_creation_and_set_on_admin_confirmation(): void
+    {
+        Mail::fake();
+
+        $admin = User::factory()->create();
+
+        // 1. Initial booking creation (status = pending)
+        $booking = Booking::create([
+            'tour_id' => $this->tour->id,
+            'travel_period_id' => $this->travelPeriod->id,
+            'hotel_id' => $this->hotel->id,
+            'customer_name' => 'Jane Customer',
+            'nationality' => 'Myanmar',
+            'email' => 'janecustomer@example.com',
+            'phone' => '0912345678',
+            'num_persons' => 2,
+            'checkin_date' => now()->addDays(10)->format('Y-m-d'),
+            'checkout_date' => now()->addDays(13)->format('Y-m-d'),
+            'base_price' => 150.00,
+            'hotel_upgrade_price' => 0.00,
+            'total_price' => 300.00,
+            'status' => 'pending',
+            'ref_code' => 'MYG-999999',
+            'cancellation_token' => 'test-token-uuid-999',
+        ]);
+
+        $this->assertEquals('pending', $booking->status);
+        $this->assertNull($booking->payment_deadline, 'Payment deadline must be null on pending booking creation.');
+
+        // 2. Admin confirms booking 3 days later (simulated)
+        $this->travelTo(now()->addDays(3));
+
+        $response = $this->actingAs($admin)
+            ->put(route('admin.bookings.update', $booking), [
+                'status' => 'confirmed'
+            ]);
+
+        $response->assertRedirect(route('admin.bookings.show', $booking));
+
+        $freshBooking = $booking->fresh();
+        $expectedDeadline = now()->addDays(7)->format('Y-m-d'); // 7 days after confirmation date
+        $this->assertEquals('confirmed', $freshBooking->status);
+        $this->assertNotNull($freshBooking->payment_deadline);
+        $this->assertEquals($expectedDeadline, $freshBooking->payment_deadline->format('Y-m-d'));
     }
 
     public function test_email_is_not_sent_when_status_changes_to_something_else(): void

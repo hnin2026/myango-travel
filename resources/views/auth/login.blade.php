@@ -4,6 +4,20 @@
 
         @csrf
 
+        {{-- INVALID CREDENTIALS / AUTH ERROR NOTICE --}}
+        @if ($errors->any())
+            <div class="auth-error-notice" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <div>
+                    @if ($errors->has('email') && ($errors->first('email') === __('auth.failed') || $errors->first('email') === 'These credentials do not match our records.' || $errors->first('email') === 'The provided credentials are incorrect.'))
+                        The provided credentials are incorrect.
+                    @else
+                        {{ $errors->first('email') ?: $errors->first('password') ?: $errors->first() }}
+                    @endif
+                </div>
+            </div>
+        @endif
+
         {{-- EMAIL --}}
         <div>
 
@@ -20,12 +34,15 @@
                 autofocus
                 autocomplete="username"
                 placeholder="Enter your email"
+                class="{{ $errors->has('email') ? 'is-invalid' : '' }}"
             >
 
             @error('email')
-                <div class="text-danger mt-1">
-                    {{ $message }}
-                </div>
+                @if ($message !== __('auth.failed') && $message !== 'These credentials do not match our records.' && $message !== 'The provided credentials are incorrect.')
+                    <div class="auth-field-error">
+                        {{ $message }}
+                    </div>
+                @endif
             @enderror
 
         </div>
@@ -46,6 +63,7 @@
                     required
                     autocomplete="current-password"
                     placeholder="Enter your password"
+                    class="{{ $errors->has('password') || ($errors->has('email') && ($errors->first('email') === __('auth.failed') || $errors->first('email') === 'These credentials do not match our records.' || $errors->first('email') === 'The provided credentials are incorrect.')) ? 'is-invalid' : '' }}"
                 >
 
                 <i
@@ -56,7 +74,7 @@
             </div>
 
             @error('password')
-                <div class="text-danger mt-1">
+                <div class="auth-field-error">
                     {{ $message }}
                 </div>
             @enderror

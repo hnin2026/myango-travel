@@ -220,3 +220,50 @@ body {
 .btn-primary:hover {
     background: #4B5694;
 }
+
+/* =========================
+   AUTHENTICATION ALERT NOTICE
+   ========================= */
+
+.auth-error-notice {
+    background-color: #fef2f2;
+    border: 1px solid #f87171;
+    color: #991b1b;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08);
+    transition: all 0.3s ease;
+}
+
+.auth-error-notice i {
+    font-size: 20px;
+    color: #dc2626;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.auth-card input.is-invalid {
+    border-color: #ef4444 !important;
+    background-color: #fff8f8;
+}
+
+.auth-card input.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+}
+
+.auth-field-error {
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: -10px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
