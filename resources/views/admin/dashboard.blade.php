@@ -374,7 +374,7 @@
                                                 <span class="small">{{ \Carbon\Carbon::parse($booking->checkin_date)->format('d M Y') }}</span>
                                             </td>
                                             <td><span class="fw-bold text-dark">${{ number_format($booking->total_price, 2) }}</span></td>
-                                            <td>
+                                             <td>
                                                 @if($booking->status === 'pending')
                                                     <span class="badge bg-warning-subtle text-warning rounded-pill px-3">Pending</span>
                                                 @elseif($booking->is_payment_uploaded)
@@ -383,6 +383,8 @@
                                                     <span class="badge bg-info-subtle text-info rounded-pill px-3">Confirmed</span>
                                                 @elseif($booking->status === 'paid')
                                                     <span class="badge bg-success-subtle text-success rounded-pill px-3">Paid</span>
+                                                @elseif($booking->status === 'completed')
+                                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3">Completed</span>
                                                 @else
                                                     <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Cancelled</span>
                                                 @endif
@@ -459,6 +461,17 @@
                                 </div>
                                 <div class="progress" style="height: 8px; border-radius: 4px; background-color: rgba(17,24,68,0.05);">
                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ $statusDistribution['paid'] }}%; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+
+                            {{-- Completed Progress Bar --}}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small fw-semibold text-dark">Completed</span>
+                                    <span class="small text-muted">{{ $completedBookingsCount }} ({{ number_format($statusDistribution['completed'], 1) }}%)</span>
+                                </div>
+                                <div class="progress" style="height: 8px; border-radius: 4px; background-color: rgba(17,24,68,0.05);">
+                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $statusDistribution['completed'] }}%; border-radius: 4px;"></div>
                                 </div>
                             </div>
 

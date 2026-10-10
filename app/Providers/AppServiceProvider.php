@@ -27,10 +27,15 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('frontend.partials.navbar', function ($view) {
             $destinations = Tour::where('status', 'active')
+                ->whereNotNull('location')
+                ->where('location', '!=', '')
                 ->select('location')
                 ->distinct()
                 ->orderBy('location')
-                ->pluck('location');
+                ->pluck('location')
+                ->map(fn ($dest) => trim($dest))
+                ->unique(fn ($dest) => strtolower($dest))
+                ->values();
             $view->with('navbarDestinations', $destinations);
         });
     }

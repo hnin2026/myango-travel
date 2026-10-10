@@ -120,6 +120,13 @@
         border: none !important;
     }
 
+    .nav-links .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
     .nav-links .dropdown-item {
         font-size: 14px !important;
         padding: 10px 16px !important;

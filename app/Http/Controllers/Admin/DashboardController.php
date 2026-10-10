@@ -21,6 +21,7 @@ class DashboardController extends Controller
         $paymentVerificationCount = Booking::where('status', 'confirmed')->whereNotNull('payment_receipt')->count();
         $confirmedBookingsCount = Booking::where('status', 'confirmed')->whereNull('payment_receipt')->count();
         $paidBookingsCount = Booking::where('status', 'paid')->count();
+        $completedBookingsCount = Booking::where('status', 'completed')->count();
         $cancelledBookingsCount = Booking::where('status', 'cancelled')->count();
         $activeToursCount = Tour::where('status', 'active')->count();
         $newInquiriesCount = Inquiry::where('status', 'new')->count();
@@ -70,6 +71,7 @@ class DashboardController extends Controller
             'confirmed' => $totalBookingsCount > 0 ? ($confirmedBookingsCount / $totalBookingsCount) * 100 : 0,
             'payment_uploaded' => $totalBookingsCount > 0 ? ($paymentVerificationCount / $totalBookingsCount) * 100 : 0,
             'paid' => $totalBookingsCount > 0 ? ($paidBookingsCount / $totalBookingsCount) * 100 : 0,
+            'completed' => $totalBookingsCount > 0 ? ($completedBookingsCount / $totalBookingsCount) * 100 : 0,
             'cancelled' => $totalBookingsCount > 0 ? ($cancelledBookingsCount / $totalBookingsCount) * 100 : 0,
         ];
 
@@ -79,6 +81,7 @@ class DashboardController extends Controller
             'paymentVerificationCount',
             'confirmedBookingsCount',
             'paidBookingsCount',
+            'completedBookingsCount',
             'cancelledBookingsCount',
             'activeToursCount',
             'newInquiriesCount',

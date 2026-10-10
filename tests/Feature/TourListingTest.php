@@ -311,4 +311,46 @@ class TourListingTest extends TestCase
         $response->assertSee('nav-mobile-toggle');
         $response->assertSee('toggleMobileMenu');
     }
+
+    /**
+     * Test destinations dropdown deduplicates and sorts locations alphabetically with proper links.
+     */
+    public function test_destinations_dropdown_deduplicates_and_sorts_alphabetically(): void
+    {
+        Tour::create([
+            'title' => 'Yangon Tour 1',
+            'duration_days' => 2,
+            'location' => 'Yangon',
+            'status' => 'active',
+        ]);
+        Tour::create([
+            'title' => 'Bagan Tour 1',
+            'duration_days' => 3,
+            'location' => 'Bagan',
+            'status' => 'active',
+        ]);
+        Tour::create([
+            'title' => 'Bagan Tour 2',
+            'duration_days' => 4,
+            'location' => 'bagan ',
+            'status' => 'active',
+        ]);
+
+        $response = $this->get(route('home'));
+        $response->assertStatus(200);
+
+        $html = $response->getContent();
+
+        // Check links exist for filtering
+        $response->assertSee(route('tours.index', ['destination' => 'Bagan']));
+        $response->assertSee(route('tours.index', ['destination' => 'Yangon']));
+
+        // Check order: Bagan should come before Yangon in dropdown
+        $baganPos = strpos($html, route('tours.index', ['destination' => 'Bagan']));
+        $yangonPos = strpos($html, route('tours.index', ['destination' => 'Yangon']));
+
+        $this->assertNotFalse($baganPos);
+        $this->assertNotFalse($yangonPos);
+        $this->assertTrue($baganPos < $yangonPos, 'Bagan should be listed before Yangon alphabetically');
+    }
 }

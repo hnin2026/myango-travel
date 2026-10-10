@@ -108,6 +108,8 @@
                             <label class="text-muted small fw-bold text-uppercase d-block mb-1">Booking Status</label>
                             @if($booking->is_payment_uploaded)
                                 <span class="badge bg-primary fs-6">Payment Uploaded</span>
+                            @elseif($booking->status === 'completed')
+                                <span class="badge bg-info fs-6">Completed</span>
                             @else
                                 <span class="badge bg-{{ $booking->status == 'confirmed' || $booking->status == 'paid' ? 'success' : ($booking->status == 'cancelled' ? 'danger' : 'warning') }} fs-6">
                                     {{ ucfirst($booking->status) }}
@@ -144,6 +146,13 @@
                         </div>
                     @endif
 
+                    @if($booking->status === 'completed')
+                        <div class="alert alert-info mb-0">
+                            <h5 class="alert-heading fw-bold"><i class="bi bi-check-circle-fill me-2"></i>Tour Completed</h5>
+                            <p class="mb-0">This booking has finished and is automatically marked as completed.</p>
+                        </div>
+                    @endif
+
                     @if($booking->status === 'cancelled')
                         <div class="alert alert-danger mb-0">
                             <h5 class="alert-heading fw-bold"><i class="bi bi-x-circle-fill me-2"></i>Booking Cancelled</h5>
@@ -153,7 +162,7 @@
                         </div>
                     @endif
 
-                    @if($booking->status !== 'cancelled')
+                    @if($booking->status !== 'cancelled' && $booking->status !== 'completed')
                         <h5 class="card-title fw-bold mb-3" style="color: #111844;"><i class="bi bi-sliders me-2"></i>Administrative Actions</h5>
                         <div class="d-flex gap-2 align-items-center flex-wrap">
                             @if($booking->status == 'pending')

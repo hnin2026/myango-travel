@@ -11,25 +11,28 @@
         <div class="nav-links" id="navLinks">
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('tours.index') }}">Tours</a>
-            <div class="dropdown d-inline">
-    <a href="#" class="dropdown-toggle {{ request('destination') ? 'active-dest' : '' }}" id="destinationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        Destinations
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="destinationsDropdown">
-        <li>
-            <a class="dropdown-item {{ !request('destination') && request()->routeIs('tours.index') ? 'active' : '' }}" href="{{ route('tours.index') }}">
-                All Destinations
-            </a>
-        </li>
-        @foreach($navbarDestinations ?? [] as $dest)
-            <li>
-                <a class="dropdown-item {{ strtolower(request('destination')) === strtolower($dest) ? 'active' : '' }}" href="{{ route('tours.index', ['destination' => $dest]) }}">
-                    {{ $dest }}
+            <div class="dropdown d-inline nav-destinations-dropdown">
+                <a href="#" class="dropdown-toggle {{ request('destination') ? 'active-dest' : '' }}" id="destinationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Destinations
                 </a>
-            </li>
-        @endforeach
-    </ul>
-</div>
+                <ul class="dropdown-menu dropdown-menu-start border-0 shadow-sm" aria-labelledby="destinationsDropdown">
+                    <li>
+                        <a class="dropdown-item {{ !request('destination') && request()->routeIs('tours.index') ? 'active' : '' }}" href="{{ route('tours.index') }}">
+                            <i class="bi bi-grid-fill me-2 opacity-75"></i>All Destinations
+                        </a>
+                    </li>
+                    @if(count($navbarDestinations ?? []) > 0)
+                        <li><hr class="dropdown-divider my-1 opacity-10"></li>
+                    @endif
+                    @foreach($navbarDestinations ?? [] as $dest)
+                        <li>
+                            <a class="dropdown-item {{ strtolower(request('destination')) === strtolower($dest) ? 'active' : '' }}" href="{{ route('tours.index', ['destination' => $dest]) }}">
+                                <i class="bi bi-geo-alt-fill me-2 opacity-75"></i>{{ $dest }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
             <a href="{{ route('home') }}#contact">Contact</a>
         </div>
 
@@ -67,4 +70,23 @@
             menu.classList.toggle('show');
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdown = document.querySelector('.nav-links .dropdown');
+        if (!dropdown) return;
+
+        dropdown.addEventListener('mouseleave', function () {
+            if (window.innerWidth >= 769) {
+                var toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                var menu = dropdown.querySelector('.dropdown-menu');
+                if (menu && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                    if (toggle) {
+                        toggle.classList.remove('show');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            }
+        });
+    });
 </script>

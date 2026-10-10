@@ -34,6 +34,15 @@ class BookingController extends Controller
             });
         }
 
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            if ($status === 'payment_uploaded') {
+                $query->where('status', 'confirmed')->whereNotNull('payment_receipt');
+            } elseif (in_array($status, Booking::STATUSES)) {
+                $query->where('status', $status);
+            }
+        }
+
         $bookings = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.bookings.index', compact('bookings'));
