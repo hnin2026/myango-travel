@@ -136,7 +136,7 @@
 
                                     <div class="booking-field">
                                         <button type="submit" class="confirm-booking-btn">
-                                            Confirm Booking
+                                            Send Booking
                                         </button>
                                     </div>
 

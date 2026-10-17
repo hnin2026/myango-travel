@@ -80,12 +80,12 @@ class ManualPaymentWorkflowTest extends TestCase
         $response->assertRedirect(route('admin.bookings.show', $booking));
         $freshBooking = $booking->fresh();
         $this->assertEquals('confirmed', $freshBooking->status);
-        $this->assertEquals(now()->addDays(7)->format('Y-m-d'), $freshBooking->payment_deadline->format('Y-m-d'));
+        $this->assertEquals(now()->addWeekdays(7)->format('Y-m-d'), $freshBooking->payment_deadline->format('Y-m-d'));
 
         Mail::assertSent(PaymentRequiredMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id &&
-                   $mail->booking->payment_deadline->format('Y-m-d') === now()->addDays(7)->format('Y-m-d');
+                   $mail->booking->payment_deadline->format('Y-m-d') === now()->addWeekdays(7)->format('Y-m-d');
         });
     }
 
@@ -129,7 +129,7 @@ class ManualPaymentWorkflowTest extends TestCase
         $response->assertRedirect(route('admin.bookings.show', $booking));
 
         $freshBooking = $booking->fresh();
-        $expectedDeadline = now()->addDays(7)->format('Y-m-d'); // 7 days after confirmation date
+        $expectedDeadline = now()->addWeekdays(7)->format('Y-m-d'); // 7 business days after confirmation date
         $this->assertEquals('confirmed', $freshBooking->status);
         $this->assertNotNull($freshBooking->payment_deadline);
         $this->assertEquals($expectedDeadline, $freshBooking->payment_deadline->format('Y-m-d'));

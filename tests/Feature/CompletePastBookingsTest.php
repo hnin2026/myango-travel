@@ -231,11 +231,6 @@ class CompletePastBookingsTest extends TestCase
         $indexResponse->assertSee('Completed Tour Guest');
         $indexResponse->assertSee('Completed');
 
-        // Admin index list page with status filter
-        $filterResponse = $this->actingAs($this->admin)->get(route('admin.bookings.index', ['status' => 'completed']));
-        $filterResponse->assertStatus(200);
-        $filterResponse->assertSee('Completed Tour Guest');
-
         // Admin show page
         $showResponse = $this->actingAs($this->admin)->get(route('admin.bookings.show', $booking));
         $showResponse->assertStatus(200);

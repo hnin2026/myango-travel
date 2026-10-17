@@ -42,6 +42,7 @@ class Booking extends Model
         'ref_code',
         'cancellation_token',
         'payment_deadline',
+        'payment_reminder_sent_at',
         'payment_receipt',
         'payment_uploaded_at',
         'cancelled_by',
@@ -51,6 +52,7 @@ class Booking extends Model
 
     protected $casts = [
         'payment_deadline' => 'date',
+        'payment_reminder_sent_at' => 'datetime',
         'payment_uploaded_at' => 'datetime',
         'cancelled_at' => 'datetime'
     ];
@@ -70,7 +72,20 @@ class Booking extends Model
         if ($this->is_payment_uploaded) {
             return 'Payment Uploaded';
         }
+        if ($this->status === self::STATUS_CANCELLED && $this->cancelled_by === 'system') {
+            return 'Cancelled (System)';
+        }
         return ucfirst($this->status);
+    }
+
+    /**
+     * Calculate a payment deadline of seven business days (excluding Saturdays and Sundays),
+     * counting starting from the day after the booking confirmation date.
+     */
+    public static function calculatePaymentDeadline(\DateTimeInterface|string|null $fromDate = null): \Carbon\Carbon
+    {
+        $start = $fromDate ? \Carbon\Carbon::parse($fromDate) : now();
+        return $start->copy()->addWeekdays(7);
     }
 
     public function tour()

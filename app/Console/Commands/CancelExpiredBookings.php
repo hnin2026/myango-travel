@@ -28,10 +28,10 @@ class CancelExpiredBookings extends Command
      */
     public function handle()
     {
-        $now = now();
+        $today = now()->toDateString();
 
-        // 1. Expired bookings are all bookings with status = confirmed, a payment deadline, and deadline < current date/time
-        // Bookings that are skipped include confirmed bookings with deadlines in the future.
+        // 1. Expired bookings are all bookings with status = confirmed, a payment deadline, and deadline date strictly before today.
+        // Bookings whose deadline is today (or in the future) are not expired yet.
         // Get total number of confirmed bookings with deadlines to calculate checked & skipped correctly.
         $checked = Booking::where('status', 'confirmed')
             ->whereNull('payment_receipt')
@@ -44,7 +44,7 @@ class CancelExpiredBookings extends Command
         Booking::where('status', 'confirmed')
             ->whereNull('payment_receipt')
             ->whereNotNull('payment_deadline')
-            ->where('payment_deadline', '<', $now)
+            ->whereDate('payment_deadline', '<', $today)
             ->chunkById(100, function ($bookings) use (&$cancelled) {
                 foreach ($bookings as $booking) {
                     // Update cancellation details

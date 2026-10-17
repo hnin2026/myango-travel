@@ -34,18 +34,29 @@ class BookingController extends Controller
             });
         }
 
-        if ($request->filled('status')) {
-            $status = $request->input('status');
-            if ($status === 'payment_uploaded') {
-                $query->where('status', 'confirmed')->whereNotNull('payment_receipt');
-            } elseif (in_array($status, Booking::STATUSES)) {
-                $query->where('status', $status);
+        $selectedFilter = $request->input('filter', $request->input('status', ''));
+
+        if (!empty($selectedFilter)) {
+            if ($selectedFilter === 'system_cancelled') {
+                $query->where('status', 'cancelled')
+                      ->where('cancelled_by', 'system');
+            } elseif ($selectedFilter === 'customer_cancelled') {
+                $query->where('status', 'cancelled')
+                      ->where('cancelled_by', 'customer');
+            } elseif ($selectedFilter === 'admin_cancelled') {
+                $query->where('status', 'cancelled')
+                      ->where('cancelled_by', 'admin');
+            } elseif ($selectedFilter === 'payment_uploaded') {
+                $query->where('status', 'confirmed')
+                      ->whereNotNull('payment_receipt');
+            } elseif (in_array($selectedFilter, Booking::STATUSES)) {
+                $query->where('status', $selectedFilter);
             }
         }
 
         $bookings = $query->latest()->paginate(10)->withQueryString();
 
-        return view('admin.bookings.index', compact('bookings'));
+        return view('admin.bookings.index', compact('bookings', 'selectedFilter'));
     }
 
     /**
@@ -120,7 +131,7 @@ class BookingController extends Controller
         }
 
         if ($oldStatus === 'pending' && $newStatus === 'confirmed') {
-            $updateData['payment_deadline'] = now()->addDays(7)->format('Y-m-d');
+            $updateData['payment_deadline'] = Booking::calculatePaymentDeadline()->format('Y-m-d');
         }
 
         $booking->update($updateData);

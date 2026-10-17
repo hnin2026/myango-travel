@@ -5,21 +5,13 @@
                 <h1 class="page-title mb-1">Booking Management</h1>
             </div>
             <form action="{{ route('admin.bookings.index') }}" method="GET" class="d-flex gap-2">
-                <select name="status" class="form-select" style="width: 170px; height: 40px;" onchange="this.form.submit()">
-                    <option value="">All Statuses</option>
-                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="confirmed" {{ request('status') === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                    <option value="payment_uploaded" {{ request('status') === 'payment_uploaded' ? 'selected' : '' }}>Payment Uploaded</option>
-                    <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Paid</option>
-                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                </select>
+            
                 <input type="text" 
                        name="search" 
                        class="form-control" 
                        placeholder="Search booking..." 
                        value="{{ request('search') }}"
-                       style="width: 220px; height: 40px;">
+                       style="width: 220px; height: 40px; font-size: 0.85rem;">
                 <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Search" style="height: 40px; width: 40px;">
                     <i class="bi bi-search"></i>
                 </button>

@@ -110,8 +110,12 @@
                                 <span class="badge bg-primary fs-6">Payment Uploaded</span>
                             @elseif($booking->status === 'completed')
                                 <span class="badge bg-info fs-6">Completed</span>
+                            @elseif($booking->status === 'cancelled')
+                                <span class="badge bg-danger fs-6">
+                                    {{ $booking->cancelled_by === 'system' ? 'Cancelled (System)' : 'Cancelled' }}
+                                </span>
                             @else
-                                <span class="badge bg-{{ $booking->status == 'confirmed' || $booking->status == 'paid' ? 'success' : ($booking->status == 'cancelled' ? 'danger' : 'warning') }} fs-6">
+                                <span class="badge bg-{{ $booking->status == 'confirmed' || $booking->status == 'paid' ? 'success' : 'warning' }} fs-6">
                                     {{ ucfirst($booking->status) }}
                                 </span>
                             @endif
@@ -155,8 +159,24 @@
 
                     @if($booking->status === 'cancelled')
                         <div class="alert alert-danger mb-0">
-                            <h5 class="alert-heading fw-bold"><i class="bi bi-x-circle-fill me-2"></i>Booking Cancelled</h5>
-                            <p class="mb-1"><strong>Cancelled By:</strong> {{ ucfirst($booking->cancelled_by ?? 'System') }}</p>
+                            <h5 class="alert-heading fw-bold d-flex align-items-center gap-2">
+                                <i class="bi bi-x-circle-fill me-1"></i>
+                                @if($booking->cancelled_by === 'system')
+                                    <span>Automatically Cancelled by System</span>
+                                @else
+                                    <span>Booking Cancelled</span>
+                                @endif
+                            </h5>
+                            <p class="mb-1">
+                                <strong>Cancelled By:</strong>
+                                @if($booking->cancelled_by === 'system')
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold">
+                                        <i class="bi bi-gear-fill me-1"></i>Automatically cancelled by system
+                                    </span>
+                                @else
+                                    <span>{{ ucfirst($booking->cancelled_by ?? 'N/A') }}</span>
+                                @endif
+                            </p>
                             <p class="mb-1"><strong>Cancelled At:</strong> {{ $booking->cancelled_at ? $booking->cancelled_at->format('F d, Y H:i:s') : 'N/A' }}</p>
                             <p class="mb-0"><strong>Reason:</strong> {{ $booking->cancel_reason ?? 'No reason specified' }}</p>
                         </div>

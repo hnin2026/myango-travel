@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule): void {
+        $schedule->command('bookings:send-payment-reminders')->daily();
         $schedule->command('bookings:cancel-expired')->daily();
         $schedule->command('bookings:complete-past')->daily();
     })->create();

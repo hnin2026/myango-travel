@@ -128,6 +128,32 @@ class CancelExpiredBookingsTest extends TestCase
     }
 
     /**
+     * TEST: status = confirmed, payment_deadline = today (on deadline date) is NOT cancelled.
+     */
+    public function test_confirmed_booking_on_deadline_date_is_not_cancelled(): void
+    {
+        Mail::fake();
+
+        $booking = $this->createBooking([
+            'status' => 'confirmed',
+            'payment_deadline' => now()->format('Y-m-d'),
+        ]);
+
+        $this->artisan('bookings:cancel-expired')
+            ->expectsOutputToContain('Expired bookings checked: 1')
+            ->expectsOutputToContain('Bookings cancelled: 0')
+            ->expectsOutputToContain('Bookings skipped: 1')
+            ->assertExitCode(0);
+
+        $booking->refresh();
+
+        $this->assertEquals('confirmed', $booking->status);
+        $this->assertNull($booking->cancelled_by);
+
+        Mail::assertNothingSent();
+    }
+
+    /**
      * TEST 3: status = payment_uploaded, payment_deadline = yesterday remains payment_uploaded, no automatic cancellation.
      */
     public function test_expired_payment_uploaded_booking_remains_unchanged(): void

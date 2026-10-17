@@ -23,6 +23,7 @@ class DashboardController extends Controller
         $paidBookingsCount = Booking::where('status', 'paid')->count();
         $completedBookingsCount = Booking::where('status', 'completed')->count();
         $cancelledBookingsCount = Booking::where('status', 'cancelled')->count();
+        $systemCancelledBookingsCount = Booking::where('status', 'cancelled')->where('cancelled_by', 'system')->count();
         $activeToursCount = Tour::where('status', 'active')->count();
         $newInquiriesCount = Inquiry::where('status', 'new')->count();
 
@@ -83,6 +84,7 @@ class DashboardController extends Controller
             'paidBookingsCount',
             'completedBookingsCount',
             'cancelledBookingsCount',
+            'systemCancelledBookingsCount',
             'activeToursCount',
             'newInquiriesCount',
             'actionItems',
