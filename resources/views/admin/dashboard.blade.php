@@ -272,26 +272,6 @@
                 </div>
             </div>
 
-            {{-- System Expired Bookings --}}
-            <div class="col-xl-3 col-md-6">
-                <a href="{{ route('admin.bookings.index', ['filter' => 'system_cancelled']) }}" class="text-decoration-none">
-                    <div class="card h-100 border-0 shadow-sm custom-stat-card" style="border-radius: 16px;">
-                        <div class="card-body p-3 d-flex align-items-center gap-3">
-                            <div class="stat-icon bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; flex-shrink: 0;">
-                                <i class="bi bi-clock-history fs-4"></i>
-                            </div>
-                            <div>
-                                <span class="text-muted text-uppercase fw-bold small d-block" style="font-size: 11px; letter-spacing: 0.5px;">System Expired</span>
-                                <div class="d-flex align-items-center gap-2 mt-1">
-                                    <h3 class="fw-bold mb-0 text-danger">{{ $systemCancelledBookingsCount }}</h3>
-                                    <span class="badge bg-light text-muted border" style="font-size: 10px;">View Filtered &rarr;</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
             {{-- Active Tours --}}
             <div class="col-xl-3 col-md-6">
                 <div class="card h-100 border-0 shadow-sm custom-stat-card" style="border-radius: 16px;">
