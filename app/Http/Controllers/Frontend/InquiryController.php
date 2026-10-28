@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminInquirySubmittedMail;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
-
-use App\Mail\AdminInquirySubmittedMail;
 use Illuminate\Support\Facades\Mail;
 
 class InquiryController extends Controller
@@ -14,17 +13,17 @@ class InquiryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tour_id'       => 'nullable|exists:tours,id',
+            'tour_id' => 'nullable|exists:tours,id',
             'customer_name' => 'required|string|max:255',
-            'nationality'   => 'nullable|string|max:255',
-            'phone'         => 'nullable|string|max:255',
-            'email'         => 'required|email|max:255',
+            'nationality' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255',
             'number_of_adults' => 'required|integer|min:1',
             'number_of_children' => 'nullable|integer|min:0',
-            'child_ages'         => 'nullable',
-            'checkin_date'  => 'nullable|date',
+            'child_ages' => 'nullable',
+            'checkin_date' => 'nullable|date',
             'checkout_date' => 'nullable|date|after_or_equal:checkin_date',
-            'message'       => 'nullable|string',
+            'message' => 'nullable|string',
         ], [
             'checkout_date.after_or_equal' => 'The check-out date must be on or after the check-in date.',
         ]);
@@ -32,25 +31,25 @@ class InquiryController extends Controller
         $childAgesInput = $request->child_ages;
         $childAgesStr = null;
         if (is_array($childAgesInput)) {
-            $filtered = array_filter($childAgesInput, fn($v) => $v !== null && $v !== '');
-            $childAgesStr = !empty($filtered) ? implode(', ', $filtered) : null;
+            $filtered = array_filter($childAgesInput, fn ($v) => $v !== null && $v !== '');
+            $childAgesStr = ! empty($filtered) ? implode(', ', $filtered) : null;
         } elseif (is_string($childAgesInput) && trim($childAgesInput) !== '') {
             $childAgesStr = trim($childAgesInput);
         }
 
         $inquiry = Inquiry::create([
-            'tour_id'       => $request->tour_id,
+            'tour_id' => $request->tour_id,
             'customer_name' => $request->customer_name,
-            'nationality'   => $request->nationality,
-            'email'         => $request->email,
-            'phone'         => $request->phone,
+            'nationality' => $request->nationality,
+            'email' => $request->email,
+            'phone' => $request->phone,
             'number_of_adults' => $request->number_of_adults,
             'number_of_children' => $request->number_of_children ?? 0,
-            'child_ages'    => $childAgesStr,
-            'checkin_date'  => $request->checkin_date,
+            'child_ages' => $childAgesStr,
+            'checkin_date' => $request->checkin_date,
             'checkout_date' => $request->checkout_date,
-            'message'       => $request->message,
-            'status'        => 'new',
+            'message' => $request->message,
+            'status' => 'new',
         ]);
 
         try {
@@ -58,7 +57,7 @@ class InquiryController extends Controller
             Mail::to($adminEmail)->send(new AdminInquirySubmittedMail($inquiry));
         } catch (\Exception $e) {
             // Log or ignore email sending errors in local environment to prevent crash
-            logger()->error('Failed sending admin inquiry email: ' . $e->getMessage());
+            logger()->error('Failed sending admin inquiry email: '.$e->getMessage());
         }
 
         return redirect()->route('inquiry.success', $inquiry->id);

@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+use App\Mail\AdminInquirySubmittedMail;
+use App\Mail\BookingSubmittedMail;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Inquiry;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,13 +23,13 @@ class BookingSuccessPageTest extends TestCase
             'duration_days' => 3,
             'base_price' => 150.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $hotel = Hotel::create([
             'name' => 'Lotte Hotel Yangon',
             'category' => '5-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $travelPeriod = TravelPeriod::create([
@@ -35,7 +37,7 @@ class BookingSuccessPageTest extends TestCase
             'start_date' => now()->addDays(10),
             'end_date' => now()->addDays(13),
             'total_seats' => 10,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
 
         $booking = Booking::create([
@@ -55,7 +57,7 @@ class BookingSuccessPageTest extends TestCase
             'status' => 'pending',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'test-token-uuid-123',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
         $response = $this->get(route('booking.success', $booking));
@@ -72,13 +74,13 @@ class BookingSuccessPageTest extends TestCase
             'duration_days' => 3,
             'base_price' => 200.00,
             'location' => 'Bagan',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $hotel = Hotel::create([
             'name' => 'Bagan Heritage Hotel',
             'category' => '4-star',
-            'location' => 'Bagan'
+            'location' => 'Bagan',
         ]);
 
         $travelPeriod = TravelPeriod::create([
@@ -86,7 +88,7 @@ class BookingSuccessPageTest extends TestCase
             'start_date' => '2026-04-01',
             'end_date' => '2026-04-10',
             'total_seats' => 5,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
 
         $response = $this->post(route('booking.store', $tour), [
@@ -100,11 +102,11 @@ class BookingSuccessPageTest extends TestCase
             'customer_name' => 'Test User',
             'email' => 'test@example.com',
             'phone' => '12345678',
-            'message' => 'Hello'
+            'message' => 'Hello',
         ]);
 
         $response->assertRedirect();
-        
+
         // Find the created booking
         $booking = Booking::where('customer_name', 'Test User')->first();
         $this->assertNotNull($booking);
@@ -116,7 +118,7 @@ class BookingSuccessPageTest extends TestCase
         // Follow redirect or get the success page
         $successResponse = $this->get(route('booking.success', $booking));
         $successResponse->assertStatus(200);
-        
+
         // Check that the correct price is displayed
         $successResponse->assertSee('$600.00');
     }
@@ -128,13 +130,13 @@ class BookingSuccessPageTest extends TestCase
             'duration_days' => 2,
             'base_price' => 120.00,
             'location' => 'Mandalay',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $hotel = Hotel::create([
             'name' => 'Mandalay Hill Resort',
             'category' => '5-star',
-            'location' => 'Mandalay'
+            'location' => 'Mandalay',
         ]);
 
         $travelPeriod = TravelPeriod::create([
@@ -142,7 +144,7 @@ class BookingSuccessPageTest extends TestCase
             'start_date' => now()->addDays(5),
             'end_date' => now()->addDays(7),
             'total_seats' => 10,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
 
         $booking = Booking::create([
@@ -162,10 +164,10 @@ class BookingSuccessPageTest extends TestCase
             'status' => 'pending',
             'ref_code' => 'MYG-999999',
             'cancellation_token' => 'uuid-token-alice',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
-        $mailable = new \App\Mail\BookingSubmittedMail($booking);
+        $mailable = new BookingSubmittedMail($booking);
         $html = $mailable->render();
 
         // Check content elements
@@ -186,17 +188,17 @@ class BookingSuccessPageTest extends TestCase
 
     public function test_admin_inquiry_submitted_email_renders_with_redesign_styles(): void
     {
-        $inquiry = \App\Models\Inquiry::create([
+        $inquiry = Inquiry::create([
             'customer_name' => 'Bob Brown',
             'email' => 'bob@example.com',
             'phone' => '111222333',
             'number_of_adults' => 3,
             'number_of_children' => 0,
             'message' => 'Hello, I want to book a private customized tour for 3 adults.',
-            'status' => 'new'
+            'status' => 'new',
         ]);
 
-        $mailable = new \App\Mail\AdminInquirySubmittedMail($inquiry);
+        $mailable = new AdminInquirySubmittedMail($inquiry);
         $html = $mailable->render();
 
         // Check content elements

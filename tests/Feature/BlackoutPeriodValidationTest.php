@@ -14,6 +14,7 @@ class BlackoutPeriodValidationTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private Tour $tour;
 
     protected function setUp(): void
@@ -21,25 +22,25 @@ class BlackoutPeriodValidationTest extends TestCase
         parent::setUp();
 
         $this->admin = User::create([
-            'name'     => 'Admin User',
-            'email'    => 'admin@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role'     => 'admin',
+            'role' => 'admin',
         ]);
 
         $this->tour = Tour::create([
-            'title'         => 'Bagan Temple Tour',
+            'title' => 'Bagan Temple Tour',
             'duration_days' => 3,
-            'base_price'    => 200.00,
-            'location'      => 'Bagan',
-            'status'        => 'active',
+            'base_price' => 200.00,
+            'location' => 'Bagan',
+            'status' => 'active',
         ]);
 
         // Define operating period covering December 2026
         TravelPeriod::create([
-            'tour_id'     => $this->tour->id,
-            'start_date'  => '2026-12-01',
-            'end_date'    => '2026-12-31',
+            'tour_id' => $this->tour->id,
+            'start_date' => '2026-12-01',
+            'end_date' => '2026-12-31',
             'total_seats' => 20,
             'booked_seats' => 0,
         ]);
@@ -55,15 +56,15 @@ class BlackoutPeriodValidationTest extends TestCase
             route('admin.tours.blackouts.store', $this->tour),
             [
                 'start_date' => '2026-12-25',
-                'end_date'   => '2026-12-01',
+                'end_date' => '2026-12-01',
             ]
         );
 
         $response->assertSessionHasErrors(['end_date']);
         $this->assertDatabaseMissing('tour_blackout_periods', [
-            'tour_id'    => $this->tour->id,
+            'tour_id' => $this->tour->id,
             'start_date' => '2026-12-25 00:00:00',
-            'end_date'   => '2026-12-01 00:00:00',
+            'end_date' => '2026-12-01 00:00:00',
         ]);
     }
 
@@ -77,15 +78,15 @@ class BlackoutPeriodValidationTest extends TestCase
             route('admin.tours.blackouts.store', $this->tour),
             [
                 'start_date' => '2026-12-01',
-                'end_date'   => '2026-12-25',
+                'end_date' => '2026-12-25',
             ]
         );
 
         $response->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
         $this->assertDatabaseHas('tour_blackout_periods', [
-            'tour_id'    => $this->tour->id,
+            'tour_id' => $this->tour->id,
             'start_date' => '2026-12-01 00:00:00',
-            'end_date'   => '2026-12-25 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
         ]);
     }
 
@@ -99,15 +100,15 @@ class BlackoutPeriodValidationTest extends TestCase
             route('admin.tours.blackouts.store', $this->tour),
             [
                 'start_date' => '2026-12-25',
-                'end_date'   => '2026-12-25',
+                'end_date' => '2026-12-25',
             ]
         );
 
         $response->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
         $this->assertDatabaseHas('tour_blackout_periods', [
-            'tour_id'    => $this->tour->id,
+            'tour_id' => $this->tour->id,
             'start_date' => '2026-12-25 00:00:00',
-            'end_date'   => '2026-12-25 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
         ]);
     }
 
@@ -119,16 +120,16 @@ class BlackoutPeriodValidationTest extends TestCase
     public function test_edit_blackout_period_with_invalid_date_order_fails(): void
     {
         $blackout = TourBlackoutPeriod::create([
-            'tour_id'    => $this->tour->id,
+            'tour_id' => $this->tour->id,
             'start_date' => '2026-12-05',
-            'end_date'   => '2026-12-10',
+            'end_date' => '2026-12-10',
         ]);
 
         $response = $this->actingAs($this->admin)->put(
             route('admin.tours.blackouts.update', [$this->tour, $blackout]),
             [
                 'start_date' => '2026-12-25',
-                'end_date'   => '2026-12-01',
+                'end_date' => '2026-12-01',
             ]
         );
 

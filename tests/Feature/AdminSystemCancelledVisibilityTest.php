@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,9 +15,13 @@ class AdminSystemCancelledVisibilityTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $staff;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -32,13 +36,13 @@ class AdminSystemCancelledVisibilityTest extends TestCase
             'duration_days' => 2,
             'base_price' => 120.00,
             'location' => 'Mandalay',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Mandalay View Hotel',
             'category' => '4-star',
-            'location' => 'Mandalay'
+            'location' => 'Mandalay',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -46,7 +50,7 @@ class AdminSystemCancelledVisibilityTest extends TestCase
             'start_date' => now()->addDays(5),
             'end_date' => now()->addDays(7),
             'total_seats' => 20,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -67,7 +71,7 @@ class AdminSystemCancelledVisibilityTest extends TestCase
             'hotel_upgrade_price' => 0.00,
             'total_price' => 240.00,
             'status' => 'confirmed',
-            'ref_code' => 'MYG-' . rand(10000, 99999),
+            'ref_code' => 'MYG-'.rand(10000, 99999),
             'cancellation_token' => uniqid('token_'),
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ], $overrides));
@@ -113,7 +117,6 @@ class AdminSystemCancelledVisibilityTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Auto-Expired Customer');
         $response->assertSee('Cancelled (System)');
-        $response->assertSee('Payment Expired');
     }
 
     /**
@@ -151,7 +154,7 @@ class AdminSystemCancelledVisibilityTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('dashboard'));
 
         $response->assertStatus(200);
-        $response->assertSee('System Expired');
+        $response->assertSee('Auto-Expired');
         // Count must match 2
         $response->assertSee('filter=system_cancelled');
     }

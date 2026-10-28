@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Booking;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentRequiredMail;
+use App\Mail\BookingCancelledMail;
 use App\Mail\PaymentConfirmedMail;
 use App\Mail\PaymentRejectedMail;
-use App\Mail\BookingCancelledMail;
+use App\Mail\PaymentRequiredMail;
+use App\Models\Booking;
+use App\Models\TravelPeriod;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -21,34 +22,34 @@ class BookingController extends Controller
         $query = Booking::with([
             'tour',
             'hotel',
-            'travelPeriod'
+            'travelPeriod',
         ]);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('ref_code', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
         $selectedFilter = $request->input('filter', $request->input('status', ''));
 
-        if (!empty($selectedFilter)) {
+        if (! empty($selectedFilter)) {
             if ($selectedFilter === 'system_cancelled') {
                 $query->where('status', 'cancelled')
-                      ->where('cancelled_by', 'system');
+                    ->where('cancelled_by', 'system');
             } elseif ($selectedFilter === 'customer_cancelled') {
                 $query->where('status', 'cancelled')
-                      ->where('cancelled_by', 'customer');
+                    ->where('cancelled_by', 'customer');
             } elseif ($selectedFilter === 'admin_cancelled') {
                 $query->where('status', 'cancelled')
-                      ->where('cancelled_by', 'admin');
+                    ->where('cancelled_by', 'admin');
             } elseif ($selectedFilter === 'payment_uploaded') {
                 $query->where('status', 'confirmed')
-                      ->whereNotNull('payment_receipt');
+                    ->whereNotNull('payment_receipt');
             } elseif (in_array($selectedFilter, Booking::STATUSES)) {
                 $query->where('status', $selectedFilter);
             }
@@ -70,10 +71,7 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-     
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
@@ -83,7 +81,7 @@ class BookingController extends Controller
         $booking->load([
             'tour',
             'hotel',
-            'travelPeriod'
+            'travelPeriod',
         ]);
 
         return view('admin.bookings.show', compact('booking'));
@@ -103,7 +101,7 @@ class BookingController extends Controller
     public function update(Request $request, Booking $booking)
     {
         $request->validate([
-            'status' => 'required|in:confirmed,paid,cancelled'
+            'status' => 'required|in:confirmed,paid,cancelled',
         ]);
 
         $oldStatus = $booking->status;
@@ -113,7 +111,7 @@ class BookingController extends Controller
         if ($oldStatus === 'cancelled' && in_array($newStatus, ['confirmed', 'paid', 'pending'])) {
             $travelPeriod = $booking->travelPeriod;
             if ($travelPeriod) {
-                $requestedSeats = \App\Models\TravelPeriod::calculateRequestedSeats($booking->num_persons, $booking->child_ages);
+                $requestedSeats = TravelPeriod::calculateRequestedSeats($booking->num_persons, $booking->child_ages);
                 $availableSeats = $travelPeriod->availableSeats();
                 if ($requestedSeats > $availableSeats) {
                     return back()->with('error', "Not enough seats available on the travel period. Only {$availableSeats} seats remaining, but this booking requires {$requestedSeats} seats.");
@@ -122,7 +120,7 @@ class BookingController extends Controller
         }
 
         $updateData = [
-            'status' => $request->status
+            'status' => $request->status,
         ];
 
         if ($wasPaymentUploaded && $newStatus === 'confirmed') {
@@ -136,7 +134,7 @@ class BookingController extends Controller
 
         $booking->update($updateData);
 
-        if ($oldStatus === 'pending' && $booking->status === 'confirmed' && !$wasPaymentUploaded) {
+        if ($oldStatus === 'pending' && $booking->status === 'confirmed' && ! $wasPaymentUploaded) {
             $booking->load(['tour']);
             Mail::to($booking->email)->send(new PaymentRequiredMail($booking));
         }
@@ -168,7 +166,7 @@ class BookingController extends Controller
         }
 
         $request->validate([
-            'cancel_reason' => 'required|string'
+            'cancel_reason' => 'required|string',
         ]);
 
         $booking->update([

@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Booking;
 use App\Mail\BookingCancelledMail;
+use App\Models\Booking;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class CancelExpiredBookings extends Command
@@ -62,7 +62,7 @@ class CancelExpiredBookings extends Command
                         $booking->load(['tour']);
                         Mail::to($booking->email)->send(new BookingCancelledMail($booking));
                     } catch (\Exception $e) {
-                        $this->error("Failed to send cancellation email for booking {$booking->ref_code}: " . $e->getMessage());
+                        $this->error("Failed to send cancellation email for booking {$booking->ref_code}: ".$e->getMessage());
                     }
                 }
             });

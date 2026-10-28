@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+use App\Mail\BookingCancelledMail;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\BookingCancelledMail;
 use Tests\TestCase;
 
 class CancelExpiredBookingsTest extends TestCase
@@ -16,7 +16,9 @@ class CancelExpiredBookingsTest extends TestCase
     use RefreshDatabase;
 
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -28,13 +30,13 @@ class CancelExpiredBookingsTest extends TestCase
             'duration_days' => 3,
             'base_price' => 150.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Lotte Hotel Yangon',
             'category' => '5-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -42,7 +44,7 @@ class CancelExpiredBookingsTest extends TestCase
             'start_date' => now()->addDays(10),
             'end_date' => now()->addDays(13),
             'total_seats' => 10,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -64,7 +66,7 @@ class CancelExpiredBookingsTest extends TestCase
             'total_price' => 150.00,
             'status' => 'confirmed',
             'cancellation_token' => uniqid(),
-            'ref_code' => 'MYG-' . uniqid(),
+            'ref_code' => 'MYG-'.uniqid(),
         ], $overrides));
     }
 
@@ -95,6 +97,7 @@ class CancelExpiredBookingsTest extends TestCase
 
         Mail::assertSent(BookingCancelledMail::class, function ($mail) use ($booking) {
             $mail->build();
+
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id &&
                    $mail->subject === 'Booking Cancelled - Payment Deadline Expired';

@@ -10,7 +10,7 @@ class Itinerary extends Model
         'tour_id',
         'day_number',
         'description_en',
-        'description_mm'
+        'description_mm',
     ];
 
     public function tour()

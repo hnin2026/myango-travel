@@ -19,10 +19,10 @@ class SeasonPeriodValidationTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->post(route('admin.season-periods.store'), [
-            'name'       => 'Invalid Season',
-            'season'     => 'peak',
+            'name' => 'Invalid Season',
+            'season' => 'peak',
             'start_date' => '2026-12-25',
-            'end_date'   => '2026-12-01',
+            'end_date' => '2026-12-01',
         ]);
 
         $response->assertSessionHasErrors(['end_date']);
@@ -39,18 +39,18 @@ class SeasonPeriodValidationTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->post(route('admin.season-periods.store'), [
-            'name'       => 'One Day Peak Season',
-            'season'     => 'peak',
+            'name' => 'One Day Peak Season',
+            'season' => 'peak',
             'start_date' => '2026-12-25',
-            'end_date'   => '2026-12-25',
+            'end_date' => '2026-12-25',
         ]);
 
         $response->assertRedirect(route('admin.season-periods.index'));
         $this->assertDatabaseHas('season_periods', [
-            'name'       => 'One Day Peak Season',
-            'season'     => 'peak',
+            'name' => 'One Day Peak Season',
+            'season' => 'peak',
             'start_date' => '2026-12-25 00:00:00',
-            'end_date'   => '2026-12-25 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
         ]);
     }
 
@@ -62,18 +62,18 @@ class SeasonPeriodValidationTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->post(route('admin.season-periods.store'), [
-            'name'       => 'Valid Peak Season',
-            'season'     => 'peak',
+            'name' => 'Valid Peak Season',
+            'season' => 'peak',
             'start_date' => '2026-12-01',
-            'end_date'   => '2026-12-25',
+            'end_date' => '2026-12-25',
         ]);
 
         $response->assertRedirect(route('admin.season-periods.index'));
         $this->assertDatabaseHas('season_periods', [
-            'name'       => 'Valid Peak Season',
-            'season'     => 'peak',
+            'name' => 'Valid Peak Season',
+            'season' => 'peak',
             'start_date' => '2026-12-01 00:00:00',
-            'end_date'   => '2026-12-25 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
         ]);
     }
 
@@ -85,17 +85,17 @@ class SeasonPeriodValidationTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $seasonPeriod = SeasonPeriod::create([
-            'name'       => 'Existing Season',
-            'season'     => 'low',
+            'name' => 'Existing Season',
+            'season' => 'low',
             'start_date' => '2026-06-01',
-            'end_date'   => '2026-08-31',
+            'end_date' => '2026-08-31',
         ]);
 
         $response = $this->actingAs($admin)->put(route('admin.season-periods.update', $seasonPeriod), [
-            'name'       => 'Updated Season',
-            'season'     => 'low',
+            'name' => 'Updated Season',
+            'season' => 'low',
             'start_date' => '2026-12-25',
-            'end_date'   => '2026-12-01',
+            'end_date' => '2026-12-01',
         ]);
 
         $response->assertSessionHasErrors(['end_date']);

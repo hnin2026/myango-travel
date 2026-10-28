@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+use App\Mail\BookingCancelledMail;
+use App\Mail\PaymentReminderMail;
+use App\Mail\PaymentRequiredMail;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentRequiredMail;
-use App\Mail\PaymentReminderMail;
-use App\Mail\BookingCancelledMail;
-use Carbon\Carbon;
 use Tests\TestCase;
 
 class PaymentDeadlineBusinessDaysTest extends TestCase
@@ -20,8 +20,11 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -35,13 +38,13 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
             'duration_days' => 3,
             'base_price' => 200.00,
             'location' => 'Inle',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Inle Heritage Resort',
             'category' => '4-star',
-            'location' => 'Inle'
+            'location' => 'Inle',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -49,7 +52,7 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
             'start_date' => '2026-11-20',
             'end_date' => '2026-11-25',
             'total_seats' => 20,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -70,7 +73,7 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
             'hotel_upgrade_price' => 0.00,
             'total_price' => 400.00,
             'status' => 'pending',
-            'ref_code' => 'MYG-' . rand(10000, 99999),
+            'ref_code' => 'MYG-'.rand(10000, 99999),
             'cancellation_token' => uniqid('token_'),
             'payment_deadline' => null,
         ], $overrides));
@@ -91,7 +94,7 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
         $booking = $this->createPendingBooking();
 
         $this->actingAs($this->admin)->put(route('admin.bookings.update', $booking), [
-            'status' => 'confirmed'
+            'status' => 'confirmed',
         ]);
 
         $booking->refresh();
@@ -121,7 +124,7 @@ class PaymentDeadlineBusinessDaysTest extends TestCase
         $booking = $this->createPendingBooking();
 
         $this->actingAs($this->admin)->put(route('admin.bookings.update', $booking), [
-            'status' => 'confirmed'
+            'status' => 'confirmed',
         ]);
 
         $booking->refresh();

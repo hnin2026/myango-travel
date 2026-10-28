@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Inquiry extends Model
 {
     const STATUS_NEW = 'new';
+
     const STATUS_IN_PROGRESS = 'in_progress';
+
     const STATUS_CONFIRMED = 'confirmed';
+
     const STATUS_UNAVAILABLE = 'unavailable';
+
     const STATUS_NOT_BOOKED = 'not_booked';
 
     const STATUSES = [
@@ -49,11 +53,11 @@ class Inquiry extends Model
     {
         $maxId = (int) static::max('id');
         $nextId = $maxId + 1;
-        $reference = 'INQ-' . str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
+        $reference = 'INQ-'.str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
 
         while (static::where('reference', $reference)->exists()) {
             $nextId++;
-            $reference = 'INQ-' . str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
+            $reference = 'INQ-'.str_pad((string) $nextId, 4, '0', STR_PAD_LEFT);
         }
 
         return $reference;

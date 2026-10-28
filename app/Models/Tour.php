@@ -17,7 +17,7 @@ class Tour extends Model
         'base_price',
         'location',
         'thumbnail',
-        'status'
+        'status',
     ];
 
     public function hotels()
@@ -49,7 +49,7 @@ class Tour extends Model
         foreach ($travelPeriods as $period) {
             $start = $period->start_date;
             $end = $period->end_date;
-            if (!$start || !$end) {
+            if (! $start || ! $end) {
                 continue;
             }
 

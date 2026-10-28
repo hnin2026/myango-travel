@@ -11,6 +11,7 @@ class SeasonPeriodController extends Controller
     public function index()
     {
         $seasons = SeasonPeriod::orderBy('start_date')->get();
+
         return view('admin.seasons.index', compact('seasons'));
     }
 
@@ -22,10 +23,10 @@ class SeasonPeriodController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'       => 'required|string|max:255',
-            'season'     => 'required|in:low,normal,peak',
+            'name' => 'required|string|max:255',
+            'season' => 'required|in:low,normal,peak',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ], [
             'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);
@@ -44,10 +45,10 @@ class SeasonPeriodController extends Controller
     public function update(Request $request, SeasonPeriod $seasonPeriod)
     {
         $request->validate([
-            'name'       => 'required|string|max:255',
-            'season'     => 'required|in:low,normal,peak',
+            'name' => 'required|string|max:255',
+            'season' => 'required|in:low,normal,peak',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ], [
             'end_date.after_or_equal' => 'The end date must be on or after the start date.',
         ]);

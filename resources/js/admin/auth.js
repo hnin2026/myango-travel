@@ -1,1 +1,1 @@
-console.log('Admin loaded');
+// Admin authentication script

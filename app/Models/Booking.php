@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Models;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+
 class Booking extends Model
 {
     public const STATUS_PENDING = 'pending';
+
     public const STATUS_CONFIRMED = 'confirmed';
+
     public const STATUS_PAID = 'paid';
+
     public const STATUS_CANCELLED = 'cancelled';
+
     public const STATUS_COMPLETED = 'completed';
 
     public const STATUSES = [
@@ -47,19 +51,19 @@ class Booking extends Model
         'payment_uploaded_at',
         'cancelled_by',
         'cancel_reason',
-        'cancelled_at'
+        'cancelled_at',
     ];
 
     protected $casts = [
         'payment_deadline' => 'date',
         'payment_reminder_sent_at' => 'datetime',
         'payment_uploaded_at' => 'datetime',
-        'cancelled_at' => 'datetime'
+        'cancelled_at' => 'datetime',
     ];
 
     public function getIsPaymentUploadedAttribute(): bool
     {
-        return $this->status === self::STATUS_CONFIRMED && !is_null($this->payment_receipt);
+        return $this->status === self::STATUS_CONFIRMED && ! is_null($this->payment_receipt);
     }
 
     public function getDisplayStatusAttribute(): string
@@ -75,6 +79,7 @@ class Booking extends Model
         if ($this->status === self::STATUS_CANCELLED && $this->cancelled_by === 'system') {
             return 'Cancelled (System)';
         }
+
         return ucfirst($this->status);
     }
 
@@ -82,9 +87,10 @@ class Booking extends Model
      * Calculate a payment deadline of seven business days (excluding Saturdays and Sundays),
      * counting starting from the day after the booking confirmation date.
      */
-    public static function calculatePaymentDeadline(\DateTimeInterface|string|null $fromDate = null): \Carbon\Carbon
+    public static function calculatePaymentDeadline(\DateTimeInterface|string|null $fromDate = null): Carbon
     {
-        $start = $fromDate ? \Carbon\Carbon::parse($fromDate) : now();
+        $start = $fromDate ? Carbon::parse($fromDate) : now();
+
         return $start->copy()->addWeekdays(7);
     }
 

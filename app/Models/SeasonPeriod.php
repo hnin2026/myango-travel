@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class SeasonPeriod extends Model
 {
@@ -11,12 +11,12 @@ class SeasonPeriod extends Model
         'name',
         'season',
         'start_date',
-        'end_date'
+        'end_date',
     ];
 
     protected $casts = [
         'start_date' => 'date',
-        'end_date'   => 'date'
+        'end_date' => 'date',
     ];
 
     public static function getSeasonForDate(string $date): string
@@ -25,7 +25,7 @@ class SeasonPeriod extends Model
 
         $period = self::all()->first(function ($period) use ($carbon) {
             $start = Carbon::parse($period->start_date);
-            $end   = Carbon::parse($period->end_date);
+            $end = Carbon::parse($period->end_date);
 
             if ($start->gt($end)) {
                 return $carbon->gte($start) || $carbon->lte($end);

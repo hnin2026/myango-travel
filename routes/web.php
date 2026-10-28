@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\TourController;
-use App\Http\Controllers\Admin\HotelController;
-use App\Http\Controllers\Admin\SeasonPeriodController;
-use App\Http\Controllers\Admin\TravelPeriodController;
 use App\Http\Controllers\Admin\BookingController;
-use App\Http\Controllers\Frontend\BookingController as FrontendBookingController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HotelController;
 use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\Frontend\InquiryController as FrontendInquiryController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SeasonPeriodController;
 use App\Http\Controllers\Admin\TourBlackoutController;
+use App\Http\Controllers\Admin\TourController;
+use App\Http\Controllers\Admin\TravelPeriodController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Frontend\BookingController as FrontendBookingController;
+use App\Http\Controllers\Frontend\InquiryController as FrontendInquiryController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Customer routes
@@ -45,7 +46,7 @@ Route::get('/booking/cancel/{token}/success', [FrontendBookingController::class,
     ->name('booking.cancel.success');
 
 // Dashboard
-Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, '__invoke'])
+Route::get('/dashboard', [DashboardController::class, '__invoke'])
     ->middleware(['auth', 'verified', 'prevent-cache'])
     ->name('dashboard');
 
@@ -87,6 +88,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 
 require __DIR__.'/auth.php';

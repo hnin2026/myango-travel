@@ -9,7 +9,7 @@ class HotelSeasonPrice extends Model
     protected $fillable = [
         'hotel_id',
         'season',
-        'upgrade_price'
+        'upgrade_price',
     ];
 
     public function hotel()

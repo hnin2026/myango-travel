@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Hotel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -50,8 +50,8 @@ class AdminHotelSearchAndPaginationTest extends TestCase
         // Create 15 hotels
         for ($i = 0; $i < 15; $i++) {
             $this->createHotel([
-                'name' => "Hotel Name " . sprintf("%02d", $i),
-                'created_at' => now()->addMinutes($i)
+                'name' => 'Hotel Name '.sprintf('%02d', $i),
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -88,7 +88,6 @@ class AdminHotelSearchAndPaginationTest extends TestCase
         $response->assertDontSee('Yangon Hotel');
     }
 
-
     /**
      * Test search by location.
      */
@@ -112,18 +111,18 @@ class AdminHotelSearchAndPaginationTest extends TestCase
         // Create 15 Bagan hotels
         for ($i = 0; $i < 15; $i++) {
             $this->createHotel([
-                'name' => "Bagan Hotel " . sprintf("%02d", $i),
+                'name' => 'Bagan Hotel '.sprintf('%02d', $i),
                 'location' => 'Bagan',
-                'created_at' => now()->addMinutes($i)
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
         // Create 5 Yangon hotels
         for ($i = 0; $i < 5; $i++) {
             $this->createHotel([
-                'name' => "Yangon Hotel " . sprintf("%02d", $i),
+                'name' => 'Yangon Hotel '.sprintf('%02d', $i),
                 'location' => 'Yangon',
-                'created_at' => now()->addMinutes($i + 15)
+                'created_at' => now()->addMinutes($i + 15),
             ]);
         }
 

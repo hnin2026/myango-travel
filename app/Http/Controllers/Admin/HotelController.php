@@ -17,11 +17,12 @@ class HotelController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%");
+                    ->orWhere('location', 'like', "%{$search}%");
             });
         }
 
         $hotels = $query->latest()->paginate(10)->withQueryString();
+
         return view('admin.hotels.index', compact('hotels'));
     }
 
@@ -43,19 +44,19 @@ class HotelController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'         => 'required|string|max:255',
-            'category'     => 'required|in:3-star,4-star,5-star',
-            'location'     => 'required|string|max:255',
-            'price_low'    => 'required|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'category' => 'required|in:3-star,4-star,5-star',
+            'location' => 'required|string|max:255',
+            'price_low' => 'required|numeric|min:0',
             'price_normal' => 'required|numeric|min:0',
-            'price_peak'   => 'required|numeric|min:0',
+            'price_peak' => 'required|numeric|min:0',
         ]);
 
         $location = Hotel::normalizeLocation($request->location);
 
         // Create hotel
         $hotel = Hotel::create([
-            'name'     => $request->name,
+            'name' => $request->name,
             'category' => $request->category,
             'location' => $location,
         ]);
@@ -71,7 +72,7 @@ class HotelController extends Controller
             ->with('success', 'Hotel created successfully!');
     }
 
-    //Edit and  Update hotel
+    // Edit and  Update hotel
     public function edit(Hotel $hotel)
     {
         $seasonPrices = $hotel->seasonPrices->keyBy('season');
@@ -89,18 +90,18 @@ class HotelController extends Controller
     public function update(Request $request, Hotel $hotel)
     {
         $request->validate([
-            'name'         => 'required|string|max:255',
-            'category'     => 'required|in:3-star,4-star,5-star',
-            'location'     => 'required|string|max:255',
-            'price_low'    => 'required|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'category' => 'required|in:3-star,4-star,5-star',
+            'location' => 'required|string|max:255',
+            'price_low' => 'required|numeric|min:0',
             'price_normal' => 'required|numeric|min:0',
-            'price_peak'   => 'required|numeric|min:0',
+            'price_peak' => 'required|numeric|min:0',
         ]);
 
         $location = Hotel::normalizeLocation($request->location);
 
         $hotel->update([
-            'name'     => $request->name,
+            'name' => $request->name,
             'category' => $request->category,
             'location' => $location,
         ]);
@@ -130,7 +131,7 @@ class HotelController extends Controller
     public function byLocation(Request $request)
     {
         $location = $request->query('location');
-        if (!$location) {
+        if (! $location) {
             return response()->json([]);
         }
 
@@ -152,7 +153,7 @@ class HotelController extends Controller
             })
             ->sortBy([
                 ['category', 'desc'],
-                ['name', 'asc']
+                ['name', 'asc'],
             ])
             ->values();
 

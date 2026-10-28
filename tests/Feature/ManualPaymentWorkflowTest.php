@@ -2,14 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
-use App\Models\Booking;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingCancelledMail;
+use App\Mail\PaymentConfirmedMail;
+use App\Mail\PaymentReceiptReceivedMail;
+use App\Mail\PaymentRejectedMail;
 use App\Mail\PaymentRequiredMail;
+use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ManualPaymentWorkflowTest extends TestCase
@@ -17,7 +23,9 @@ class ManualPaymentWorkflowTest extends TestCase
     use RefreshDatabase;
 
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -29,13 +37,13 @@ class ManualPaymentWorkflowTest extends TestCase
             'duration_days' => 3,
             'base_price' => 150.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Lotte Hotel Yangon',
             'category' => '5-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -43,7 +51,7 @@ class ManualPaymentWorkflowTest extends TestCase
             'start_date' => now()->addDays(10),
             'end_date' => now()->addDays(13),
             'total_seats' => 10,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -74,7 +82,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->put(route('admin.bookings.update', $booking), [
-                'status' => 'confirmed'
+                'status' => 'confirmed',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
@@ -123,7 +131,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->put(route('admin.bookings.update', $booking), [
-                'status' => 'confirmed'
+                'status' => 'confirmed',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
@@ -158,12 +166,12 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'pending',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'test-token-uuid-123',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
         $response = $this->actingAs($admin)
             ->put(route('admin.bookings.update', $booking), [
-                'status' => 'cancelled'
+                'status' => 'cancelled',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
@@ -191,7 +199,7 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
         $response = $this->get('/payment/my-uuid-token-xyz');
@@ -212,8 +220,8 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_payment_receipt_can_be_uploaded_successfully(): void
     {
-        \Illuminate\Support\Facades\Mail::fake();
-        \Illuminate\Support\Facades\Storage::fake('public');
+        Mail::fake();
+        Storage::fake('public');
 
         $booking = Booking::create([
             'tour_id' => $this->tour->id,
@@ -232,17 +240,17 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
-        $file = \Illuminate\Http\UploadedFile::fake()->image('receipt.jpg');
+        $file = UploadedFile::fake()->image('receipt.jpg');
 
         $response = $this->post('/payment/my-uuid-token-xyz', [
-            'receipt' => $file
+            'receipt' => $file,
         ]);
 
         $response->assertRedirect(route('payment.success'));
-        
+
         $booking = $booking->fresh();
         $this->assertEquals('confirmed', $booking->status);
         $this->assertTrue($booking->is_payment_uploaded);
@@ -250,9 +258,9 @@ class ManualPaymentWorkflowTest extends TestCase
         $this->assertNotNull($booking->payment_receipt);
         $this->assertNotNull($booking->payment_uploaded_at);
 
-        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($booking->payment_receipt);
+        Storage::disk('public')->assertExists($booking->payment_receipt);
 
-        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\PaymentReceiptReceivedMail::class, function ($mail) use ($booking) {
+        Mail::assertSent(PaymentReceiptReceivedMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id;
         });
@@ -260,7 +268,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_payment_upload_fails_validation_for_invalid_file_type(): void
     {
-        \Illuminate\Support\Facades\Storage::fake('public');
+        Storage::fake('public');
 
         $booking = Booking::create([
             'tour_id' => $this->tour->id,
@@ -279,13 +287,13 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
-        $file = \Illuminate\Http\UploadedFile::fake()->create('receipt.txt', 100);
+        $file = UploadedFile::fake()->create('receipt.txt', 100);
 
         $response = $this->post('/payment/my-uuid-token-xyz', [
-            'receipt' => $file
+            'receipt' => $file,
         ]);
 
         $response->assertSessionHasErrors(['receipt']);
@@ -294,7 +302,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_payment_upload_fails_validation_for_oversized_file(): void
     {
-        \Illuminate\Support\Facades\Storage::fake('public');
+        Storage::fake('public');
 
         $booking = Booking::create([
             'tour_id' => $this->tour->id,
@@ -313,13 +321,13 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
-        $file = \Illuminate\Http\UploadedFile::fake()->create('receipt.pdf', 6144);
+        $file = UploadedFile::fake()->create('receipt.pdf', 6144);
 
         $response = $this->post('/payment/my-uuid-token-xyz', [
-            'receipt' => $file
+            'receipt' => $file,
         ]);
 
         $response->assertSessionHasErrors(['receipt']);
@@ -336,7 +344,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_admin_can_approve_uploaded_payment_receipt(): void
     {
-        \Illuminate\Support\Facades\Mail::fake();
+        Mail::fake();
         $admin = User::factory()->create();
 
         $booking = Booking::create([
@@ -358,18 +366,18 @@ class ManualPaymentWorkflowTest extends TestCase
             'cancellation_token' => 'my-uuid-token-xyz',
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
             'payment_receipt' => 'payment_receipts/test.jpg',
-            'payment_uploaded_at' => now()
+            'payment_uploaded_at' => now(),
         ]);
 
         $response = $this->actingAs($admin)
             ->put(route('admin.bookings.update', $booking), [
-                'status' => 'paid'
+                'status' => 'paid',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
         $this->assertEquals('paid', $booking->fresh()->status);
 
-        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\PaymentConfirmedMail::class, function ($mail) use ($booking) {
+        Mail::assertSent(PaymentConfirmedMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id;
         });
@@ -377,7 +385,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_admin_can_reject_uploaded_payment_receipt(): void
     {
-        \Illuminate\Support\Facades\Mail::fake();
+        Mail::fake();
         $admin = User::factory()->create();
 
         $booking = Booking::create([
@@ -399,12 +407,12 @@ class ManualPaymentWorkflowTest extends TestCase
             'cancellation_token' => 'my-uuid-token-xyz',
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
             'payment_receipt' => 'payment_receipts/test.jpg',
-            'payment_uploaded_at' => now()
+            'payment_uploaded_at' => now(),
         ]);
 
         $response = $this->actingAs($admin)
             ->put(route('admin.bookings.update', $booking), [
-                'status' => 'confirmed'
+                'status' => 'confirmed',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
@@ -413,7 +421,7 @@ class ManualPaymentWorkflowTest extends TestCase
         $this->assertNull($freshBooking->payment_receipt);
         $this->assertNull($freshBooking->payment_uploaded_at);
 
-        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\PaymentRejectedMail::class, function ($mail) use ($booking) {
+        Mail::assertSent(PaymentRejectedMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id;
         });
@@ -421,7 +429,7 @@ class ManualPaymentWorkflowTest extends TestCase
 
     public function test_admin_can_cancel_booking_with_reason(): void
     {
-        \Illuminate\Support\Facades\Mail::fake();
+        Mail::fake();
         $admin = User::factory()->create();
 
         $booking = Booking::create([
@@ -441,23 +449,23 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
         $response = $this->actingAs($admin)
             ->patch(route('admin.bookings.cancel', $booking), [
-                'cancel_reason' => 'Customer requested cancellation'
+                'cancel_reason' => 'Customer requested cancellation',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));
-        
+
         $booking = $booking->fresh();
         $this->assertEquals('cancelled', $booking->status);
         $this->assertEquals('admin', $booking->cancelled_by);
         $this->assertEquals('Customer requested cancellation', $booking->cancel_reason);
         $this->assertNotNull($booking->cancelled_at);
 
-        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\BookingCancelledMail::class, function ($mail) use ($booking) {
+        Mail::assertSent(BookingCancelledMail::class, function ($mail) use ($booking) {
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id;
         });
@@ -484,12 +492,12 @@ class ManualPaymentWorkflowTest extends TestCase
             'status' => 'confirmed',
             'ref_code' => 'MYG-123456',
             'cancellation_token' => 'my-uuid-token-xyz',
-            'payment_deadline' => now()->addDays(7)->format('Y-m-d')
+            'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
         ]);
 
         $response = $this->actingAs($admin)
             ->patch(route('admin.bookings.cancel', $booking), [
-                'cancel_reason' => ''
+                'cancel_reason' => '',
             ]);
 
         $response->assertSessionHasErrors(['cancel_reason']);
@@ -520,12 +528,12 @@ class ManualPaymentWorkflowTest extends TestCase
             'payment_deadline' => now()->addDays(7)->format('Y-m-d'),
             'cancelled_by' => 'admin',
             'cancel_reason' => 'Previous cancellation reason',
-            'cancelled_at' => now()
+            'cancelled_at' => now(),
         ]);
 
         $response = $this->actingAs($admin)
             ->patch(route('admin.bookings.cancel', $booking), [
-                'cancel_reason' => 'New reason'
+                'cancel_reason' => 'New reason',
             ]);
 
         $response->assertRedirect(route('admin.bookings.show', $booking));

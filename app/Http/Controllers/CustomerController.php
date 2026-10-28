@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tour;
 use App\Models\SeasonPeriod;
+use App\Models\Tour;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -15,6 +15,7 @@ class CustomerController extends Controller
             ->limit(6)
             ->with(['images', 'travelPeriods'])
             ->get();
+
         return view('frontend.home.index', compact('tours'));
     }
 
@@ -49,15 +50,15 @@ class CustomerController extends Controller
             'images',
             'hotels' => function ($query) use ($tour) {
                 $query->whereRaw('LOWER(location) = ?', [strtolower($tour->location)])
-                      ->orderBy('category', 'desc')
-                      ->orderBy('name', 'asc');
+                    ->orderBy('category', 'desc')
+                    ->orderBy('name', 'asc');
             },
             'hotels.seasonPrices',
             'itineraries',
-            'travelPeriods'
+            'travelPeriods',
         ]);
         $seasonPeriods = SeasonPeriod::all();
+
         return view('frontend.tours.show', compact('tour', 'seasonPeriods'));
     }
-
 }

@@ -20,8 +20,9 @@ class AdminInquirySubmittedMail extends Mailable
 
     public function build()
     {
-        $subject = 'New Inquiry Received - ' . ($this->inquiry->reference ?? 'INQ-XXXX');
+        $subject = 'New Inquiry Received - '.($this->inquiry->reference ?? 'INQ-XXXX');
+
         return $this->subject($subject)
-                    ->view('emails.admin-inquiry-submitted');
+            ->view('emails.admin-inquiry-submitted');
     }
 }

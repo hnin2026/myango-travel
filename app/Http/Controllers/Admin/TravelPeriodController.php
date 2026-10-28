@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\TravelPeriod;
-use App\Models\Tour;
 use App\Models\SeasonPeriod;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Http\Request;
 
 class TravelPeriodController extends Controller
@@ -19,15 +19,16 @@ class TravelPeriodController extends Controller
 
     public function create(Tour $tour)
     {
-        $seasonPeriods = \App\Models\SeasonPeriod::all();
+        $seasonPeriods = SeasonPeriod::all();
+
         return view('admin.tours.travel-periods.create', compact('tour', 'seasonPeriods'));
     }
 
     public function store(Request $request, Tour $tour)
     {
         $validated = $request->validate([
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'total_seats' => 'required|integer|min:1',
         ], [
             'end_date.after_or_equal' => 'The end date must be on or after the start date.',
@@ -44,7 +45,7 @@ class TravelPeriodController extends Controller
         ]);
 
         return redirect()->route('admin.tours.travel-periods.index', $tour)
-            ->with('success', 'Date added successfully! Season: ' . ucfirst($season));
+            ->with('success', 'Date added successfully! Season: '.ucfirst($season));
     }
 
     public function edit(Tour $tour, TravelPeriod $travel_period)
@@ -55,8 +56,8 @@ class TravelPeriodController extends Controller
     public function update(Request $request, Tour $tour, TravelPeriod $travel_period)
     {
         $validated = $request->validate([
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'total_seats' => 'required|integer|min:1',
         ], [
             'end_date.after_or_equal' => 'The end date must be on or after the start date.',
@@ -79,6 +80,4 @@ class TravelPeriodController extends Controller
         return redirect()->route('admin.tours.travel-periods.index', $tour)
             ->with('success', 'Date deleted successfully!');
     }
-
-    
 }

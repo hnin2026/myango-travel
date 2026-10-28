@@ -2,14 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+use App\Mail\BookingCancelledMail;
+use App\Mail\BookingSubmittedMail;
+use App\Mail\PaymentRejectedMail;
+use App\Mail\PaymentRequiredMail;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\BookingCancelledMail;
 use Tests\TestCase;
 
 class CustomerBookingCancellationTest extends TestCase
@@ -17,7 +19,9 @@ class CustomerBookingCancellationTest extends TestCase
     use RefreshDatabase;
 
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -29,13 +33,13 @@ class CustomerBookingCancellationTest extends TestCase
             'duration_days' => 3,
             'base_price' => 150.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Lotte Hotel Yangon',
             'category' => '5-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -43,7 +47,7 @@ class CustomerBookingCancellationTest extends TestCase
             'start_date' => now()->addDays(10),
             'end_date' => now()->addDays(13),
             'total_seats' => 10,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -103,6 +107,7 @@ class CustomerBookingCancellationTest extends TestCase
         // Assert cancellation email sent to customer
         Mail::assertSent(BookingCancelledMail::class, function ($mail) use ($booking) {
             $mail->build();
+
             return $mail->hasTo('customer@example.com') &&
                    $mail->booking->id === $booking->id &&
                    $mail->subject === 'Booking Cancellation Confirmation';
@@ -389,17 +394,17 @@ class CustomerBookingCancellationTest extends TestCase
         ]);
 
         // 1. BookingSubmittedMail
-        $mail = new \App\Mail\BookingSubmittedMail($booking);
+        $mail = new BookingSubmittedMail($booking);
         $rendered = $mail->render();
         $this->assertStringContainsString('/booking/cancel/my-uuid-token-email-link', $rendered);
 
         // 2. PaymentRequiredMail
-        $mail = new \App\Mail\PaymentRequiredMail($booking);
+        $mail = new PaymentRequiredMail($booking);
         $rendered = $mail->render();
         $this->assertStringContainsString('/booking/cancel/my-uuid-token-email-link', $rendered);
 
         // 3. PaymentRejectedMail
-        $mail = new \App\Mail\PaymentRejectedMail($booking);
+        $mail = new PaymentRejectedMail($booking);
         $rendered = $mail->render();
         $this->assertStringContainsString('/booking/cancel/my-uuid-token-email-link', $rendered);
     }

@@ -11,12 +11,12 @@ class TravelPeriod extends Model
         'start_date',
         'end_date',
         'total_seats',
-        'booked_seats'
+        'booked_seats',
     ];
 
     protected $casts = [
         'start_date' => 'date',
-        'end_date' => 'date'
+        'end_date' => 'date',
     ];
 
     public function tour()
@@ -32,7 +32,7 @@ class TravelPeriod extends Model
     public static function calculateRequestedSeats(int $adults, string|array|null $childAges = null): int
     {
         $seats = $adults;
-        if (!empty($childAges)) {
+        if (! empty($childAges)) {
             $ages = is_array($childAges) ? $childAges : explode(',', $childAges);
             foreach ($ages as $age) {
                 if (is_numeric($age) && intval($age) >= 5) {
@@ -40,6 +40,7 @@ class TravelPeriod extends Model
                 }
             }
         }
+
         return $seats;
     }
 
@@ -50,6 +51,7 @@ class TravelPeriod extends Model
         foreach ($bookings as $booking) {
             $total += static::calculateRequestedSeats($booking->num_persons, $booking->child_ages);
         }
+
         return $total;
     }
 

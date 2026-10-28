@@ -77,7 +77,7 @@ class AuthenticationTest extends TestCase
         $this->assertStringContainsString('no-cache', $cacheControl);
         $this->assertStringContainsString('must-revalidate', $cacheControl);
         $this->assertStringContainsString('max-age=0', $cacheControl);
-        
+
         $response->assertHeader('Pragma', 'no-cache');
         $response->assertHeader('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }

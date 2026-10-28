@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CompletePastBookingsTest extends TestCase
@@ -15,8 +16,11 @@ class CompletePastBookingsTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -30,13 +34,13 @@ class CompletePastBookingsTest extends TestCase
             'duration_days' => 3,
             'base_price' => 200.00,
             'location' => 'Bagan',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Aureum Palace Bagan',
             'category' => '5-star',
-            'location' => 'Bagan'
+            'location' => 'Bagan',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -44,7 +48,7 @@ class CompletePastBookingsTest extends TestCase
             'start_date' => now()->subDays(10)->toDateString(),
             'end_date' => now()->addDays(10)->toDateString(),
             'total_seats' => 20,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -66,8 +70,8 @@ class CompletePastBookingsTest extends TestCase
             'hotel_upgrade_price' => 0.00,
             'total_price' => 400.00,
             'status' => 'paid',
-            'ref_code' => 'MYG-' . uniqid(),
-            'cancellation_token' => (string) \Illuminate\Support\Str::uuid(),
+            'ref_code' => 'MYG-'.uniqid(),
+            'cancellation_token' => (string) Str::uuid(),
             'payment_receipt' => 'payment_receipts/test.png',
             'payment_uploaded_at' => now()->subDays(6),
         ], $overrides));

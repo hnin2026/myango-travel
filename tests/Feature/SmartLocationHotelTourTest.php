@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Hotel;
 use App\Models\Tour;
-use App\Models\TravelPeriod;
-use App\Models\Booking;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

@@ -13,6 +13,7 @@ class TravelPeriodValidationTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private Tour $tour;
 
     protected function setUp(): void
@@ -20,18 +21,18 @@ class TravelPeriodValidationTest extends TestCase
         parent::setUp();
 
         $this->admin = User::create([
-            'name'     => 'Admin User',
-            'email'    => 'admin@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role'     => 'admin',
+            'role' => 'admin',
         ]);
 
         $this->tour = Tour::create([
-            'title'         => 'Test Paradise Tour',
+            'title' => 'Test Paradise Tour',
             'duration_days' => 5,
-            'base_price'    => 300.00,
-            'location'      => 'Mandalay',
-            'status'        => 'active',
+            'base_price' => 300.00,
+            'location' => 'Mandalay',
+            'status' => 'active',
         ]);
     }
 
@@ -43,17 +44,17 @@ class TravelPeriodValidationTest extends TestCase
         $response = $this->actingAs($this->admin)->post(
             route('admin.tours.travel-periods.store', $this->tour),
             [
-                'start_date'  => '2026-12-25',
-                'end_date'    => '2026-12-01',
+                'start_date' => '2026-12-25',
+                'end_date' => '2026-12-01',
                 'total_seats' => 20,
             ]
         );
 
         $response->assertSessionHasErrors(['end_date']);
         $this->assertDatabaseMissing('travel_periods', [
-            'tour_id'    => $this->tour->id,
+            'tour_id' => $this->tour->id,
             'start_date' => '2026-12-25 00:00:00',
-            'end_date'   => '2026-12-01 00:00:00',
+            'end_date' => '2026-12-01 00:00:00',
         ]);
     }
 
@@ -65,17 +66,17 @@ class TravelPeriodValidationTest extends TestCase
         $response = $this->actingAs($this->admin)->post(
             route('admin.tours.travel-periods.store', $this->tour),
             [
-                'start_date'  => '2026-12-01',
-                'end_date'    => '2026-12-25',
+                'start_date' => '2026-12-01',
+                'end_date' => '2026-12-25',
                 'total_seats' => 20,
             ]
         );
 
         $response->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
         $this->assertDatabaseHas('travel_periods', [
-            'tour_id'     => $this->tour->id,
-            'start_date'  => '2026-12-01 00:00:00',
-            'end_date'    => '2026-12-25 00:00:00',
+            'tour_id' => $this->tour->id,
+            'start_date' => '2026-12-01 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
             'total_seats' => 20,
         ]);
     }
@@ -88,17 +89,17 @@ class TravelPeriodValidationTest extends TestCase
         $response = $this->actingAs($this->admin)->post(
             route('admin.tours.travel-periods.store', $this->tour),
             [
-                'start_date'  => '2026-12-25',
-                'end_date'    => '2026-12-25',
+                'start_date' => '2026-12-25',
+                'end_date' => '2026-12-25',
                 'total_seats' => 20,
             ]
         );
 
         $response->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
         $this->assertDatabaseHas('travel_periods', [
-            'tour_id'     => $this->tour->id,
-            'start_date'  => '2026-12-25 00:00:00',
-            'end_date'    => '2026-12-25 00:00:00',
+            'tour_id' => $this->tour->id,
+            'start_date' => '2026-12-25 00:00:00',
+            'end_date' => '2026-12-25 00:00:00',
             'total_seats' => 20,
         ]);
     }
@@ -109,9 +110,9 @@ class TravelPeriodValidationTest extends TestCase
     public function test_edit_travel_period_with_invalid_date_order_fails(): void
     {
         $travelPeriod = TravelPeriod::create([
-            'tour_id'     => $this->tour->id,
-            'start_date'  => '2026-06-01',
-            'end_date'    => '2026-08-31',
+            'tour_id' => $this->tour->id,
+            'start_date' => '2026-06-01',
+            'end_date' => '2026-08-31',
             'total_seats' => 15,
             'booked_seats' => 0,
         ]);
@@ -119,8 +120,8 @@ class TravelPeriodValidationTest extends TestCase
         $response = $this->actingAs($this->admin)->put(
             route('admin.tours.travel-periods.update', [$this->tour, $travelPeriod]),
             [
-                'start_date'  => '2026-12-25',
-                'end_date'    => '2026-12-01',
+                'start_date' => '2026-12-25',
+                'end_date' => '2026-12-01',
                 'total_seats' => 15,
             ]
         );

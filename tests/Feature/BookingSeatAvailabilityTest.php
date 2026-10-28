@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,7 +14,9 @@ class BookingSeatAvailabilityTest extends TestCase
     use RefreshDatabase;
 
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -26,13 +28,13 @@ class BookingSeatAvailabilityTest extends TestCase
             'duration_days' => 3,
             'base_price' => 150.00,
             'location' => 'Mandalay',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Mandalay Hill Resort',
             'category' => '4-star',
-            'location' => 'Mandalay'
+            'location' => 'Mandalay',
         ]);
 
         // Create travel period with total_seats = 2
@@ -41,7 +43,7 @@ class BookingSeatAvailabilityTest extends TestCase
             'start_date' => '2026-05-01',
             'end_date' => '2026-05-10',
             'total_seats' => 2,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -51,22 +53,22 @@ class BookingSeatAvailabilityTest extends TestCase
     public function test_booking_rejected_when_requested_adults_exceed_remaining_seats(): void
     {
         $response = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 5,
-            'children'      => 0,
-            'child_ages'    => '',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 750,
+            'adults' => 5,
+            'children' => 0,
+            'child_ages' => '',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 750,
             'customer_name' => 'Alice Oversized',
-            'email'         => 'alice@example.com',
-            'phone'         => '0911111111',
-            'message'       => 'Group booking'
+            'email' => 'alice@example.com',
+            'phone' => '0911111111',
+            'message' => 'Group booking',
         ]);
 
         $response->assertSessionHasErrors(['seats']);
         $this->assertDatabaseMissing('bookings', [
-            'customer_name' => 'Alice Oversized'
+            'customer_name' => 'Alice Oversized',
         ]);
         $this->assertEquals(0, Booking::count());
     }
@@ -77,17 +79,17 @@ class BookingSeatAvailabilityTest extends TestCase
     public function test_booking_accepted_when_requested_adults_equals_remaining_seats(): void
     {
         $response = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 2,
-            'children'      => 0,
-            'child_ages'    => '',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 300,
+            'adults' => 2,
+            'children' => 0,
+            'child_ages' => '',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 300,
             'customer_name' => 'Bob Exact',
-            'email'         => 'bob@example.com',
-            'phone'         => '0922222222',
-            'message'       => 'Two adults'
+            'email' => 'bob@example.com',
+            'phone' => '0922222222',
+            'message' => 'Two adults',
         ]);
 
         $this->assertEquals(1, Booking::count());
@@ -95,7 +97,7 @@ class BookingSeatAvailabilityTest extends TestCase
         $response->assertRedirect(route('booking.success', ['booking' => $booking->id]));
         $this->assertDatabaseHas('bookings', [
             'customer_name' => 'Bob Exact',
-            'num_persons'   => 2
+            'num_persons' => 2,
         ]);
         $this->assertEquals(0, $this->travelPeriod->refresh()->availableSeats());
     }
@@ -106,17 +108,17 @@ class BookingSeatAvailabilityTest extends TestCase
     public function test_booking_accepted_when_requested_adults_less_than_remaining_seats(): void
     {
         $response = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 1,
-            'children'      => 0,
-            'child_ages'    => '',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 150,
+            'adults' => 1,
+            'children' => 0,
+            'child_ages' => '',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 150,
             'customer_name' => 'Charlie Solo',
-            'email'         => 'charlie@example.com',
-            'phone'         => '0933333333',
-            'message'       => 'Solo trip'
+            'email' => 'charlie@example.com',
+            'phone' => '0933333333',
+            'message' => 'Solo trip',
         ]);
 
         $this->assertEquals(1, Booking::count());
@@ -124,7 +126,7 @@ class BookingSeatAvailabilityTest extends TestCase
         $response->assertRedirect(route('booking.success', ['booking' => $booking->id]));
         $this->assertDatabaseHas('bookings', [
             'customer_name' => 'Charlie Solo',
-            'num_persons'   => 1
+            'num_persons' => 1,
         ]);
         $this->assertEquals(1, $this->travelPeriod->refresh()->availableSeats());
     }
@@ -136,20 +138,20 @@ class BookingSeatAvailabilityTest extends TestCase
     {
         // 1 adult + 1 child age 3 (< 5) + 1 child age 6 (>= 5) = 2 seats requested against 2 remaining seats -> accepted
         $response1 = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 1,
-            'children'      => 2,
-            'child_ages'    => '3,6',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 300,
+            'adults' => 1,
+            'children' => 2,
+            'child_ages' => '3,6',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 300,
             'customer_name' => 'Family Accept',
-            'email'         => 'family1@example.com',
-            'phone'         => '0944444444'
+            'email' => 'family1@example.com',
+            'phone' => '0944444444',
         ]);
 
         $this->assertDatabaseHas('bookings', [
-            'customer_name' => 'Family Accept'
+            'customer_name' => 'Family Accept',
         ]);
         $this->assertEquals(0, $this->travelPeriod->refresh()->availableSeats());
 
@@ -159,21 +161,21 @@ class BookingSeatAvailabilityTest extends TestCase
 
         // 1 adult + 2 children aged 6, 8 (both >= 5) = 3 seats requested against 2 remaining seats -> rejected
         $response2 = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 1,
-            'children'      => 2,
-            'child_ages'    => '6,8',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 450,
+            'adults' => 1,
+            'children' => 2,
+            'child_ages' => '6,8',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 450,
             'customer_name' => 'Family Overbook',
-            'email'         => 'family2@example.com',
-            'phone'         => '0955555555'
+            'email' => 'family2@example.com',
+            'phone' => '0955555555',
         ]);
 
         $response2->assertSessionHasErrors(['seats']);
         $this->assertDatabaseMissing('bookings', [
-            'customer_name' => 'Family Overbook'
+            'customer_name' => 'Family Overbook',
         ]);
         $this->assertEquals(0, Booking::count());
     }
@@ -186,16 +188,16 @@ class BookingSeatAvailabilityTest extends TestCase
         $initialCount = Booking::count();
 
         $response = $this->post(route('booking.store', $this->tour), [
-            'checkin_date'  => '2026-05-02',
+            'checkin_date' => '2026-05-02',
             'checkout_date' => '2026-05-05',
-            'adults'        => 3,
-            'children'      => 0,
-            'child_ages'    => '',
-            'hotel_id'      => $this->hotel->id,
-            'total_price'   => 450,
+            'adults' => 3,
+            'children' => 0,
+            'child_ages' => '',
+            'hotel_id' => $this->hotel->id,
+            'total_price' => 450,
             'customer_name' => 'David Excessive',
-            'email'         => 'david@example.com',
-            'phone'         => '0966666666'
+            'email' => 'david@example.com',
+            'phone' => '0966666666',
         ]);
 
         $response->assertSessionHasErrors(['seats']);

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Booking;
+use Illuminate\Console\Command;
 
 class CompletePastBookings extends Command
 {

@@ -2,27 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Models\Booking;
 use App\Models\Hotel;
 use App\Models\Tour;
 use App\Models\TravelPeriod;
-use App\Models\Booking;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class TourStatusTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $admin;
+
     protected $hotel;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->admin = User::factory()->create(['role' => 'admin']);
-        
+
         // Location-based hotel requirement: tours require an existing hotel location
         $this->hotel = Hotel::create([
             'name' => 'Bagan Lodge Test',
@@ -167,7 +168,7 @@ class TourStatusTest extends TestCase
             'checkin' => '2026-09-02',
             'checkout' => '2026-09-05',
         ]));
-        
+
         $responseCreate->assertRedirect(route('tours.show', $inactiveTour));
 
         // Attempt to submit a booking to store route

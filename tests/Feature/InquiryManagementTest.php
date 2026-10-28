@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
+use App\Mail\AdminInquirySubmittedMail;
 use App\Models\Hotel;
 use App\Models\Inquiry;
-use App\Mail\AdminInquirySubmittedMail;
+use App\Models\Tour;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -16,12 +16,13 @@ class InquiryManagementTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->admin = User::factory()->create(['role' => 'admin']);
 
         // Create a hotel and tour for testing

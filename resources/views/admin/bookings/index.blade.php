@@ -11,7 +11,7 @@
                        class="form-control" 
                        placeholder="Search booking..." 
                        value="{{ request('search') }}"
-                       style="width: 220px; height: 40px; font-size: 0.85rem;">
+                       style="width: 220px; height: 40px; ">
                 <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" aria-label="Search" style="height: 40px; width: 40px;">
                     <i class="bi bi-search"></i>
                 </button>

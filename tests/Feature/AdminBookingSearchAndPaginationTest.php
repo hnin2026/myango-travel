@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,8 +15,11 @@ class AdminBookingSearchAndPaginationTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -30,13 +33,13 @@ class AdminBookingSearchAndPaginationTest extends TestCase
             'duration_days' => 2,
             'base_price' => 120.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Rose Garden Hotel',
             'category' => '4-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -44,7 +47,7 @@ class AdminBookingSearchAndPaginationTest extends TestCase
             'start_date' => now()->addDays(5),
             'end_date' => now()->addDays(7),
             'total_seats' => 20,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -70,7 +73,7 @@ class AdminBookingSearchAndPaginationTest extends TestCase
             'hotel_upgrade_price' => 0.00,
             'total_price' => 240.00,
             'status' => 'pending',
-            'ref_code' => 'MYG-' . rand(10000, 99999),
+            'ref_code' => 'MYG-'.rand(10000, 99999),
         ], $attributes));
 
         if ($createdAt) {
@@ -89,8 +92,8 @@ class AdminBookingSearchAndPaginationTest extends TestCase
         // Create 15 bookings
         for ($i = 0; $i < 15; $i++) {
             $this->createBooking([
-                'ref_code' => "MYG-REF" . sprintf("%02d", $i),
-                'created_at' => now()->addMinutes($i)
+                'ref_code' => 'MYG-REF'.sprintf('%02d', $i),
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -98,7 +101,7 @@ class AdminBookingSearchAndPaginationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Booking Management');
-        
+
         // Should only see 10 bookings on the first page
         // Let's assert that page 1 shows MYG-REF14 down to MYG-REF05 (latest first)
         $response->assertSee('MYG-REF14');
@@ -188,8 +191,8 @@ class AdminBookingSearchAndPaginationTest extends TestCase
         for ($i = 0; $i < 15; $i++) {
             $this->createBooking([
                 'customer_name' => "Jenny Smith $i",
-                'ref_code' => "JENNY-" . sprintf("%02d", $i),
-                'created_at' => now()->addMinutes($i)
+                'ref_code' => 'JENNY-'.sprintf('%02d', $i),
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -197,8 +200,8 @@ class AdminBookingSearchAndPaginationTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $this->createBooking([
                 'customer_name' => "John Doe $i",
-                'ref_code' => "JOHN-" . sprintf("%02d", $i),
-                'created_at' => now()->addMinutes($i + 15)
+                'ref_code' => 'JOHN-'.sprintf('%02d', $i),
+                'created_at' => now()->addMinutes($i + 15),
             ]);
         }
 

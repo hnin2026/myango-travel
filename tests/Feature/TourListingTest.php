@@ -213,7 +213,7 @@ class TourListingTest extends TestCase
 
         // Mandalay location should not appear in destinations dropdown of navbar or page dropdown because its tour is inactive
         $response = $this->get(route('tours.index'));
-        
+
         $response->assertStatus(200);
         $response->assertSee('Yangon');
         $response->assertDontSee('Mandalay');
@@ -237,7 +237,7 @@ class TourListingTest extends TestCase
         $response = $this->get(route('tours.index', ['destination' => 'Bagan']));
 
         $response->assertStatus(200);
-        
+
         // Assert that the page 2 pagination link includes destination=Bagan
         $response->assertSee('destination=Bagan');
     }
@@ -267,7 +267,7 @@ class TourListingTest extends TestCase
             'location' => 'Bagan',
             'status' => 'active',
         ]);
-        
+
         Tour::create([
             'title' => 'Mandalay Inactive Tour',
             'duration_days' => 4,
@@ -278,25 +278,25 @@ class TourListingTest extends TestCase
         $response = $this->get(route('home'));
 
         $response->assertStatus(200);
-        
+
         // Assert Bagan (active tour location) is visible in the dropdown
         $response->assertSee('Bagan');
-        
+
         // Assert Mandalay (inactive tour location) is NOT visible in the dropdown
         $response->assertDontSee('Mandalay');
 
         // Assert navbar contains Destinations positioned correctly (between Tours and Contact)
         $html = $response->getContent();
-        
+
         // Let's assert the structural ordering: Tours, then Destinations, then Contact
         $toursPos = strpos($html, 'Tours</a>');
         $destinationsPos = strpos($html, 'Destinations');
         $contactPos = strpos($html, 'Contact</a>');
-        
+
         $this->assertNotFalse($toursPos, 'Tours link not found in navbar');
         $this->assertNotFalse($destinationsPos, 'Destinations dropdown not found in navbar');
         $this->assertNotFalse($contactPos, 'Contact link not found in navbar');
-        
+
         $this->assertTrue($toursPos < $destinationsPos, 'Tours link must appear before Destinations');
         $this->assertTrue($destinationsPos < $contactPos, 'Destinations must appear before Contact');
     }

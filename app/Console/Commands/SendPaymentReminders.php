@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Booking;
 use App\Mail\PaymentReminderMail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Booking;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendPaymentReminders extends Command
 {
@@ -60,8 +60,8 @@ class SendPaymentReminders extends Command
                     $sent++;
                 } catch (\Exception $e) {
                     $failed++;
-                    $this->error("Failed to send payment reminder for booking {$booking->ref_code}: " . $e->getMessage());
-                    Log::error("Failed to send payment reminder for booking {$booking->ref_code}: " . $e->getMessage());
+                    $this->error("Failed to send payment reminder for booking {$booking->ref_code}: ".$e->getMessage());
+                    Log::error("Failed to send payment reminder for booking {$booking->ref_code}: ".$e->getMessage());
                 }
             }
         });

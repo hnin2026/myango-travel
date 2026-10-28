@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\Tour;
 use App\Models\Inquiry;
+use App\Models\Tour;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -36,7 +36,7 @@ class DashboardController extends Controller
                 'description' => "{$pendingBookingsCount} booking(s) waiting for confirmation.",
                 'link' => route('admin.bookings.index'),
                 'icon' => 'bi-journal-text',
-                'button_text' => 'Review Bookings'
+                'button_text' => 'Review Bookings',
             ];
         }
         if ($paymentVerificationCount > 0) {
@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 'description' => "{$paymentVerificationCount} payment receipt(s) waiting for verification.",
                 'link' => route('admin.bookings.index'),
                 'icon' => 'bi-credit-card-2-front',
-                'button_text' => 'Verify Payments'
+                'button_text' => 'Verify Payments',
             ];
         }
         if ($newInquiriesCount > 0) {
@@ -56,7 +56,7 @@ class DashboardController extends Controller
                 'description' => "{$newInquiriesCount} new inquiry/inquiries waiting for response.",
                 'link' => route('admin.inquiries.index'),
                 'icon' => 'bi-chat-dots',
-                'button_text' => 'Respond to Inquiries'
+                'button_text' => 'Respond to Inquiries',
             ];
         }
 

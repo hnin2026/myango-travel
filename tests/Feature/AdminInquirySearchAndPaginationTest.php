@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Inquiry;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -51,7 +51,7 @@ class AdminInquirySearchAndPaginationTest extends TestCase
         // Create 15 inquiries
         for ($i = 0; $i < 15; $i++) {
             $this->createInquiry([
-                'created_at' => now()->addMinutes($i)
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -97,7 +97,7 @@ class AdminInquirySearchAndPaginationTest extends TestCase
         for ($i = 0; $i < 15; $i++) {
             $this->createInquiry([
                 'status' => 'confirmed',
-                'created_at' => now()->addMinutes($i)
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -105,7 +105,7 @@ class AdminInquirySearchAndPaginationTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $this->createInquiry([
                 'status' => 'new',
-                'created_at' => now()->addMinutes($i + 15)
+                'created_at' => now()->addMinutes($i + 15),
             ]);
         }
 
@@ -176,7 +176,7 @@ class AdminInquirySearchAndPaginationTest extends TestCase
     {
         for ($i = 0; $i < 15; $i++) {
             $this->createInquiry([
-                'created_at' => now()->addMinutes($i)
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 

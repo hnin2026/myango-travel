@@ -2,10 +2,9 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use App\Models\Booking;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
 
 class PaymentReminderMail extends Mailable
 {
@@ -26,7 +25,7 @@ class PaymentReminderMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Payment Reminder: 2 Days Left - Booking ' . $this->booking->ref_code)
-                    ->view('emails.payment-reminder');
+        return $this->subject('Payment Reminder: 2 Days Left - Booking '.$this->booking->ref_code)
+            ->view('emails.payment-reminder');
     }
 }

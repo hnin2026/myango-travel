@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
 use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,7 +13,9 @@ class AdminTourSearchAndPaginationTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $hotelYangon;
+
     protected $hotelBagan;
 
     protected function setUp(): void
@@ -26,13 +28,13 @@ class AdminTourSearchAndPaginationTest extends TestCase
         $this->hotelYangon = Hotel::create([
             'name' => 'Yangon Garden Hotel',
             'category' => '4-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->hotelBagan = Hotel::create([
             'name' => 'Bagan Lodge',
             'category' => '4-star',
-            'location' => 'Bagan'
+            'location' => 'Bagan',
         ]);
     }
 
@@ -68,8 +70,8 @@ class AdminTourSearchAndPaginationTest extends TestCase
         // Create 15 tours
         for ($i = 0; $i < 15; $i++) {
             $this->createTour([
-                'title' => "Tour Title " . sprintf("%02d", $i),
-                'created_at' => now()->addMinutes($i)
+                'title' => 'Tour Title '.sprintf('%02d', $i),
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
@@ -77,7 +79,7 @@ class AdminTourSearchAndPaginationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Tour Management');
-        
+
         // Assert page 1 shows newest first (Title 14 down to Title 05)
         $response->assertSee('Tour Title 14');
         $response->assertSee('Tour Title 05');
@@ -136,18 +138,18 @@ class AdminTourSearchAndPaginationTest extends TestCase
         // Create 15 tours with "Bagan" in location/destination
         for ($i = 0; $i < 15; $i++) {
             $this->createTour([
-                'title' => "Bagan Adventure " . sprintf("%02d", $i),
+                'title' => 'Bagan Adventure '.sprintf('%02d', $i),
                 'location' => 'Bagan',
-                'created_at' => now()->addMinutes($i)
+                'created_at' => now()->addMinutes($i),
             ]);
         }
 
         // Create 5 tours in "Yangon"
         for ($i = 0; $i < 5; $i++) {
             $this->createTour([
-                'title' => "Yangon City Tour " . sprintf("%02d", $i),
+                'title' => 'Yangon City Tour '.sprintf('%02d', $i),
                 'location' => 'Yangon',
-                'created_at' => now()->addMinutes($i + 15)
+                'created_at' => now()->addMinutes($i + 15),
             ]);
         }
 

@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
+use App\Mail\PaymentReminderMail;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentReminderMail;
 use Tests\TestCase;
 
 class SendPaymentRemindersTest extends TestCase
@@ -16,7 +16,9 @@ class SendPaymentRemindersTest extends TestCase
     use RefreshDatabase;
 
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -28,13 +30,13 @@ class SendPaymentRemindersTest extends TestCase
             'duration_days' => 3,
             'base_price' => 180.00,
             'location' => 'Yangon',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Strand Hotel Yangon',
             'category' => '5-star',
-            'location' => 'Yangon'
+            'location' => 'Yangon',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -42,7 +44,7 @@ class SendPaymentRemindersTest extends TestCase
             'start_date' => now()->addDays(10),
             'end_date' => now()->addDays(13),
             'total_seats' => 15,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -64,7 +66,7 @@ class SendPaymentRemindersTest extends TestCase
             'total_price' => 360.00,
             'status' => 'confirmed',
             'cancellation_token' => uniqid('token_'),
-            'ref_code' => 'MYG-' . rand(10000, 99999),
+            'ref_code' => 'MYG-'.rand(10000, 99999),
             'payment_deadline' => now()->addDays(2)->format('Y-m-d'),
             'payment_reminder_sent_at' => null,
         ], $overrides));
@@ -93,9 +95,10 @@ class SendPaymentRemindersTest extends TestCase
 
         Mail::assertSent(PaymentReminderMail::class, function ($mail) use ($booking) {
             $mail->build();
+
             return $mail->hasTo($booking->email) &&
                    $mail->booking->id === $booking->id &&
-                   str_contains($mail->subject, 'Payment Reminder: 2 Days Left - Booking ' . $booking->ref_code);
+                   str_contains($mail->subject, 'Payment Reminder: 2 Days Left - Booking '.$booking->ref_code);
         });
     }
 

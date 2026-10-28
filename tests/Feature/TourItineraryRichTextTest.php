@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Hotel;
-use App\Models\Tour;
 use App\Models\Itinerary;
+use App\Models\Tour;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class TourItineraryRichTextTest extends TestCase
@@ -14,13 +16,14 @@ class TourItineraryRichTextTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $hotel;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->admin = User::factory()->create(['role' => 'admin']);
-        
+
         $this->hotel = Hotel::create([
             'name' => 'Bagan Lodge Test',
             'category' => '4-star',
@@ -49,8 +52,8 @@ class TourItineraryRichTextTest extends TestCase
                 [
                     'description_en' => '<p><strong>Day 2:</strong> Yangon Pagoda Tour</p>',
                     'description_mm' => '<p><strong>နေ့ ၂:</strong> ရန်ကုန် ဘုရားဖူး ခရီးစဉ်</p>',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $response->assertStatus(302);
@@ -98,8 +101,8 @@ class TourItineraryRichTextTest extends TestCase
                 ],
                 [
                     'description_en' => '<p>New Day 2 content</p>',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $response->assertRedirect(route('admin.tours.index'));
@@ -145,8 +148,8 @@ class TourItineraryRichTextTest extends TestCase
      */
     public function test_admin_can_delete_tour_image(): void
     {
-        \Illuminate\Support\Facades\Storage::fake('public');
-        
+        Storage::fake('public');
+
         $tour = Tour::create([
             'title' => 'Bagan Tour',
             'duration_days' => 3,
@@ -154,7 +157,7 @@ class TourItineraryRichTextTest extends TestCase
             'status' => 'active',
         ]);
 
-        $imageFile = \Illuminate\Http\UploadedFile::fake()->image('tour1.jpg');
+        $imageFile = UploadedFile::fake()->image('tour1.jpg');
         $path = $imageFile->store('tours', 'public');
 
         $image = $tour->images()->create([
@@ -162,7 +165,7 @@ class TourItineraryRichTextTest extends TestCase
             'order' => 0,
         ]);
 
-        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($path);
+        Storage::disk('public')->assertExists($path);
 
         $response = $this->actingAs($this->admin)->delete(route('admin.tours.images.destroy', $image));
 
@@ -173,7 +176,7 @@ class TourItineraryRichTextTest extends TestCase
             'id' => $image->id,
         ]);
 
-        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($path);
+        Storage::disk('public')->assertMissing($path);
     }
 
     /**

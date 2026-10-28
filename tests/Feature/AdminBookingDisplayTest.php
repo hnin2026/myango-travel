@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TravelPeriod;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,8 +15,11 @@ class AdminBookingDisplayTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -30,13 +33,13 @@ class AdminBookingDisplayTest extends TestCase
             'duration_days' => 3,
             'base_price' => 200.00,
             'location' => 'Bagan',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Bagan Hotel',
             'category' => '4-star',
-            'location' => 'Bagan'
+            'location' => 'Bagan',
         ]);
 
         $this->travelPeriod = TravelPeriod::create([
@@ -44,7 +47,7 @@ class AdminBookingDisplayTest extends TestCase
             'start_date' => now()->addDays(5)->toDateString(),
             'end_date' => now()->addDays(10)->toDateString(),
             'total_seats' => 20,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -66,7 +69,7 @@ class AdminBookingDisplayTest extends TestCase
             'hotel_upgrade_price' => 0.00,
             'total_price' => 400.00,
             'status' => 'pending',
-            'ref_code' => 'MYG-' . rand(10000, 99999),
+            'ref_code' => 'MYG-'.rand(10000, 99999),
         ], $attributes));
     }
 

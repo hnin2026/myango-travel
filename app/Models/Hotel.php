@@ -9,7 +9,7 @@ class Hotel extends Model
     protected $fillable = [
         'name',
         'category',
-        'location'
+        'location',
     ];
 
     public static function normalizeLocation(string $value): string
@@ -46,6 +46,7 @@ class Hotel extends Model
         $seasonPrice = $this->seasonPrices()
             ->where('season', $season)
             ->first();
+
         return $seasonPrice ? (float) $seasonPrice->upgrade_price : 0;
     }
 }

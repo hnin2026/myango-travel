@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tour;
 use App\Models\TourBlackoutPeriod;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TourBlackoutController extends Controller
@@ -26,12 +27,12 @@ class TourBlackoutController extends Controller
         $earliest = $tour->travelPeriods()->min('start_date');
         $latest = $tour->travelPeriods()->max('end_date');
 
-        if (!$earliest || !$latest) {
+        if (! $earliest || ! $latest) {
             return back()->withErrors(['start_date' => 'Please add at least one travel period/available date before adding blackout periods.'])->withInput();
         }
 
-        $earliestDate = \Carbon\Carbon::parse($earliest)->format('Y-m-d');
-        $latestDate = \Carbon\Carbon::parse($latest)->format('Y-m-d');
+        $earliestDate = Carbon::parse($earliest)->format('Y-m-d');
+        $latestDate = Carbon::parse($latest)->format('Y-m-d');
 
         if ($validated['start_date'] < $earliestDate || $validated['end_date'] > $latestDate) {
             return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliestDate} to {$latestDate})."])->withInput();
@@ -70,12 +71,12 @@ class TourBlackoutController extends Controller
         $earliest = $tour->travelPeriods()->min('start_date');
         $latest = $tour->travelPeriods()->max('end_date');
 
-        if (!$earliest || !$latest) {
+        if (! $earliest || ! $latest) {
             return back()->withErrors(['start_date' => 'Please add at least one travel period/available date before adding blackout periods.'])->withInput();
         }
 
-        $earliestDate = \Carbon\Carbon::parse($earliest)->format('Y-m-d');
-        $latestDate = \Carbon\Carbon::parse($latest)->format('Y-m-d');
+        $earliestDate = Carbon::parse($earliest)->format('Y-m-d');
+        $latestDate = Carbon::parse($latest)->format('Y-m-d');
 
         if ($validated['start_date'] < $earliestDate || $validated['end_date'] > $latestDate) {
             return back()->withErrors(['start_date' => "Blackout dates must be within the tour operating period ({$earliestDate} to {$latestDate})."])->withInput();

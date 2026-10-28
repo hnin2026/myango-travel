@@ -9,7 +9,7 @@ class TourImage extends Model
     protected $fillable = [
         'tour_id',
         'image_path',
-        'order'
+        'order',
     ];
 
     public function tour()

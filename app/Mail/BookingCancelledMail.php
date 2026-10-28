@@ -2,10 +2,9 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use App\Models\Booking;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
 
 class BookingCancelledMail extends Mailable
 {
@@ -34,6 +33,6 @@ class BookingCancelledMail extends Mailable
         }
 
         return $this->subject($subject)
-                    ->view('emails.booking-cancelled');
+            ->view('emails.booking-cancelled');
     }
 }

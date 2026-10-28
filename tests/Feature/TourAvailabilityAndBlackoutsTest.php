@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Tour;
-use App\Models\Hotel;
-use App\Models\TravelPeriod;
-use App\Models\TourBlackoutPeriod;
 use App\Models\Booking;
+use App\Models\Hotel;
+use App\Models\Tour;
+use App\Models\TourBlackoutPeriod;
+use App\Models\TravelPeriod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,8 +16,11 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
     use RefreshDatabase;
 
     protected $admin;
+
     protected $tour;
+
     protected $hotel;
+
     protected $travelPeriod;
 
     protected function setUp(): void
@@ -28,7 +31,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->tour = Tour::create([
@@ -36,13 +39,13 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'duration_days' => 3,
             'base_price' => 200.00,
             'location' => 'Bagan',
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         $this->hotel = Hotel::create([
             'name' => 'Bagan Heritage Hotel',
             'category' => '4-star',
-            'location' => 'Bagan'
+            'location' => 'Bagan',
         ]);
 
         // Operating period: April 1 -> April 10
@@ -51,7 +54,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'start_date' => '2026-04-01',
             'end_date' => '2026-04-10',
             'total_seats' => 5,
-            'booked_seats' => 0
+            'booked_seats' => 0,
         ]);
     }
 
@@ -72,7 +75,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             ->put(route('admin.tours.travel-periods.update', [$this->tour, $this->travelPeriod]), [
                 'start_date' => '2026-04-02',
                 'end_date' => '2026-04-09',
-                'total_seats' => 15
+                'total_seats' => 15,
             ]);
 
         $updateResponse->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
@@ -106,7 +109,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'hotel_upgrade_price' => 0,
             'total_price' => 400,
             'status' => 'pending',
-            'ref_code' => 'TEST-001'
+            'ref_code' => 'TEST-001',
         ]);
 
         $this->travelPeriod->refresh();
@@ -130,7 +133,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'hotel_upgrade_price' => 0,
             'total_price' => 400,
             'status' => 'confirmed',
-            'ref_code' => 'TEST-002'
+            'ref_code' => 'TEST-002',
         ]);
 
         $this->travelPeriod->refresh();
@@ -153,7 +156,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('admin.tours.blackouts.store', $this->tour), [
                 'start_date' => '2026-04-05',
-                'end_date' => '2026-04-02'
+                'end_date' => '2026-04-02',
             ]);
         $response->assertSessionHasErrors(['end_date']);
 
@@ -161,7 +164,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('admin.tours.blackouts.store', $this->tour), [
                 'start_date' => '2026-03-25',
-                'end_date' => '2026-03-30'
+                'end_date' => '2026-03-30',
             ]);
         $response->assertSessionHasErrors(['start_date']);
 
@@ -169,20 +172,20 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('admin.tours.blackouts.store', $this->tour), [
                 'start_date' => '2026-04-04',
-                'end_date' => '2026-04-06'
+                'end_date' => '2026-04-06',
             ]);
         $response->assertRedirect(route('admin.tours.travel-periods.index', $this->tour));
         $this->assertDatabaseHas('tour_blackout_periods', [
             'tour_id' => $this->tour->id,
             'start_date' => '2026-04-04 00:00:00',
-            'end_date' => '2026-04-06 00:00:00'
+            'end_date' => '2026-04-06 00:00:00',
         ]);
 
         // 4. Overlap: April 5 to April 8 overlaps with April 4 to April 6
         $response = $this->actingAs($this->admin)
             ->post(route('admin.tours.blackouts.store', $this->tour), [
                 'start_date' => '2026-04-05',
-                'end_date' => '2026-04-08'
+                'end_date' => '2026-04-08',
             ]);
         $response->assertSessionHasErrors(['start_date']);
     }
@@ -208,7 +211,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'hotel_upgrade_price' => 0,
             'total_price' => 800,
             'status' => 'pending',
-            'ref_code' => 'TEST-003'
+            'ref_code' => 'TEST-003',
         ]);
 
         // Customer attempts to book 2 seats (total becomes 6 > 5)
@@ -223,12 +226,12 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'customer_name' => 'Overbook Customer',
             'email' => 'overbook@example.com',
             'phone' => '22222222',
-            'message' => 'Hello'
+            'message' => 'Hello',
         ]);
 
         $response->assertSessionHasErrors(['seats']);
         $this->assertDatabaseMissing('bookings', [
-            'customer_name' => 'Overbook Customer'
+            'customer_name' => 'Overbook Customer',
         ]);
     }
 
@@ -241,7 +244,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         TourBlackoutPeriod::create([
             'tour_id' => $this->tour->id,
             'start_date' => '2026-04-04',
-            'end_date' => '2026-04-06'
+            'end_date' => '2026-04-06',
         ]);
 
         // Attempt to book for April 5
@@ -256,12 +259,12 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'customer_name' => 'Blackout Customer',
             'email' => 'blackout@example.com',
             'phone' => '33333333',
-            'message' => 'Hello'
+            'message' => 'Hello',
         ]);
 
         $response->assertSessionHasErrors(['checkin_date']);
         $this->assertDatabaseMissing('bookings', [
-            'customer_name' => 'Blackout Customer'
+            'customer_name' => 'Blackout Customer',
         ]);
     }
 
@@ -285,7 +288,7 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'hotel_upgrade_price' => 0,
             'total_price' => 600,
             'status' => 'confirmed',
-            'ref_code' => 'TEST-004'
+            'ref_code' => 'TEST-004',
         ]);
 
         // Create cancelled booking of 3 seats
@@ -303,13 +306,13 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
             'hotel_upgrade_price' => 0,
             'total_price' => 600,
             'status' => 'cancelled',
-            'ref_code' => 'TEST-005'
+            'ref_code' => 'TEST-005',
         ]);
 
         // Restoring cancelled booking (total seats would become 6 > 5)
         $response = $this->actingAs($this->admin)
             ->put(route('admin.bookings.update', $cancelledBooking), [
-                'status' => 'confirmed'
+                'status' => 'confirmed',
             ]);
 
         $response->assertSessionHas('error');
@@ -326,13 +329,13 @@ class TourAvailabilityAndBlackoutsTest extends TestCase
         TourBlackoutPeriod::create([
             'tour_id' => $this->tour->id,
             'start_date' => '2026-04-04',
-            'end_date' => '2026-04-06'
+            'end_date' => '2026-04-06',
         ]);
 
         $response = $this->get(route('tours.show', $this->tour));
 
         $response->assertStatus(200);
-        
+
         // Assert travel period is shown in the new section
         $response->assertSee('Available Travel Period');
         $response->assertSee('01 Apr 2026');
